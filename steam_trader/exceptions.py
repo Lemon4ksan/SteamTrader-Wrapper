@@ -1,6 +1,9 @@
 class SteamTraderError(Exception):
     """Базовый класс, представляющий исключения общего характера."""
 
+class UnsupportedAppID(SteamTraderError):
+    """Класс исключения, вызываемый в случае использования неподдерживаемого AppID."""
+
 class ClientError(SteamTraderError):
     """Класс исключения, вызываемый в случае ошибки с клиентом."""
 
