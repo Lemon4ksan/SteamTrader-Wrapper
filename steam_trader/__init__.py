@@ -17,7 +17,7 @@ from ._misc import InventoryItem
 from ._misc import BuyOrder
 from ._misc import Discount
 from ._misc import OperationsHistoryItem
-from ._misc import WebSocketMessage
+from ._misc import AltWebSocketMessage
 from ._misc import MultiBuyOrder
 from ._misc import ItemForExchange
 from ._misc import TradeDescription
@@ -81,7 +81,7 @@ __all__ = [
     'Discount',
     'P2PConfirmObject',
     'OperationsHistoryItem',
-    'WebSocketMessage',
+    'AltWebSocketMessage',
     'GetDownOrdersResult',
     'ExchangeP2PResult',
     'EditPriceResult',
