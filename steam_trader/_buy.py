@@ -1,20 +1,12 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional, Sequence
 
-from steam_trader import (
-    TraderClientObject,
-    BadRequestError,
-    Unauthorized,
-    NoLongerExists,
-    NoTradeLink,
-    NotEnoughMoney,
-    OfferCreationFail,
-    UnknownItem,
-    MultiBuyOrder
-)
+from steam_trader import exceptions
+from ._misc import MultiBuyOrder
+from ._base import TraderClientObject
 
 if TYPE_CHECKING:
-    from steam_trader import Client
+    from ._client import Client
 
 @dataclass
 class BuyResult(TraderClientObject):
@@ -25,9 +17,10 @@ class BuyResult(TraderClientObject):
         id (:obj:`int`): ID покупки.
         itemid (:obj:`int`): Униклаьный ID купленного предмета.
         price (:obj:`float`): Цена, за которую был куплен предмет с учётом скидки.
-        new_price (:obj:`float`): Новая цена лучшего предложения о продаже для варианта покупки Commodity, если у группы предметов ещё имеются предложения о продаже. Для остальных вариантов покупки будет 0
+        new_price (:obj:`float`): Новая цена лучшего предложения о продаже для варианта покупки Commodity,
+            если у группы предметов ещё имеются предложения о продаже. Для остальных вариантов покупки будет 0
         discount (:obj:`float`): Размер скидки в процентах, за которую был куплен предмет.
-        client (:obj:`steam_trader.Client` optional): Клиент Steam Trader.
+        client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
     """
 
     success: bool
@@ -45,29 +38,29 @@ class BuyResult(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.BuyResult`: Купленный предмет.
+            :class:`steam_trader.BuyResult`, optional: Купленный предмет.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос')
                 case 401:
-                    raise Unauthorized('Вы не зарегистрированны')
+                    raise exceptions.Unauthorized('Вы не зарегистрированны')
                 case 1:
-                    raise OfferCreationFail('Ошибка создания заявки.')
+                    raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 3:
-                    raise NoTradeLink('У Вас нет ссылки для обмена.')
+                    raise exceptions.NoTradeLink('У Вас нет ссылки для обмена.')
                 case 4:
-                    raise NoLongerExists('Извините, данное предложение больше недействительно.')
+                    raise exceptions.NoLongerExists('Извините, данное предложение больше недействительно.')
                 case 5:
-                    raise NotEnoughMoney('Для покупки не достаточно средств.')
+                    raise exceptions.NotEnoughMoney('Для покупки не достаточно средств.')
 
         data = super(BuyResult, cls).de_json(data, client)
 
@@ -81,7 +74,7 @@ class BuyOrderResult(TraderClientObject):
         success (:obj:`bool`): Результат запроса.
         executed (:obj:`int`): Количество исполненных заявок.
         placed (:obj:`int`): Количество размещённых на маркет заявок.
-        client (:obj:`steam_trader.Client` optional): Клиент Steam Trader.
+        client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
     """
 
     success: bool
@@ -95,33 +88,33 @@ class BuyOrderResult(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.BuyResult`: Результат запроса на покупку.
+            :class:`steam_trader.BuyResult`, optional: Результат запроса на покупку.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         del data['orders']  # Конфликт с steam_trader.BuyOrder
 
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос')
                 case 401:
-                    raise Unauthorized('Вы не зарегистрированны')
+                    raise exceptions.Unauthorized('Вы не зарегистрированны')
                 case 1:
-                    raise OfferCreationFail('Ошибка создания заявки.')
+                    raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 2:
-                    raise UnknownItem('Неизвестный предмет')
+                    raise exceptions.UnknownItem('Неизвестный предмет')
                 case 3:
-                    raise NoTradeLink('У Вас нет ссылки для обмена.')
+                    raise exceptions.NoTradeLink('У Вас нет ссылки для обмена.')
                 case 4:
-                    raise NoLongerExists('Извините, данное предложение больше недействительно.')
+                    raise exceptions.NoLongerExists('Извините, данное предложение больше недействительно.')
                 case 5:
-                    raise NotEnoughMoney('Для покупки не достаточно средств.')
+                    raise exceptions.NotEnoughMoney('Для покупки не достаточно средств.')
 
         data = super(BuyOrderResult, cls).de_json(data, client)
 
@@ -135,14 +128,14 @@ class MultiBuyResult(TraderClientObject):
         success (:obj:`bool`): Результат запроса.
         balance (:obj:`float`): Баланс после покупки предметов.
         spent (:obj:`float`): Сумма потраченных средств на покупку предметов.
-        orders (:Sequence:`MultiBuyOrder`): Последовательность купленных предметов.
-        client (:obj:`steam_trader.Client` optional): Клиент Steam Trader.
+        orders (Sequence[:class:`steam_trader.MultiBuyOrder`, optional]): Последовательность купленных предметов.
+        client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
     """
 
     success: bool
     balance: float
     spent: float
-    orders: Sequence['MultiBuyOrder']
+    orders: Sequence[Optional['MultiBuyOrder']]
     client: Optional['Client'] = None
 
     @classmethod
@@ -151,29 +144,29 @@ class MultiBuyResult(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.BuyResult`: Результат мульти-покупки.
+            :class:`steam_trader.BuyResult`: Результат мульти-покупки.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос')
                 case 401:
-                    raise Unauthorized('Вы не зарегистрированны')
+                    raise exceptions.Unauthorized('Вы не зарегистрированны')
                 case 1:
-                    raise OfferCreationFail('Ошибка создания заявки.')
+                    raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 2:
-                    raise NotEnoughMoney(data['error'])
+                    raise exceptions.NotEnoughMoney(data['error'])
                 case 3:
-                    raise NoTradeLink('У Вас нет ссылки для обмена.')
+                    raise exceptions.NoTradeLink('У Вас нет ссылки для обмена.')
                 case 5:
-                    raise NotEnoughMoney('Для покупки не достаточно средств.')
+                    raise exceptions.NotEnoughMoney('Для покупки не достаточно средств.')
 
         for i, offer in enumerate(data['orders']):
             data['orders'][i] = MultiBuyOrder.de_json(offer)
