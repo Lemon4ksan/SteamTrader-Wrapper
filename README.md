@@ -132,9 +132,9 @@ asyncio.run(main())
 
 Внесение своего вклада максимально приветствуется!
 
-Вы можете помочь и сообщив о [баге](https://github.com/Lemon4ksan/SteamTrader-Wrapper/issues/new?assignees=&labels=bug&projects=&template=bug-report.md&title=) или [предложив](https://github.com/Lemon4ksan/SteamTrader-Wrapper/issues/new?assignees=&labels=feature-request&projects=&template=feature-request.md&title=) новый функционал.
+Вы можете помочь, сообщив о [баге](https://github.com/Lemon4ksan/SteamTrader-Wrapper/issues/new?assignees=&labels=bug&projects=&template=bug-report.md&title=) или [предложив](https://github.com/Lemon4ksan/SteamTrader-Wrapper/issues/new?assignees=&labels=feature-request&projects=&template=feature-request.md&title=) новый функционал.
 
-Данная библиотека будет переодически обновляться и дополняться. В данный момент она находится в стадии пре-релиза.
+Данная библиотека будет переодически обновляться и дополняться.
 
 ### Лицензия
 См. Оригинал на английском [LICENSE](https://github.com/Lemon4ksan/SteamTrader-Wrapper/blob/master/LICENSE)
