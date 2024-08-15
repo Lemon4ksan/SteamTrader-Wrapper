@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
-from steam_trader import TraderClientObject
+from ._base import TraderClientObject
 
 if TYPE_CHECKING:
     from steam_trader import Client
@@ -32,13 +32,14 @@ class SellOffer(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.SellOffer`, optional: Информация о предложении продажи.
+            :class:`steam_trader.SellOffer`, optional: Информация о предложении продажи.
         """
+
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(SellOffer, cls).de_json(data)
 
@@ -64,15 +65,15 @@ class BuyOffer(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.BuyOffer`, optional: Информация о запросе на покупку.
+            :class:`steam_trader.BuyOffer`, optional: Информация о запросе на покупку.
         """
+
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(BuyOffer, cls).de_json(data)
 
         return cls(**data)
-
