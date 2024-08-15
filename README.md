@@ -14,7 +14,7 @@
 
 ### Введение
 
-Эта библиотека предоставляет Python обёртку для API Steam-Trader.
+Эта библиотека представляет Python обёртку для API Steam-Trader.
 
 Она совместима с версиями Python 3.12+ и поддерживает работу как с синхронным, так и с асинхронным (asyncio) кодом.
 
@@ -106,7 +106,7 @@ for offer in sell_offers.sell:
 import asyncio
 from steam_trader import ClientAsync
 
-client = ClientAsync('jag_PqWczTXg_0Ym4WNk1kcHvmk5tPheXPhONweX')
+client = ClientAsync('Ваш токен')
 
 gids = [1226, 1402, 3439, 1976, 1984, 1990, 1227, 1205, 1523, 2484, 1524, 1503, 1506, 1220, 1515, 3530, 1745, 1202]
 
