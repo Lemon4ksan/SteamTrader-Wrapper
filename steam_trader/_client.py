@@ -1,7 +1,7 @@
 import httpx
 from typing import Optional, LiteralString, Union, List
 
-from steam_trader.constants import SUPPORTED_APPIDS
+from .constants import SUPPORTED_APPIDS
 from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsopportedAppID, Unauthorized
 from ._base import TraderClientObject
 from ._account import WSToken, Inventory, BuyOrders, Discounts, OperationsHistory, InventoryState, AltWebSocket
