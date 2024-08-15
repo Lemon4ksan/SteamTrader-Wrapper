@@ -1,16 +1,10 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional, Sequence, List
 
-from steam_trader import (
-    TraderClientObject,
-    BadRequestError,
-    Unauthorized,
-    UnknownItem,
-    InternalError,
-    SellOffer,
-    BuyOffer,
-    SellHistoryItem
-)
+from .exceptions import BadRequestError, Unauthorized, InternalError, UnknownItem
+from ._base import TraderClientObject
+from ._offers import SellOffer, BuyOffer
+from ._misc import SellHistoryItem
 
 if TYPE_CHECKING:
     from steam_trader import Client
@@ -26,7 +20,7 @@ class MinPrices(TraderClientObject):
         steam_price (:obj:`float`, optional): Минимальная цена в Steam. Может быть пустым.
         count_sell_offers (:obj:`int`): Количество предложений о продаже.
         count_buy_offers (:obj:`int`): Количество предложений о покупке.
-        client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
     """
 
     success: bool
@@ -43,13 +37,13 @@ class MinPrices(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.MinPrices`, optional: Минимальная/максимальная цена на предмет.
+            :class:`steam_trader.MinPrices`, optional: Минимальная/максимальная цена на предмет.
         """
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         if not data['success']:
             match data['code']:
@@ -88,10 +82,10 @@ class ItemInfo(TraderClientObject):
         buy_price (:obj:`float`, optional): Максимальная цена покупки. Может быть пустым.
         steam_price (:obj:`float`, optional): Минимальная цена в Steam. Может быть пустым.
         filters (:obj:`dict`): Фильтры, используемые для поиска на сайте (нет в документации).
-        sell_offers (:Sequnce:`steam_trader.SellOffer`): Последовательность с предложениями о продаже.
-        buy_offers (:Sequnce:`steam_trader.BuyOffer`): Последовательность с предложениями о покупке.
-        sell_history (:Sequence:`steam_trader.SellHistoryItem`): Последовательность, содержащая историю продаж.
-        client (:obj:`steam_trader.Client` optional): Клиент Steam Trader.
+        sell_offers (Sequnce[`steam_trader.SellOffer`, optional]): Последовательность с предложениями о продаже.
+        buy_offers (Sequnce[`steam_trader.BuyOffer`, optional]): Последовательность с предложениями о покупке.
+        sell_history (Sequence[`steam_trader.SellHistoryItem`, optional]): Последовательность истории продаж.
+        client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
     """
 
     success: bool
@@ -110,9 +104,9 @@ class ItemInfo(TraderClientObject):
     buy_price: Optional[float]
     steam_price: Optional[float]
     filters: dict
-    sell_offers: Sequence['SellOffer']
-    buy_offers: Sequence['BuyOffer']
-    sell_history: list
+    sell_offers: Sequence[Optional['SellOffer']]
+    buy_offers: Sequence[Optional['BuyOffer']]
+    sell_history: Sequence[Optional['SellHistoryItem']]
     client: Optional['Client'] = None
 
     @classmethod
@@ -121,13 +115,13 @@ class ItemInfo(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.ItemInfo`, optional: Группа предметов на сайте.
+            :class:`steam_trader.ItemInfo`, optional: Группа предметов на сайте.
         """
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         if not data['success']:
             match data['code']:
@@ -159,11 +153,13 @@ class OrderBook(TraderClientObject):
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
-        sell (:Sequence:`list[int, int]`): Сгруппированный по цене список заявок на продажу. Каждый элемент в списке является массивом, где первый элемент - это цена, а второй - количество заявок.
-        buy (:Sequence:`list[int, int]`): Сгруппированный по цене список заявок на покупку. Каждый элемент в списке является массивом, где первый элемент - это цена, а второй - количество заявок.
+        sell (Sequence[List[:obj:`int`, :obj:`int`]]): Сгруппированный по цене список заявок на продажу.
+            Каждый элемент в списке является массивом, где первый элемент - это цена, а второй - количество заявок.
+        buy (Sequence[List[:obj:`int`, :obj:`int`]]): Сгруппированный по цене список заявок на покупку.
+            Каждый элемент в списке является массивом, где первый элемент - это цена, а второй - количество заявок.
         total_sell (:obj:`int`): Количество всех заявок на продажу.
         total_buy (:obj:`int`): Количество всех заявок на покупку.
-        client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
     """
 
     success: bool
@@ -179,13 +175,13 @@ class OrderBook(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.OrderBook`: Список заявок о покупке/продаже предмета.
+            :class:`steam_trader.OrderBook`, optional: Список заявок о покупке/продаже предмета.
         """
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         if not data['success']:
             match data['code']:
