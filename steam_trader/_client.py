@@ -1,35 +1,15 @@
 import httpx
 from typing import Optional, LiteralString, Union, List
 
-from steam_trader import (
-    TraderClientObject,
-    SteamTraderError,
-    Unauthorized,
-    BadRequestError,
-    SaveFail,
-    MinPrices,
-    ItemInfo,
-    OrderBook,
-    WSToken,
-    Inventory,
-    BuyOrders,
-    MultiBuyResult,
-    BuyOrderResult,
-    Discounts,
-    WrongTradeLink,
-    OperationsHistory,
-    InventoryState,
-    AltWebSocket,
-    ItemOnSale,
-    BuyResult,
-    ItemsForExchange,
-    ExchangeResult,
-    ExchangeP2PResult,
-    EditPriceResult,
-    DeleteItemResult,
-    GetDownOrdersResult,
-    SUPPORTED_APPIDS
-)
+from steam_trader.constants import SUPPORTED_APPIDS
+from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsopportedAppID, Unauthorized
+from ._base import TraderClientObject
+from ._account import WSToken, Inventory, BuyOrders, Discounts, OperationsHistory, InventoryState, AltWebSocket
+from ._buy import BuyResult, BuyOrderResult, MultiBuyResult
+from ._sale import SellResult
+from ._edit_item import EditPriceResult, DeleteItemResult, GetDownOrdersResult
+from ._item_info import MinPrices, ItemInfo, OrderBook
+from ._trade import ItemsForExchange, ExchangeResult, ExchangeP2PResult
 
 class Client(TraderClientObject):
     """Класс, представляющий клиент Steam Trader.
@@ -78,22 +58,22 @@ class Client(TraderClientObject):
             raise Unauthorized('Неправильный api-токен')
         return result['balance']
 
-    def sale(self, itemid: int, assetid: int, price: float) -> Optional['ItemOnSale']:
+    def sell(self, itemid: int, assetid: int, price: float) -> Optional['SellResult']:
         """Создать предложение о продаже определённого предмета.
 
         Note:
-            Если при создании предложения о ПРОДАЖЕ указать цену меньше, чем у имеющейся заявки на покупку,
+            Если при создании предложения о ПРОДАЖЕ указать цену меньше, чем у имеющейся заявки на ПОКУПКУ,
             предложение о ПРОДАЖЕ будет исполнено моментально по цене заявки на ПОКУПКУ.
-            Например, на сайте есть заявка на покупку за 10 ₽, а продавец собирается выставить предложение за 5 ₽ (дешевле),
-            то сделка совершится по цене 10 ₽.
+            Например, на сайте есть заявка на покупку за 10 ₽, а продавец собирается выставить предложение за 5 ₽
+            (дешевле), то сделка совершится по цене 10 ₽.
 
         Args:
             itemid (:obj:`int`): Уникальный ID предмета.
             assetid (:obj:`int`): AssetID предмета в Steam (найти их можно через get_inventory).
-            price (:obj:`float`): Цена, за которую хотите продать предмет без учета комиссии/скидки.
+            price (:obj:`float`): Цена, за которую хотите продать предмет без учёта комиссии/скидки.
 
         Returns:
-            :obj:`steam_trader.ItemOnSale, optional`: Результат создания предложения о продаже.
+            :class:`steam_trader.SellResult, optional`: Результат создания предложения о продаже.
         """
 
         url = self.base_url + 'sale/'
@@ -102,7 +82,7 @@ class Client(TraderClientObject):
             data={"itemid": itemid, "assetid": assetid, "price": price, "key": self.api_token},
             headers=self.headers
         ).json()
-        return ItemOnSale.de_json(result, self)
+        return SellResult.de_json(result, self)
 
     def buy(self, _id: Union[int, str], _type: int, price: float, currency: int = 1) -> Optional['BuyResult']:
         """Создать предложение о покупке предмета по строго указанной цене.
@@ -113,16 +93,17 @@ class Client(TraderClientObject):
             Сайт пока работает только с рублями. Не меняйте значение currency.
 
         Args:
-            _id (:Union:`int, str`): В качества ID может выступать:
-                GID для варианта покупки Commodity
-                Часть ссылки после nc/ (nc/L8RJI7XR96Mmo3Bu) для варианта покупки NoCommission
-                ID предложения о продаже для варианта покупки Offer (найти их можно в ItemInfo)
-            _type (:obj:`int`): Вариант покупки (указаны выше) - 1 / 2 / 3
-            price (:obj:`float`): Цена предложения о продаже без учёта комиссии/скидки. Актуальные цены можно узнать через get_item_info и get_min_prices
+            _id (:obj:`int | :obj: str`): В качества ID может выступать:
+                GID для варианта покупки Commodity.
+                Часть ссылки после nc/ (nc/L8RJI7XR96Mmo3Bu) для варианта покупки NoCommission.
+                ID предложения о продаже для варианта покупки Offer (найти их можно в ItemInfo).
+            _type (:obj:`int`): Вариант покупки (указаны выше) - 1 / 2 / 3.
+            price (:obj:`float`): Цена предложения о продаже без учёта комиссии/скидки.
+                Актуальные цены можно узнать через get_item_info и get_min_prices.
             currency (:obj:`int`): Валюта покупки. Значение 1 - рубль.
 
         Returns:
-            :obj:`steam_trader.BuyResult`, optional: Результат создания запроса о покупке.
+            :class:`steam_trader.BuyResult`, optional: Результат создания запроса о покупке.
         """
 
         url = self.base_url + 'buy/'
@@ -134,21 +115,21 @@ class Client(TraderClientObject):
         return BuyResult.de_json(result, self)
 
     def create_buy_order(self, gid: int, price: float, *, count: int = 1) -> Optional['BuyOrderResult']:
-        """Создаёт заявку на покупку предмета с определенным GID.
+        """Создать заявку на покупку предмета с определённым GID.
 
         Note:
-            Если при создании предложения о ПРОДАЖЕ указать цену меньше, чем у имеющейся заявки на покупку,
+            Если при создании предложения о ПРОДАЖЕ указать цену меньше, чем у имеющейся заявки на ПОКУПКУ,
             предложение о ПРОДАЖЕ будет исполнено моментально по цене заявки на ПОКУПКУ.
-            Например, на сайте есть заявка на покупку за 10 ₽, а продавец собирается выставить предложение за 5 ₽ (дешевле),
-            то сделка совершится по цене 10 ₽.
+            Например, на сайте есть заявка на покупку за 10 ₽, а продавец собирается выставить предложение за 5 ₽
+            (дешевле), то сделка совершится по цене 10 ₽.
 
         Args:
             gid (:obj:`int`): ID группы предметов.
-            price (:obj:`float`): Цена предмета, за которую будете его покупать без учета комиссии/скидки.
-            count (:obj:`int`): Количество заявок для размещения (не более 500). По умолчанию - 1
+            price (:obj:`float`): Цена предмета, за которую будете его покупать без учёта комиссии/скидки.
+            count (:obj:`int`): Количество заявок для размещения (не более 500). По умолчанию - 1.
 
         Returns:
-            :obj:`steam_trader.CreatedBuyOrder, optional`: Результат созданния заявки на покупку.
+            :class:`steam_trader.BuyOrderResult, optional`: Результат созданния заявки на покупку.
         """
 
         url = self.base_url + 'createbuyorder/'
@@ -160,10 +141,11 @@ class Client(TraderClientObject):
         return BuyOrderResult.de_json(result, self)
 
     def multi_buy(self, gid: int, max_price: float, count: int) -> Optional['MultiBuyResult']:
-        """Создаёт запрос о покупке нескольких предметов с определённым GID.
+        """Создать запрос о покупке нескольких предметов с определённым GID.
 
         Будут куплены самые лучшие (дешёвые) предложения о продаже.
-        Если максимальная цена будет указана больше, чем у имеющихся предложений о продаже, покупка
+
+        Если максимальная цена ПОКУПКИ будет указана больше, чем у имеющихся предложений о ПРОДАЖЕ, ПОКУПКА
         совершится по цене предложений. Например, на сайте есть 2 предложения о продаже по цене 10 и 11 ₽,
         если при покупке указать максмальную цену 25 ₽, то сделки совершатся по цене 10 и 11 ₽,
         а общая сумма потраченных средств - 21 ₽.
@@ -177,7 +159,7 @@ class Client(TraderClientObject):
             count (:obj:`int`): Количество предметов для покупки.
 
         Returns:
-            :obj:`steam_trader.MultiBuyInfo`: Результат мульти-покупки.
+            :class:`steam_trader.MultiBuyResult`, optional: Результат создания запроса на мульти-покупку.
         """
 
         url = self.base_url + 'multibuy/'
@@ -189,16 +171,17 @@ class Client(TraderClientObject):
         return MultiBuyResult.de_json(result, self)
 
     def edit_price(self, _id: int, price: float) -> Optional['EditPriceResult']:
-        """Редактирует цену предмета/заявки на покупку.
+        """Редактировать цену предмета/заявки на покупку.
 
-        При редактировании может произойти моментальная продажа/покупка по аналогии тому, как это сделано в методах sale и create_buy_order.
+        При редактировании может произойти моментальная продажа/покупка по аналогии тому,
+        как это сделано в методах sale и create_buy_order.
 
         Args:
             _id (:obj:`int`): ID предложения о продаже/заявки на покупку.
-            price (:obj:`float`): Новая цена, за которую хотите продать/купить предмет без учета комиссии/скидки.
+            price (:obj:`float`): Новая цена, за которую хотите продать/купить предмет без учёта комиссии/скидки.
 
         Returns:
-            :obj:`steam_trader.EditPriceResult`, optional: Результат запроса на изменение цены.
+            :class:`steam_trader.EditPriceResult`, optional: Результат запроса на изменение цены.
         """
 
         url = self.base_url + 'editprice/'
@@ -213,10 +196,11 @@ class Client(TraderClientObject):
         """Снять предмет с продажи/заявку на покупку.
 
         Args:
-            _id (:obj:`int`): ID продажи.
+            _id (:obj:`int`): ID продажи/заявки на покупку.
 
         Returns:
-            :obj:`steam_trader.DeleteItemResult`, optional: Результат запроса снятия предмета с продажи/заявки на покупку.
+            :class:`steam_trader.DeleteItemResult`, optional: Результат запроса снятия предмета
+                с продажи/заявки на покупку.
         """
 
         url = self.base_url + 'deleteitem/'
@@ -241,6 +225,9 @@ class Client(TraderClientObject):
                 на продажу/покупку предметов.
         """
 
+        if gameid not in SUPPORTED_APPIDS:
+            raise UnsopportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+
         url = self.base_url + 'getdownorders/'
         result = httpx.post(
             url,
@@ -250,10 +237,10 @@ class Client(TraderClientObject):
         return GetDownOrdersResult.de_json(result, self)
 
     def get_items_for_exchange(self) -> Optional['ItemsForExchange']:
-        """Возвращает список предметов для обмена с ботом.
+        """Получить список предметов для обмена с ботом.
 
         Returns:
-            :obj:`steam_trader.ItemsForExchange`, optional: Cписок предметов для обмена с ботом.
+            :class:`steam_trader.ItemsForExchange`, optional: Cписок предметов для обмена с ботом.
         """
 
         url = self.base_url + 'itemsforexchange/'
@@ -266,13 +253,14 @@ class Client(TraderClientObject):
         return ItemsForExchange.de_json(result, self)
 
     def exchange(self) -> Optional['ExchangeResult']:
-        """Выполняет обмен с ботом.
+        """Выполнить обмен с ботом.
 
         Note:
-            Вы сами должны принять трейд в приложении Steam, у вас будет 3 часа на это. В противном случае трейд будет отменён.
+            Вы сами должны принять трейд в приложении Steam, у вас будет 3 часа на это.
+            В противном случае трейд будет отменён.
 
         Returns:
-            :obj:`steam_trader.ExchangeResult`, optional: Результат обмена с ботом.
+            :class:`steam_trader.ExchangeResult`, optional: Результат обмена с ботом.
         """
 
         url = self.base_url + 'exchange/'
@@ -285,10 +273,10 @@ class Client(TraderClientObject):
         return ExchangeResult.de_json(result, self)
 
     def get_items_for_exchange_p2p(self) -> Optional['ItemsForExchange']:
-        """Возвращает список предметов для p2p обмена.
+        """Получить список предметов для p2p обмена.
 
         Returns:
-            :obj:`steam_trader.ItemsForExchange`, optional: Cписок предметов для p2p обмена.
+            :class:`steam_trader.ItemsForExchange`, optional: Cписок предметов для p2p обмена.
         """
 
         url = self.base_url + 'itemsforexchangep2p/'
@@ -301,13 +289,14 @@ class Client(TraderClientObject):
         return ItemsForExchange.de_json(result, self)
 
     def exchange_p2p(self) -> Optional['ExchangeP2PResult']:
-        """Выполняет p2p обмен.
+        """Выполнить p2p обмен.
 
         Note:
-            Вы сами должны принять трейд из полученной информации.
+            Вы сами должны передать предмет боту из полученной информации, у вас будет 40 минут на это.
+            В противном случае, трейд будет отменён.
 
         Returns:
-            :obj:`steam_trader.ExchangeP2PResult`, optional: Результат p2p обмена .
+            :class:`steam_trader.ExchangeP2PResult`, optional: Результат p2p обмена .
         """
 
         url = self.base_url + 'exchange/'
@@ -320,7 +309,7 @@ class Client(TraderClientObject):
         return ExchangeP2PResult.de_json(result, self)
 
     def get_min_prices(self, gid: int, currency: int = 1) -> Optional['MinPrices']:
-        """Возвращает минимальные/максимальные цены предмета.
+        """Получить минимальные/максимальные цены предмета.
 
         Note:
             Сайт пока работает только с рублями. Не меняйте значение currency.
@@ -330,7 +319,7 @@ class Client(TraderClientObject):
             currency (:obj:`int`): Валюта, значение 1 - рубль.
 
         Returns:
-            :obj:`steam_trader.MinPrices`, optional: Минимальные/максимальные цены предмета.
+            :class:`steam_trader.MinPrices`, optional: Минимальные/максимальные цены предмета.
         """
 
         url = self.base_url + "getminprices/"
@@ -342,13 +331,13 @@ class Client(TraderClientObject):
         return MinPrices.de_json(result, self)
 
     def get_item_info(self, gid: int) -> Optional['ItemInfo']:
-        """Возвращает информацию о группе предметов.
+        """Получить информацию о группе предметов.
 
         Args:
             gid (:obj:`int`): ID группы предметов.
 
         Returns:
-            :obj:`steam_trader.ItemInfo`, optional: Информация о группе предметов.
+            :class:`steam_trader.ItemInfo`, optional: Информация о группе предметов.
         """
 
         url = self.base_url + "iteminfo/"
@@ -359,19 +348,25 @@ class Client(TraderClientObject):
         ).json()
         return ItemInfo.de_json(result, self)
 
-    def get_order_book(self, gid: int, *, mode: LiteralString = 'all', limit: Optional[int] = None) -> Optional['OrderBook']:
-        """Возвращает заявки о покупке/продаже предмета.
+    def get_order_book(
+            self,
+            gid: int,
+            *,
+            mode: LiteralString = 'all',
+            limit: Optional[int] = None
+    ) -> Optional['OrderBook']:
+        """Получить заявки о покупке/продаже предмета.
 
         Args:
             gid (:obj:`int`): ID группы предметов.
-            mode (:obj:`int`, optional): Режим отображения
+            mode (:obj:`LiteralString`): Режим отображения
                 "all" - отображать покупки и продажи. Значение по умолчанию.
                 "sell" - отображать только заявки на ПРОДАЖУ.
                 "buy" - отображать только заявки на ПОКУПКУ.
             limit (:obj:`int`, optional): Максимальное количество строк в списке. По умолчанию - неограниченно
 
         Returns:
-            :obj:`steam_trader.OrderBook`, optional: Заявки о покупке/продаже предмета.
+            :class:`steam_trader.OrderBook`, optional: Заявки о покупке/продаже предмета.
         """
 
         url = self.base_url + "orderbook/"
@@ -389,7 +384,7 @@ class Client(TraderClientObject):
         return WSToken.de_json(result, self)
 
     def get_inventory(self, gameid: int, *, status: Optional[List[int]] = None) -> Optional['Inventory']:
-        """Возвращает инвентарь клиента, включая заявки на покупку и купленные предметы.
+        """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         По умолчанию (то есть всегда) возвращает список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
 
@@ -410,11 +405,11 @@ class Client(TraderClientObject):
                 Если не указавать, вернётся список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
 
         Returns:
-            :obj:`steam_trader.Inventory`, optional: Инвентарь клиента, включая заявки на покупку и купленные предметы.
+            :class:`steam_trader.Inventory`, optional: Инвентарь клиента, включая заявки на покупку и купленные предметы.
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise SteamTraderError(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsopportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
 
         url = self.base_url + 'getinventory/'
         result = httpx.get(
@@ -425,21 +420,25 @@ class Client(TraderClientObject):
         return Inventory.de_json(result, self)
 
     def get_buy_orders(self, *, gameid: Optional[int] = None, gid: Optional[int] = None) -> Optional['BuyOrders']:
-        """Возвращает последовательность заявок на покупку. По умолчанию возвращаются заявки для всех предметов из всех разделов.
-        При указании соответствующих параметров можно получить заявки из определенного раздела и/или предмета.
+        """Получить последовательность заявок на покупку. По умолчанию возвращаются заявки для всех
+        предметов из всех разделов.
 
-        Note: Когда я тестировал, мои запросы на покупку отображались только когда я указал конкретный appid игры и gid предмета.
+        При указании соответствующих параметров можно получить заявки из определённого раздела и/или предмета.
+
+        Note:
+            Во время тестирования мои запросы на покупку отображались только тогда,
+            когда я указал конкретный appid игры и gid предмета.
 
         Args:
             gameid (:obj:`int`, optional): AppID приложения в Steam.
             gid (:obj:`int`, optional): ID группы предметов.
 
         Returns:
-            :obj:`steam_trader.BuyOrders`, optional: Список заявок на покупку.
+            :class:`steam_trader.BuyOrders`, optional: Список заявок на покупку.
         """
 
         if gameid is not None and gameid not in SUPPORTED_APPIDS:
-            raise SteamTraderError(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsopportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
 
         url = self.base_url + 'getbuyorders/'
         result = httpx.get(
@@ -450,11 +449,12 @@ class Client(TraderClientObject):
         return BuyOrders.de_json(result, self)
 
     def get_discounts(self) -> Optional['Discounts']:
-        """Возвращает комиссии/скидки и оборот на сайте.
-        Данные хранятся в словаре data, где ключ - это AppID игры в Steam (См. константы).
+        """Получить комиссии/скидки и оборот на сайте.
+
+        Данные хранятся в словаре data, где ключ - это AppID игры в Steam (См. steam_trader.constants).
 
         Returns:
-            :obj:`steam_trader.Discounts`, optional: Комиссии/скидки и оборот на сайте.
+            :class:`steam_trader.Discounts`, optional: Комиссии/скидки и оборот на сайте.
         """
 
         url = self.base_url + 'getdiscounts/'
@@ -466,10 +466,11 @@ class Client(TraderClientObject):
         return Discounts.de_json(result, self)
 
     def set_trade_link(self, trade_link: str) -> None:
-        """Установливает ссылку для обмена. Ничего не возвращает.
+        """Установить ссылку для обмена.
 
         Args:
-            trade_link (:obj:`str`): Ссылка для обмена, Например, https://steamcommunity.com/tradeoffer/new/?partner=453486961&token=ZhXMbDS9
+            trade_link (:obj:`str`): Ссылка для обмена,
+                Например, https://steamcommunity.com/tradeoffer/new/?partner=453486961&token=ZhXMbDS9
         """
 
         url = self.base_url + 'settradelink/'
@@ -492,7 +493,7 @@ class Client(TraderClientObject):
                 raise WrongTradeLink('Вы указали ссылку для обмена от другого Steam аккаунта')
 
     def remove_trade_link(self) -> None:
-        """Удаляет ссылку для обмена. Ничего не возвращает."""
+        """Удалить ссылку для обмена."""
 
         url = self.base_url + 'removetradelink/'
         result = httpx.post(
@@ -511,7 +512,7 @@ class Client(TraderClientObject):
                     raise SaveFail('Не удалось удалить ссылку обмена')
 
     def get_operations_history(self, *, operation_type: Optional[int] = None) -> Optional['OperationsHistory']:
-        """Возвращает историю операций (По умолчанию все типы).
+        """Получить историю операций (По умолчанию все типы).
 
         Args:
             operation_type (:obj:`int`, optional): Тип операции. Может быть пустым.
@@ -525,7 +526,7 @@ class Client(TraderClientObject):
                 10 - Штрафной балл
 
         Returns:
-              :obj:`steam_trader.OperationsHistory`, optional: История операций.
+              :class:`steam_trader.OperationsHistory`, optional: История операций.
         """
 
         url = self.base_url + 'operationshistory/'
@@ -537,14 +538,14 @@ class Client(TraderClientObject):
         return OperationsHistory.de_json(result, self)
 
     def update_inventory(self, gameid: int) -> None:
-        """Обновляет инвентарь игры на сайте. Ничего не возвращает.
+        """Обновить инвентарь игры на сайте.
 
         Args:
             gameid (:obj:`int`): AppID приложения в Steam.
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise SteamTraderError(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsopportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
 
         url = self.base_url + 'updateinventory/'
         result = httpx.get(
@@ -559,14 +560,17 @@ class Client(TraderClientObject):
                     raise Unauthorized('Неправильный api-токен')
 
     def get_inventory_state(self, gameid: int) -> Optional['InventoryState']:
-        """Возвращает текущий статус обновления инвентаря.
+        """Получить текущий статус обновления инвентаря.
 
         Args:
             gameid (:obj:`int`): AppID приложения в Steam.
 
         Returns:
-            :obj:`steam_trader.InventoryState`, optional: Текущий статус обновления инвентаря.
+            :class:`steam_trader.InventoryState`, optional: Текущий статус обновления инвентаря.
         """
+
+        if gameid not in SUPPORTED_APPIDS:
+            raise UnsopportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
 
         url = self.base_url + 'inventorystate/'
         result = httpx.get(
@@ -577,10 +581,11 @@ class Client(TraderClientObject):
         return InventoryState.de_json(result, self)
 
     def trigger_alt_web_socket(self) -> Optional['AltWebSocket']:
-        """Создаёт запрос альтернативным WebSocket. Для поддержания активного соединения нужно делать этот запрос каждые 2 минуты.
+        """Создать запрос альтернативным WebSocket.
+        Для поддержания активного соединения нужно делать этот запрос каждые 2 минуты.
 
         Returns:
-            :obj:`steam_trader.AltWebSocket`, optional: Запрос альтернативным WebSocket.
+            :class:`steam_trader.AltWebSocket`, optional: Запрос альтернативным WebSocket.
         """
 
         url = self.base_url + 'altws/'
