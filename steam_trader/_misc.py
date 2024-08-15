@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
-from steam_trader import TraderClientObject
+from ._base import TraderClientObject
 
 if TYPE_CHECKING:
-    from steam_trader import Client
+    from ._client import Client
 
 @dataclass
 class SellHistoryItem(TraderClientObject):
@@ -14,20 +14,24 @@ class SellHistoryItem(TraderClientObject):
         date (:obj:`int`): Timestamp времени продажи.
         price (:obj:`float`): Цена предложения о покупке/продаже.
     """
+
     date: int
     price: float
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['SellHistoryItem']:
+    def de_json(cls: dataclass, data: list, client: Optional['Client'] = None) -> Optional['SellHistoryItem']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.ItemInfo`: Информация о предмете.
+            :class:`steam_trader.ItemInfo`, optional: Информация о предмете.
         """
+
+        if not isinstance(data, list):
+            return
 
         new_data = {'date': data[0], 'price': data[1]}
 
@@ -44,8 +48,10 @@ class InventoryItem(TraderClientObject):
         assetid (:obj:`int`, optional): AssetID предмета в Steam. Может быть пустым.
         gid (:obj:`int`): ID группы предметов.
         itemid (:obj:`int`): Уникальный ID предмета.
-        price (:obj:`float`, optional): Цена, за которую предмет был выставлен/куплен/продан предмет без учета скидки/комиссии. Может быть пустым.
-        currency (:obj:`int`, optional): Валюта, за которую предмет был выставлен/куплен/продан. Значение 1 - рубль. Может быть пустым.
+        price (:obj:`float`, optional): Цена, за которую предмет был выставлен/куплен/продан предмет без учёта
+            скидки/комиссии. Может быть пустым.
+        currency (:obj:`int`, optional): Валюта, за которую предмет был выставлен/куплен/продан. Значение 1 - рубль.
+            Может быть пустым.
         timer (:obj:`int`, optional): Время, которое доступно для приема/передачи этого предмета. Может быть пустым.
         type (:obj:`int`, optional): Тип предмета. 0 - продажа, 1 - покупка. Может быть пустым.
         status (:obj:`int`): Статус предмета.
@@ -53,10 +59,12 @@ class InventoryItem(TraderClientObject):
             0	Предмет выставлен на продажу или выставлена заявка на покупку. Для различия используется поле type.
             1	Предмет был куплен/продан и ожидает передачи боту или P2P способом. Для различия используется поле type.
             2	Предмет был передан боту или P2P способом и ожидает приёма покупателем.
-            6	Предмет находится в режиме резервного времени. На сайте отображается как "Проверяется" после истечения времени на передачу боту или P2P способом.
+            6	Предмет находится в режиме резервного времени. На сайте отображается как "Проверяется"
+                после истечения времени на передачу боту или P2P способом.
         position (:obj:`int`, optional): Позиция предмета в списке заявок на покупку/продажу. Может быть пустым.
         nc (:obj:`int`, optional): ID заявки на продажу для бескомиссионной ссылки. Может быть пустым.
-        percent (:obj:`float`, optional): Размер скидки/комиссии в процентах, с которой был куплен/продан предмет. Может быть пустым.
+        percent (:obj:`float`, optional): Размер скидки/комиссии в процентах, с которой был куплен/продан предмет.
+            Может быть пустым.
         steam_item (:obj:`bool`): Флаг, определяющий, имеется ли этот предмет в инвентаре в Steam (для продавца).
         nm (:obj:`bool`): Незадокументированно.
     """
@@ -82,14 +90,14 @@ class InventoryItem(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.ItemInfo`: Информация о предмете.
+            :class:`steam_trader.ItemInfo`, optional: Информация о предмете.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(InventoryItem, cls).de_json(data)
 
@@ -102,12 +110,12 @@ class BuyOrder(TraderClientObject):
     Attributes:
         id (:obj:`bool`, optional): ID заявки на покупку.
         gid (:obj:`int`): ID группы предметов.
-        gameid (:obj:`int`): AppID приложения в Steam
-        hash_name (:obj:`str`): Параметр market_hash_name в Steam
-        date (:obj:`int`): Timestamp подачи заявки
-        price (:obj:`float`): Предлагаемая цена покупки без учета скидки
-        currency (:obj:`int`): Валюта, значение 1 - рубль
-        position (:obj:`int`): Позиция заявки в очереди
+        gameid (:obj:`int`): AppID приложения в Steam.
+        hash_name (:obj:`str`): Параметр market_hash_name в Steam.
+        date (:obj:`int`): Timestamp подачи заявки.
+        price (:obj:`float`): Предлагаемая цена покупки без учета скидки.
+        currency (:obj:`int`): Валюта, значение 1 - рубль.
+        position (:obj:`int`): Позиция заявки в очереди.
     """
 
     id: int
@@ -125,14 +133,14 @@ class BuyOrder(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.BuyOrder`: Информация о запрос на покупку.
+            :class:`steam_trader.BuyOrder`, optional: Информация о запрос на покупку.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(BuyOrder, cls).de_json(data)
 
@@ -160,14 +168,14 @@ class Discount(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.Discount`: Информацию о комиссии/скидке в определённой игре.
+            :class:`steam_trader.Discount`, optional: Информацию о комиссии/скидке в определённой игре.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(Discount, cls).de_json(data)
 
@@ -199,21 +207,21 @@ class OperationsHistoryItem(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.OperationsHistoryItem`: Информацию о предмете в истории операций.
+            :class:`steam_trader.OperationsHistoryItem`, optional: Информацию о предмете в истории операций.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(OperationsHistoryItem, cls).de_json(data)
 
         return cls(**data)
 
 @dataclass
-class WebSocketMessage(TraderClientObject):
+class AltWebSocketMessage(TraderClientObject):
     """Класс, представляющий AltWebSsocket сообщение.
 
     Attributes:
@@ -225,27 +233,27 @@ class WebSocketMessage(TraderClientObject):
     data: str
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['WebSocketMessage']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['AltWebSocketMessage']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.WebSocketMessage`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.AltWebSocketMessage`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.Discount`: Комиссия/скидка.
+            :class:`steam_trader.Discount`, optional: Комиссия/скидка.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
-        data = super(WebSocketMessage, cls).de_json(data)
+        data = super(AltWebSocketMessage, cls).de_json(data)
 
         return cls(**data)
 
 @dataclass
 class MultiBuyOrder(TraderClientObject):
-    """Класс, представляющий информацию о запросе из steam_clieant.MultiBuyInfo
+    """Класс, представляющий запрос на покупку из steam_clieant.MultiBuyInfo.
 
     Args:
         id (:obj:`int`): ID заявки.
@@ -263,14 +271,14 @@ class MultiBuyOrder(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.MultiBuyOrder`: Информация о запросе из steam_clieant.MultiBuyInfo
+            :class:`steam_trader.MultiBuyOrder`: Запрос на покупку из steam_clieant.MultiBuyInfo.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(MultiBuyOrder, cls).de_json(data)
 
@@ -294,7 +302,8 @@ class ItemForExchange(TraderClientObject):
         timer (:obj:`int`): Cколько времени осталось до передачи боту/окончания гарантии.
         asset_type (:obj:`int`): Значение 0 - этот предмет для передачи боту. Значение 1 - для приёма предмета от бота.
         percent (:obj:`float`): Размер комиссии/скидки в процентах, за которую был продан/куплен предмет.
-        steam_item (:obj:`bool`): Если присутствует этот параметр и имеет значение false, значит этот предмет отсутствует в вашем инвентаре Steam
+        steam_item (:obj:`bool`): Если присутствует этот параметр и имеет значение false, значит этот предмет
+            отсутствует в вашем инвентаре Steam.
     """
 
     id: int
@@ -318,14 +327,14 @@ class ItemForExchange(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.ItemForExchange`: Информация о предмете для передачи/получения.
+            :class:`steam_trader.ItemForExchange`, optional: Информация о предмете для передачи/получения.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(ItemForExchange, cls).de_json(data)
 
@@ -361,14 +370,14 @@ class TradeDescription(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.TradeDescription`: Описание предмета для передачи/получения боту.
+            :class:`steam_trader.TradeDescription`, optional: Описание предмета для передачи/получения боту.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(TradeDescription, cls).de_json(data)
 
@@ -410,14 +419,14 @@ class ExchangeItem(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.ExchangeItem`: Предмет, на который был отправлен обмен.
+            :class:`steam_trader.ExchangeItem`, optional: Предмет, на который был отправлен обмен.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(ExchangeItem, cls).de_json(data)
 
