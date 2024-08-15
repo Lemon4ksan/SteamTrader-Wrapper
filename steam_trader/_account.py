@@ -1,20 +1,12 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional, Sequence, Dict
 
-from steam_trader import (
-    TraderClientObject,
-    BadRequestError,
-    Unauthorized,
-    NoBuyOrders,
-    InventoryItem,
-    BuyOrder,
-    Discount,
-    OperationsHistoryItem,
-    WebSocketMessage
-)
+from .exceptions import BadRequestError, Unauthorized, NoBuyOrders
+from ._base import TraderClientObject
+from ._misc import InventoryItem, BuyOrder, Discount, OperationsHistoryItem, AltWebSocketMessage
 
 if TYPE_CHECKING:
-    from steam_trader import Client
+    from ._client import Client
 
 @dataclass
 class WSToken(TraderClientObject):
@@ -24,7 +16,7 @@ class WSToken(TraderClientObject):
         steam_id: (:obj:`str`)
         time: (:obj:`int`)
         hash: (:obj:`str`)
-        client (:obj:`Client` optional): Клиент Steam Trader.
+        client (:class:`Client`, optional): Клиент Steam Trader.
     """
 
     steam_id: str
@@ -38,14 +30,14 @@ class WSToken(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.WSToken`: WS токен.
+            :class:`steam_trader.WSToken`, optional: WS токен.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         if not data['success']:
             match data['code']:
@@ -63,17 +55,17 @@ class Inventory(TraderClientObject):
     Attributes:
         success (:obj:`bool`): Результат запроса.
         count (:obj:`int`): Количество всех предметов в инвентаре Steam.
-        game (:obj:`int`): ID игры к которой принадлежит инвентарь (Название не совпадает с документацией).
+        game (:obj:`int`): AppID игры к которой принадлежит инвентарь (Название не совпадает с документацией).
         last_update (:obj:`int`): Timestamp последнего обновления инвентаря.
-        items (:Sequence:`steam_trader.InventoryItem`): Последовательность с предметами в инвентаре.
-        client (:obj:`steam_trader.Client` optional): Клиент Steam Trader.
+        items (Sequence[:class:`steam_trader.InventoryItem`, optional]): Последовательность с предметами в инвентаре.
+        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
     """
 
     success: bool
     count: int
     game: int
     last_update: int
-    items: Sequence['InventoryItem']
+    items: Sequence[Optional['InventoryItem']]
     client: Optional['Client'] = None
 
     @classmethod
@@ -82,14 +74,14 @@ class Inventory(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.Inventory`: Инвентарь клиента.
+            :class:`steam_trader.Inventory`, optional: Инвентарь клиента.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         if not data['success']:
             try:
@@ -114,11 +106,12 @@ class BuyOrders(TraderClientObject):
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
-        data (:Sequence:`steam_trader.BuyOrder`): Последовательность запросов на покупку.
-        client (:obj:`steam_trader.Client` optional): Клиент Steam Trader.
+        data (Sequence[:class:`steam_trader.BuyOrder`, optional]): Последовательность запросов на покупку.
+        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
     """
+
     success: bool
-    data: Sequence['BuyOrder']
+    data: Sequence[Optional['BuyOrder']]
     client: Optional['Client'] = None
 
     @classmethod
@@ -127,10 +120,10 @@ class BuyOrders(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.BuyOrders`, optional: Ваши запросы на покупку.
+            :class:`steam_trader.BuyOrders`, optional: Ваши запросы на покупку.
         """
 
         if not cls.is_valid_model_data(data):
@@ -158,12 +151,12 @@ class Discounts(TraderClientObject):
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
-        data (:dict:`int, steam_trader.Discount`): Словарь, содержащий комисии/скидки.
-        client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+        data (Dict[:obj:`int`, :class:`steam_trader.Discount`, optional]): Словарь, содержащий комисии/скидки.
+        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
     """
 
     success: bool
-    data: Dict[int, Discount]
+    data: Dict[int, Optional['Discount']]
     client: Optional['Client'] = None
 
     @classmethod
@@ -172,14 +165,14 @@ class Discounts(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.Discounts, optional`: Комиссии/скидки на игры.
+            :class:`steam_trader.Discounts, optional`: Комиссии/скидки на игры.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         if not data['success']:
             match data['code']:
@@ -201,12 +194,12 @@ class OperationsHistory(TraderClientObject):
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
-        data (:Sequence:`steam_trader.OperationsHistoryItem`): Последовательность историй операций
-        client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+        data (Sequence[:class:`steam_trader.OperationsHistoryItem`, optional]): Последовательность историй операций.
+        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
     """
 
     success: bool
-    data: Sequence[OperationsHistoryItem]
+    data: Sequence[Optional['OperationsHistoryItem']]
     client: Optional['Client'] = None
 
     @classmethod
@@ -215,14 +208,14 @@ class OperationsHistory(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.Discounts`, optional: Истории операций.
+            :class:`steam_trader.Discounts`, optional: Истории операций.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         if not data['success']:
             match data['code']:
@@ -231,7 +224,6 @@ class OperationsHistory(TraderClientObject):
                 case 401:
                     raise Unauthorized('Неправильный api-токен')
 
-        # Конвертируем ключ в число для совместимости с константами
         for i, item in enumerate(data['data']):
             data['data'][i] = OperationsHistoryItem.de_json(item)
 
@@ -241,14 +233,14 @@ class OperationsHistory(TraderClientObject):
 
 @dataclass
 class InventoryState(TraderClientObject):
-    """Класс, представляющий текущий статус обновления инвентаря.
+    """Класс, представляющий текущий статус инвентаря.
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
         updating_now (:obj:`bool`): Инвентарь обновляется в данный момент.
-        last_update (:obj:`int`): Timestamp, когда последний раз был обновлён инвентарь
+        last_update (:obj:`int`): Timestamp, когда последний раз был обновлён инвентарь.
         items_in_cache (:obj:`int`): Количество предметов в инвентаре.
-        client (:obj:`steam_trader.Client` optional): Клиент Steam Trader.
+        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
     """
 
     success: bool
@@ -263,14 +255,14 @@ class InventoryState(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.InventoryState`, optional: Текущий статус обновления инвентаря.
+            :class:`steam_trader.InventoryState`, optional: Текущий статус инвентаря.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data.update({  # перенос с camleCase на snake_case
             'updating_now': data['updatingNow'],
@@ -294,13 +286,14 @@ class AltWebSocket(TraderClientObject):
     """Класс, представляющий запрос альтернативным WebSocket.
 
     Attributes:
-        success (:obj:`bool`): Результат запроса. Если false, сообщений в поле messages не будет, при этом соединение будет поддержано.
-        messages (:Sequence:`steam_trader.WebSocketMessage`): Последовательность с WebSocket сообщениями.
-        client (:obj:`steam_trader.Client` optional): Клиент Steam Trader.
+        success (:obj:`bool`): Результат запроса. Если false, сообщений в поле messages не будет,
+            при этом соединение будет поддержано.
+        messages (Sequence[:class:`steam_trader.AltWebSocketMessage`, optional]): Последовательность с WebSocket сообщениями.
+        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
     """
 
     success: bool
-    messages: Sequence[WebSocketMessage]
+    messages: Sequence[Optional['AltWebSocketMessage']]
     client: Optional['Client'] = None
 
     @classmethod
@@ -312,7 +305,7 @@ class AltWebSocket(TraderClientObject):
             client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.AltWebSocket`: Запрос альтернативным WebSocket.
+            :obj:`steam_trader.AltWebSocket`, optional: Запрос альтернативным WebSocket.
         """
 
         if not cls.is_valid_model_data(data):
@@ -324,6 +317,6 @@ class AltWebSocket(TraderClientObject):
         for i, message in enumerate(data['messages']):
             data['messages'][i] = BuyOrder.de_json(message)
 
-        data = super(WebSocketMessage, cls).de_json(data, client)
+        data = super(AltWebSocketMessage, cls).de_json(data, client)
 
         return cls(client=client, **data)
