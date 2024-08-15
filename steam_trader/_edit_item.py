@@ -1,17 +1,8 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Sequence, List
+from typing import TYPE_CHECKING, Optional, Sequence
 
-from steam_trader import (
-    TraderClientObject,
-    BadRequestError,
-    Unauthorized,
-    InternalError,
-    NotFoundError,
-    IncorrectPrice,
-    NotEnoughMoney,
-    UnknownItem,
-    NoTradeItems
-)
+from steam_trader import exceptions
+from ._base import TraderClientObject
 
 if TYPE_CHECKING:
     from steam_trader import Client
@@ -25,9 +16,12 @@ class EditPriceResult(TraderClientObject):
         type (:obj:`int`): Тип заявки. 0 - продажа, 1 - покупка.
         position (:obj:`int`): Позиция предмета в очереди.
         fast_execute (:obj:`bool`): Был ли предмет продан/куплен моментально.
-        new_id (:obj:`int`): Новый ID заявки. Указывается, если 'fast_execute' = true. Новый ID присваивается только заявкам на ПОКУПКУ и только в случае редактирования уже имеющейся заявки.
-        price (:obj:`float`): Цена, за которую был продан/куплен предмет с учётом комиссии/скидки. Указывается, если 'fast_execute' = true
-        percent (:obj:`float`): Размер комиссии/скидки в процентах, за которую был продан/куплен предмет. Указывается, если 'fast_execute' = true
+        new_id (:obj:`int`, optional): Новый ID заявки. Указывается, если 'fast_execute' = true.
+            Новый ID присваивается только заявкам на ПОКУПКУ и только в случае редактирования уже имеющейся заявки.
+        price (:obj:`float`, optional): Цена, за которую был продан/куплен предмет с учётом комиссии/скидки.
+            Указывается, если 'fast_execute' = true.
+        percent (:obj:`float`, optional): Размер комиссии/скидки в процентах, за которую был продан/куплен предмет.
+            Указывается, если 'fast_execute' = true.
         client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
     """
 
@@ -46,7 +40,7 @@ class EditPriceResult(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.EditPriceResult`, optional: Результат запроса на изменение цены.
@@ -58,17 +52,17 @@ class EditPriceResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен')
                 case 1:
-                    raise InternalError('Ошибка редактирования предмета.')
+                    raise exceptions.InternalError('Ошибка редактирования предмета.')
                 case 2:
-                    raise NotFoundError('У вас нет данного предмета или он уже продан.')
+                    raise exceptions.NotFoundError('У вас нет данного предмета или он уже продан.')
                 case 4:
-                    raise IncorrectPrice(data['error'])
+                    raise exceptions.IncorrectPrice(data['error'])
                 case 5:
-                    raise NotEnoughMoney('Для покупки не достаточно средств.')
+                    raise exceptions.NotEnoughMoney('Для покупки не достаточно средств.')
 
         data = super(EditPriceResult, cls).de_json(data, client)
 
@@ -102,10 +96,10 @@ class DeleteItemResult(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.DeleteItemResult`, optional: Результат запроса снятия предмета с продажи/заявки на покупку.
+            :class:`steam_trader.DeleteItemResult`, optional: Результат запроса снятия предмета с продажи/заявки на покупку.
         """
 
         if not cls.is_valid_model_data(data):
@@ -114,13 +108,13 @@ class DeleteItemResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен')
                 case 1:
-                    raise InternalError('Ошибка редактирования предмета.')
+                    raise exceptions.InternalError('Ошибка редактирования предмета.')
                 case 2:
-                    raise UnknownItem('	Неизвестный предмет.')
+                    raise exceptions.UnknownItem('	Неизвестный предмет.')
 
         data = super(DeleteItemResult, cls).de_json(data, client)
 
@@ -128,7 +122,7 @@ class DeleteItemResult(TraderClientObject):
 
 @dataclass
 class GetDownOrdersResult(TraderClientObject):
-    """Класс, представляющий результат снятия всех заявок на продажу/покупку предметов.
+    """Класс, представляющий результат снятия всех заявок на продажу/покупку.
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
@@ -148,7 +142,7 @@ class GetDownOrdersResult(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.EditPriceResult`, optional: Результат запроса на изменение цены.
@@ -160,13 +154,13 @@ class GetDownOrdersResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен')
                 case 1:
-                    raise InternalError('Ошибка редактирования предмета')
+                    raise exceptions.InternalError('Ошибка редактирования предмета')
                 case 2:
-                    raise NoTradeItems('Нет заявок на продажу/покупку')
+                    raise exceptions.NoTradeItems('Нет заявок на продажу/покупку')
 
         data = super(GetDownOrdersResult, cls).de_json(data, client)
 
