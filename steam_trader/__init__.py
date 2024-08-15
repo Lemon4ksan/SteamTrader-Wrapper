@@ -57,6 +57,7 @@ from ._edit_item import DeleteItemResult
 from ._edit_item import GetDownOrdersResult
 
 from ._client import Client
+from ._client_async import ClientAsync
 
 __all__ = [
     '__version__',
@@ -86,6 +87,7 @@ __all__ = [
     'ExchangeP2PResult',
     'EditPriceResult',
     'P2PReceiveObject',
+    'ClientAsync',
     'SellResult',
     'TradeDescription',
     'BuyOffer',
