@@ -1,4 +1,3 @@
-# В документации почему-то ключи и значения поменяли местами
 STEAMGIFT_APPID: int = 753
 CSGO_APPID: int = 730
 TEAM_FORTRESS_APPID: int = 440
