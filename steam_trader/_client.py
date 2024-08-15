@@ -2,7 +2,7 @@ import httpx
 from typing import Optional, LiteralString, Union, List
 
 from .constants import SUPPORTED_APPIDS
-from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsopportedAppID, Unauthorized
+from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsupportedAppID, Unauthorized
 from ._base import TraderClientObject
 from ._account import WSToken, Inventory, BuyOrders, Discounts, OperationsHistory, InventoryState, AltWebSocket
 from ._buy import BuyResult, BuyOrderResult, MultiBuyResult
@@ -226,7 +226,7 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsopportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
 
         url = self.base_url + 'getdownorders/'
         result = httpx.post(
@@ -409,7 +409,7 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsopportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
 
         url = self.base_url + 'getinventory/'
         result = httpx.get(
@@ -438,7 +438,7 @@ class Client(TraderClientObject):
         """
 
         if gameid is not None and gameid not in SUPPORTED_APPIDS:
-            raise UnsopportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
 
         url = self.base_url + 'getbuyorders/'
         result = httpx.get(
@@ -545,7 +545,7 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsopportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
 
         url = self.base_url + 'updateinventory/'
         result = httpx.get(
@@ -570,7 +570,7 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsopportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
 
         url = self.base_url + 'inventorystate/'
         result = httpx.get(
