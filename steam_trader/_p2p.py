@@ -1,26 +1,24 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional, Sequence, Dict
 
-from steam_trader import (
-    TraderClientObject,
-    ExchangeItem
-)
+from ._base import TraderClientObject
+from ._misc import ExchangeItem
 
 if TYPE_CHECKING:
-    from steam_trader import Client
+    from ._client import Client
 
 @dataclass
 class P2PTradeOffer(TraderClientObject):
     """Класс, представляющий данные для совершения p2p трейда. Незадокументированно.
 
     Attributes:
-        sessionid (:obj:`str`)
-        serverid (:obj:`int`)
-        partner (:obj:`str`)
-        tradeoffermessage (:obj:`str`)
-        json_tradeoffer (:obj:`str`)
-        captcha (:obj:`str`)
-        trade_offer_create_params (:obj:`str`)
+        sessionid (:obj:`str`):
+        serverid (:obj:`int`):
+        partner (:obj:`str`):
+        tradeoffermessage (:obj:`str`):
+        json_tradeoffer (:obj:`str`):
+        captcha (:obj:`str`):
+        trade_offer_create_params (:obj:`str`):
     """
 
     sessionid: str
@@ -37,14 +35,14 @@ class P2PTradeOffer(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.P2PTradeOffer`: Данные для совершения p2p трейда.
+            :class:`steam_trader.P2PTradeOffer`, optional: Данные для совершения p2p трейда.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data = super(P2PTradeOffer, cls).de_json(data)
 
@@ -56,7 +54,9 @@ class P2PSendObject(TraderClientObject):
 
     Attributes:
         trade_link (:obj:`str`): Ссылка для p2p обмена.
-        trade_offer (:obj:`steam_trader.P2PTradeOffer`, optional): Параметры для POST запроса (https://steamcommunity.com/tradeoffer/new/send) при создании обмена в Steam. Вместо {sessionid} нужно указывать ID своей сессии в Steam.
+        trade_offer (:class:`steam_trader.P2PTradeOffer`, optional): Параметры для POST запроса
+            (https://steamcommunity.com/tradeoffer/new/send) при создании обмена в Steam. Вместо {sessionid} нужно
+            указывать ID своей сессии в Steam.
     """
 
     trade_link: str
@@ -68,14 +68,14 @@ class P2PSendObject(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.P2PSendObject`: Ссылка на p2p трейд и сам трейд.
+            :class:`steam_trader.P2PSendObject`, optional: Ссылка на p2p трейд и сам трейд.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data.update({  # перенос с camleCase на snake_case
             'trade_link': data['tradeLink'],
@@ -93,13 +93,13 @@ class P2PReceiveObject(TraderClientObject):
     """Класс, представляющий массив с данными для принятия обмена.
 
     Attributes:
-        offer_id (:obj:`int`): ID обмена в Steam.
+        offerid (:obj:`int`): ID обмена в Steam.
         code (:obj:`str`): Код проверки обмена.
-        items (:Sequence:`steam_trader.ExchangeItem`, optional): Список предметов в обмене.
+        items (Sequence[`steam_trader.ExchangeItem`, optional]): Список предметов в обмене.
         partner_steamid (:obj:`int`): SteamID покупателя.
     """
 
-    offer_id: int
+    offerid: int
     code: str
     items: Sequence[Optional['ExchangeItem']]
     partner_steamid: int
@@ -110,14 +110,14 @@ class P2PReceiveObject(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.P2PSendObject`: Массив с данными для принятия обмена.
+            :class:`steam_trader.P2PSendObject`, optional: Массив с данными для принятия обмена.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data.update({  # перенос с camleCase на snake_case
             'offerid': data['offerId'],
@@ -150,14 +150,14 @@ class P2PConfirmObject(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.P2PSendObject`: Массив с данными для подтверждения обмена в мобильном аутентификаторе.
+            :class:`steam_trader.P2PSendObject`, optional: Массив с данными для подтверждения обмена в мобильном аутентификаторе.
         """
 
         if not cls.is_valid_model_data(data):
-            return None
+            return
 
         data.update({  # перенос с camleCase на snake_case
             'offerid': data['offerId'],
