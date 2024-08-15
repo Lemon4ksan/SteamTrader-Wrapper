@@ -1,5 +1,4 @@
 import dataclasses
-import keyword
 from abc import ABCMeta
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Optional
@@ -12,7 +11,7 @@ except ImportError:
     import json
 
 if TYPE_CHECKING:
-    from steam_trader import Client
+    from ._client import Client
 
 class TraderClientObject:
     """Базовый класс для всех объектов библиотеки."""
