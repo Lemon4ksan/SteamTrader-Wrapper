@@ -1,15 +1,12 @@
 import re
 from setuptools import find_packages, setup
 
-with open('steam_trader/__init__.py', encoding='UTF-8') as f:
-    version = re.findall(r"__version__ = '(.+)'", f.read())[0]
-
 with open('README.md', 'r', encoding='UTF-8') as f:
     readme = f.read()
 
 setup(
     name='steam-trader',
-    version=version,
+    version='0.1.0',
     author='Lemon4ksan (Bananchiki)',
     author_email='senya20151718@gmail.com',
     license='BSD License',
@@ -19,7 +16,6 @@ setup(
     description='Неофициальная Python библиотека для работы с API сервиса Steam-Trader.',
     long_description=readme,
     long_description_content_type='text/markdown',
-    package_dir={'': 'steam_trader'},
     packages=find_packages(),
     install_requires=['httpx',],
     include_package_data=True,
