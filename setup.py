@@ -19,8 +19,9 @@ setup(
     description='Неофициальная Python библиотека для работы с API сервиса Steam-Trader.',
     long_description=readme,
     long_description_content_type='text/markdown',
+    package_dir={'': 'steam_trader'},
     packages=find_packages(),
-    install_requires=['httpx'],
+    install_requires='httpx',
     include_package_data=True,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -39,5 +40,4 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
     python_requires='~=3.12',
-    tests_require=['unittest'],
 )
