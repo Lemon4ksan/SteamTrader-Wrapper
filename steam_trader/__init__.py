@@ -14,6 +14,8 @@ from ._base import TraderClientObject
 
 from ._misc import SellHistoryItem
 from ._misc import InventoryItem
+from ._misc import Filter
+from ._misc import Filters
 from ._misc import BuyOrder
 from ._misc import Discount
 from ._misc import OperationsHistoryItem
@@ -77,6 +79,8 @@ __all__ = [
     'SellHistoryItem',
     'InventoryItem',
     'BuyOrder',
+    'Filter',
+    'Filters',
     'ItemForExchange',
     'ExchangeItem',
     'Discount',

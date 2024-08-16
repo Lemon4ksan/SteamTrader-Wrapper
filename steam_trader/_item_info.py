@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional, Sequence, List
 from .exceptions import BadRequestError, Unauthorized, InternalError, UnknownItem
 from ._base import TraderClientObject
 from ._offers import SellOffer, BuyOffer
-from ._misc import SellHistoryItem
+from ._misc import SellHistoryItem, Filters
 
 if TYPE_CHECKING:
     from steam_trader import Client
@@ -62,7 +62,6 @@ class MinPrices(TraderClientObject):
 
 @dataclass
 class ItemInfo(TraderClientObject):
-    # TODO: Добавить датакласс для фильтра
     """Класс, представляющий группу предметов на сайте.
 
     Attributes:
@@ -81,7 +80,7 @@ class ItemInfo(TraderClientObject):
         market_price (:obj:`float`, optional): Минимальная цена продажи. Может быть пустым.
         buy_price (:obj:`float`, optional): Максимальная цена покупки. Может быть пустым.
         steam_price (:obj:`float`, optional): Минимальная цена в Steam. Может быть пустым.
-        filters (:obj:`dict`): Фильтры, используемые для поиска на сайте (нет в документации).
+        filters (:class:`steam_trader.Filters`, optional): Фильтры, используемые для поиска на сайте (нет в документации).
         sell_offers (Sequnce[`steam_trader.SellOffer`, optional]): Последовательность с предложениями о продаже.
         buy_offers (Sequnce[`steam_trader.BuyOffer`, optional]): Последовательность с предложениями о покупке.
         sell_history (Sequence[`steam_trader.SellHistoryItem`, optional]): Последовательность истории продаж.
@@ -103,7 +102,7 @@ class ItemInfo(TraderClientObject):
     market_price: Optional[float]
     buy_price: Optional[float]
     steam_price: Optional[float]
-    filters: dict
+    filters: Optional['Filters']
     sell_offers: Sequence[Optional['SellOffer']]
     buy_offers: Sequence[Optional['BuyOffer']]
     sell_history: Sequence[Optional['SellHistoryItem']]
@@ -133,6 +132,8 @@ class ItemInfo(TraderClientObject):
                     raise InternalError('При выполнении запроса произошла ошибка')
                 case 2:
                     raise UnknownItem('Неизвестный предмет')
+
+        data['filters'] = Filters.de_json(data['filters'])
 
         for i, offer in enumerate(data['sell_offers']):
             data['sell_offers'][i] = SellOffer.de_json(offer)

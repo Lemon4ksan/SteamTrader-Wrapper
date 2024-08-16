@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Sequence
 
 from ._base import TraderClientObject
 
@@ -100,6 +100,123 @@ class InventoryItem(TraderClientObject):
             return
 
         data = super(InventoryItem, cls).de_json(data)
+
+        return cls(**data)
+
+@dataclass
+class Filter(TraderClientObject):
+    """Класс, представляющий фильтр.
+
+    Attributes:
+        id (:obj:`int`, optional): ID данного фильтра, может быть пустым.
+        title (:obj:`str`, optional): Тайтл данного фильтра, может быть пустым.
+        color (:obj:`str`, optionl): Цвет данного фильтра, может быть пустым.
+    """
+
+    id: Optional[int]
+    title: Optional[str]
+    color: Optional[str]
+
+    @classmethod
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['Filter']:
+        """Десериализация объекта.
+
+        Args:
+            data (:obj:`dict`): Поля и значения десериализуемого объекта.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+
+        Returns:
+            :class:`steam_trader.Filter`, optional: Фильтр.
+        """
+
+        if not cls.is_valid_model_data(data):
+            return
+
+        data = super(Filter, cls).de_json(data)
+
+        return cls(**data)
+
+@dataclass
+class Filters(TraderClientObject):
+    """Класс, представляющий фильтры, используемые для поиска на сайте."""
+
+    quality: Optional[Sequence[Optional['Filter']]] = None
+    type: Optional[Sequence[Optional['Filter']]] = None
+    used_by: Optional[Sequence[Optional['Filter']]] = None
+    craft: Optional[Sequence[Optional['Filter']]] = None
+    region: Optional[Sequence[Optional['Filter']]] = None
+    genre: Optional[Sequence[Optional['Filter']]] = None
+    mode: Optional[Sequence[Optional['Filter']]] = None
+    trade: Optional[Sequence[Optional['Filter']]] = None
+    rarity: Optional[Sequence[Optional['Filter']]] = None
+    hero: Optional[Sequence[Optional['Filter']]] = None
+
+    @classmethod
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['Filters']:
+        """Десериализация объекта.
+
+        Args:
+            data (:obj:`dict`): Поля и значения десериализуемого объекта.
+            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+
+        Returns:
+            :class:`steam_trader.Filters`, optional: Фильтры.
+        """
+
+        if not cls.is_valid_model_data(data):
+            return
+
+        try:
+            # TF2
+
+            data.update({  # Затмевает встроенное имя class
+                'used_by': data['class']
+            })
+
+            for i, _filter in enumerate(data['quality']):
+                data['quality'][i] = Filter.de_json(data['quality'])
+
+            for i, _filter in enumerate(data['type']):
+                data['type'][i] = Filter.de_json(data['type'])
+
+            for i, _filter in enumerate(data['used_by']):
+                data['used_by'][i] = Filter.de_json(data['used_by'])
+
+            for i, _filter in enumerate(data['craft']):
+                data['craft'][i] = Filter.de_json(data['craft'])
+
+        except KeyError:
+            try:
+                # SteamGift
+
+                for i, _filter in enumerate(data['region']):
+                    data['region'][i] = Filter.de_json(data['region'])
+
+                for i, _filter in enumerate(data['genre']):
+                    data['genre'][i] = Filter.de_json(data['genre'])
+
+                for i, _filter in enumerate(data['mode']):
+                    data['mode'][i] = Filter.de_json(data['mode'])
+
+                for i, _filter in enumerate(data['trade']):
+                    data['trade'][i] = Filter.de_json(data['trade'])
+
+            except KeyError:
+                # DOTA2
+
+                for i, _filter in enumerate(data['rarity']):
+                    data['rarity'][i] = Filter.de_json(data['rarity'])
+
+                for i, _filter in enumerate(data['quality']):
+                    data['quality'][i] = Filter.de_json(data['quality'])
+
+                for i, _filter in enumerate(data['type']):
+                    data['type'][i] = Filter.de_json(data['type'])
+
+                for i, _filter in enumerate(data['hero']):
+                    data['hero'][i] = Filter.de_json(data['hero'])
+
+        data = super(Filters, cls).de_json(data)
 
         return cls(**data)
 
