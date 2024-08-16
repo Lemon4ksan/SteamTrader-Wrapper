@@ -197,47 +197,47 @@ class Filters(TraderClientObject):
             })
 
             for i, _filter in enumerate(data['quality']):
-                data['quality'][i] = Filter.de_json(data['quality'])
+                data['quality'][i] = Filter.de_json(data['quality'][i])
 
             for i, _filter in enumerate(data['type']):
-                data['type'][i] = Filter.de_json(data['type'])
+                data['type'][i] = Filter.de_json(data['type'][i])
 
             for i, _filter in enumerate(data['used_by']):
-                data['used_by'][i] = Filter.de_json(data['used_by'])
+                data['used_by'][i] = Filter.de_json(data['used_by'][i])
 
             for i, _filter in enumerate(data['craft']):
-                data['craft'][i] = Filter.de_json(data['craft'])
+                data['craft'][i] = Filter.de_json(data['craft'][i])
 
         except KeyError:
             try:
                 # SteamGift
 
                 for i, _filter in enumerate(data['region']):
-                    data['region'][i] = Filter.de_json(data['region'])
+                    data['region'][i] = Filter.de_json(data['region'][i])
 
                 for i, _filter in enumerate(data['genre']):
-                    data['genre'][i] = Filter.de_json(data['genre'])
+                    data['genre'][i] = Filter.de_json(data['genre'][i])
 
                 for i, _filter in enumerate(data['mode']):
-                    data['mode'][i] = Filter.de_json(data['mode'])
+                    data['mode'][i] = Filter.de_json(data['mode'][i])
 
                 for i, _filter in enumerate(data['trade']):
-                    data['trade'][i] = Filter.de_json(data['trade'])
+                    data['trade'][i] = Filter.de_json(data['trade'][i])
 
             except KeyError:
                 # DOTA2
 
                 for i, _filter in enumerate(data['rarity']):
-                    data['rarity'][i] = Filter.de_json(data['rarity'])
+                    data['rarity'][i] = Filter.de_json(data['rarity'][i])
 
                 for i, _filter in enumerate(data['quality']):
-                    data['quality'][i] = Filter.de_json(data['quality'])
+                    data['quality'][i] = Filter.de_json(data['quality'][i])
 
                 for i, _filter in enumerate(data['type']):
-                    data['type'][i] = Filter.de_json(data['type'])
+                    data['type'][i] = Filter.de_json(data['type'][i])
 
                 for i, _filter in enumerate(data['hero']):
-                    data['hero'][i] = Filter.de_json(data['hero'])
+                    data['hero'][i] = Filter.de_json(data['hero'][i])
 
         data = super(Filters, cls).de_json(data)
 
