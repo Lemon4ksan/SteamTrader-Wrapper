@@ -138,7 +138,30 @@ class Filter(TraderClientObject):
 
 @dataclass
 class Filters(TraderClientObject):
-    """Класс, представляющий фильтры, используемые для поиска на сайте."""
+    """Класс, представляющий фильтры, используемые для поиска на сайте.
+
+    Attributes:
+        quality (Sequence[:class:`steam_trader.Filter, optional`], optional):
+            Качество предмета (TF2, DOTA2).
+        type (Sequence[:class:`steam_trader.Filter, optional`], optional):
+            Тип предмета (TF2, DOTA2).
+        used_by (Sequence[:class:`steam_trader.Filter, optional`], optional):
+            Класс, который использует предмет (TF2).
+        craft (Sequence[:class:`steam_trader.Filter, optional`], optional):
+            Информация о карфте (TF2).
+        region (Sequence[:class:`steam_trader.Filter, optional`], optional):
+            Регион игры (SteamGift).
+        genre (Sequence[:class:`steam_trader.Filter, optional`], optional):
+            Жанр игры (SteamGift).
+        mode (Sequence[:class:`steam_trader.Filter, optional`], optional):
+            Тип игры, взаимодействие с Steam (SteamGift).
+        trade (Sequence[:class:`steam_trader.Filter, optional`], optional):
+            Информация об обмене (SteamGift).
+        rarity (Sequence[:class:`steam_trader.Filter, optional`], optional):
+            Редкость предмета (DOTA2).
+        hero (Sequence[:class:`steam_trader.Filter, optional`], optional):
+            Герой, который использует предмет (DOTA2).
+    """
 
     quality: Optional[Sequence[Optional['Filter']]] = None
     type: Optional[Sequence[Optional['Filter']]] = None
