@@ -74,9 +74,9 @@ for item in inventory.items:
 ```
 
 С помощью get_inventory мы получаем все предметы из инвенторя TF2, которые не находятся в продаже, проходим по каждому, 
-находим Очищенный металл и выставляем его по цене на копейку меньше рыночной, чтобы быть впереди. Узнать минимальную стоимость предмета можно через get_min_prices
+находим Очищенный металл и выставляем его по цене на копейку меньше рыночной, чтобы быть впереди. Узнать минимальную стоимость предмета можно через get_min_prices.
 
-Пример покупки всех предметов по GID ниже заданной стоимости
+Пример покупки всех предметов по GID ниже заданной стоимости.
 
 ```python
 from steam_trader import Client
@@ -113,8 +113,8 @@ gids = [1226, 1402, 3439, 1976, 1984, 1990, 1227, 1205, 1523, 2484, 1524, 1503, 
 async def main():
     async with client:
         tasks = [client.get_item_info(gid) for gid in gids]
-        results = await asyncio.gather(*tasks)
-        for response in results:
+        responses = await asyncio.gather(*tasks)
+        for response in responses:
             print(response)
 
 asyncio.run(main())
