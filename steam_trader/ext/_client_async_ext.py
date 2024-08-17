@@ -9,13 +9,18 @@ from steam_trader.exceptions import *
 
 class ExtClientAsync(ClientAsync):
     def __init__(self, api_token: str, *, base_url: str | None = None, headers: dict | None = None) -> None:
+        """Данный класс представляет расширенную версию обычного клиента.
+
+        Изменённые методы:
+            get_inventory - Добавлена возможность указывать фильтр для отсеивания предметов.
+        """
         super().__init__(api_token, base_url=base_url, headers=headers)
 
-    async def get_inventory(self, gameid: int, *, filters: Optional[Filters] = None, status: Optional[List[int]] = None):
+    async def get_inventory(self, gameid: int, *, filters: Optional['Filters'] = None, status: Optional[List[int]] = None):
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         EXT:
-            Добавляет аргумент filters для отсеивания предметов.
+            Добавляен аргумент filters для отсеивания предметов.
 
         По умолчанию (то есть всегда) возвращает список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
 
@@ -24,7 +29,7 @@ class ExtClientAsync(ClientAsync):
 
         Args:
             gameid (:obj:`int`): AppID приложения в Steam.
-            filters (:class:`steam_trader.Filters`): Фильтр для отсеивания предметов.
+            filters (:class:`steam_trader.Filters`, optional): Фильтр для отсеивания предметов.
             status (:list:`int`, optional): Указывается, чтобы получить список предметов с определенным статусом.
 
                 Возможные статусы:
@@ -54,44 +59,64 @@ class ExtClientAsync(ClientAsync):
         inventory = Inventory.de_json(result, self)
 
         tasks = [self.get_item_info(item.gid) for item in inventory.items]
-        responses: Sequence['ItemInfo'] = await asyncio.gather(*tasks)
+        responses = await asyncio.gather(*tasks)
 
         new_items = []
 
-        for i, response in enumerate(responses):
-
+        for i, item in enumerate(inventory.items):
+            item_filters = responses[i].filters
             if filters.quality is not None:
-                if not filters.quality[0].id == response.filters.quality[0].id:
+                requred_filters_list = [_filter.id for _filter in filters.quality]
+                item_filters_list = [_filter.id for _filter in item_filters.quality]
+                if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
                     continue
             if filters.type is not None:
-                if not filters.type[0].id == response.filters.type[0].id:
+                requred_filters_list = [_filter.id for _filter in filters.type]
+                item_filters_list = [_filter.id for _filter in item_filters.type]
+                if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
                     continue
             if filters.used_by is not None:
-                if not filters.used_by[0].id == response.filters.used_by[0].id:
+                requred_filters_list = [_filter.id for _filter in filters.used_by]
+                item_filters_list = [_filter.id for _filter in item_filters.used_by]
+                if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
                     continue
             if filters.craft is not None:
-                if not filters.craft[0].id == response.filters.craft[0].id:
+                requred_filters_list = [_filter.id for _filter in filters.craft]
+                item_filters_list = [_filter.id for _filter in item_filters.craft]
+                if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
                     continue
             if filters.region is not None:
-                if not filters.region[0].id == response.filters.region[0].id:
+                requred_filters_list = [_filter.id for _filter in filters.region]
+                item_filters_list = [_filter.id for _filter in item_filters.region]
+                if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
                     continue
             if filters.genre is not None:
-                if not filters.genre[0].id == response.filters.genre[0].id:
+                requred_filters_list = [_filter.id for _filter in filters.genre]
+                item_filters_list = [_filter.id for _filter in item_filters.genre]
+                if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
                     continue
             if filters.mode is not None:
-                if not filters.mode[0].id == response.filters.mode[0].id:
+                requred_filters_list = [_filter.id for _filter in filters.mode]
+                item_filters_list = [_filter.id for _filter in item_filters.mode]
+                if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
                     continue
             if filters.trade is not None:
-                if not filters.trade[0].id == response.filters.trade[0].id:
+                requred_filters_list = [_filter.id for _filter in filters.trade]
+                item_filters_list = [_filter.id for _filter in item_filters.trade]
+                if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
                     continue
             if filters.rarity is not None:
-                if not filters.rarity[0].id == response.filters.rarity[0].id:
+                requred_filters_list = [_filter.id for _filter in filters.rarity]
+                item_filters_list = [_filter.id for _filter in item_filters.rarity]
+                if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
                     continue
             if filters.hero is not None:
-                if not filters.hero[0].id == response.filters.hero[0].id:
+                requred_filters_list = [_filter.id for _filter in filters.hero]
+                item_filters_list = [_filter.id for _filter in item_filters.hero]
+                if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
                     continue
 
-            new_items.append(inventory.items[i])
+            new_items.append(item)
 
         inventory.items = new_items
         return inventory
