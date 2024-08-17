@@ -1,11 +1,32 @@
-import httpx
 import asyncio
-from typing import Optional, List, LiteralString, Sequence
+import logging
+import functools
+from typing import Optional, List, LiteralString, Sequence, TypeVar, Callable, Any
 
 from steam_trader import *
 from steam_trader.constants import *
 from steam_trader.exceptions import *
 
+
+logging.getLogger(__name__).addHandler(logging.NullHandler())
+
+F = TypeVar('F', bound=Callable[..., Any])
+
+def log(method: F) -> F:
+    logger = logging.getLogger(method.__module__)
+
+    @functools.wraps(method)
+    def wrapper(*args, **kwargs) -> Any:
+        logger.debug(f'Entering: {method.__name__}')
+
+        result = method(*args, **kwargs)
+        logger.info(result)
+
+        logger.debug(f'Exiting: {method.__name__}')
+
+        return result
+
+    return wrapper
 
 class ExtClientAsync(ClientAsync):
     def __init__(self, api_token: str, *, base_url: str | None = None, headers: dict | None = None) -> None:
@@ -16,6 +37,7 @@ class ExtClientAsync(ClientAsync):
         """
         super().__init__(api_token, base_url=base_url, headers=headers)
 
+    @log
     async def get_inventory(self, gameid: int, *, filters: Optional['Filters'] = None, status: Optional[List[int]] = None):
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
