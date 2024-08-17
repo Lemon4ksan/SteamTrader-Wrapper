@@ -26,6 +26,11 @@ class IndependentTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_get_inventory(self):
         async with self.client:
+            inventory = await self.client.get_inventory(TEAM_FORTRESS_APPID)
+            self.assertTrue(inventory.success)
+
+    async def test_get_inventory_with_filters(self):
+        async with self.client:
             inventory = await self.client.get_inventory(TEAM_FORTRESS_APPID, filters=self.filters)
             self.assertTrue(inventory.success)
 
