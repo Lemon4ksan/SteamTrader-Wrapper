@@ -23,12 +23,12 @@ def log(method: F) -> F:
 
     @functools.wraps(method)
     def wrapper(*args, **kwargs) -> Any:
-        logger.info(f'Entering: {method.__name__}')
+        logger.debug(f'Entering: {method.__name__}')
 
         result = method(*args, **kwargs)
         logger.info(result)
 
-        logger.info(f'Exiting: {method.__name__}')
+        logger.debug(f'Exiting: {method.__name__}')
 
         return result
 
