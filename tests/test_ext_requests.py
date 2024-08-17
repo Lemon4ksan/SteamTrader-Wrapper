@@ -24,6 +24,10 @@ class IndependentTests(unittest.TestCase):
         )
 
     def test_get_inventory(self):
+        inventory = self.client.get_inventory(TEAM_FORTRESS_APPID)
+        self.assertTrue(inventory.success)
+
+    def test_get_inventory_with_filters(self):
         inventory = self.client.get_inventory(TEAM_FORTRESS_APPID, filters=self.filters)
         self.assertTrue(inventory.success)
 
