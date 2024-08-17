@@ -1,5 +1,7 @@
 import httpx
-from typing import Optional, LiteralString, Union, List
+import logging
+import functools
+from typing import Optional, LiteralString, Union, List, TypeVar, Callable, Any
 
 from .constants import SUPPORTED_APPIDS
 from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsupportedAppID, Unauthorized
@@ -10,6 +12,28 @@ from ._sale import SellResult
 from ._edit_item import EditPriceResult, DeleteItemResult, GetDownOrdersResult
 from ._item_info import MinPrices, ItemInfo, OrderBook
 from ._trade import ItemsForExchange, ExchangeResult, ExchangeP2PResult
+
+
+logging.getLogger(__name__).addHandler(logging.NullHandler())
+
+F = TypeVar('F', bound=Callable[..., Any])
+
+def log(method: F) -> F:
+    logger = logging.getLogger(method.__module__)
+
+    @functools.wraps(method)
+    def wrapper(*args, **kwargs) -> Any:
+        logger.info(f'Entering: {method.__name__}')
+
+        result = method(*args, **kwargs)
+        logger.info(result)
+
+        logger.info(f'Exiting: {method.__name__}')
+
+        return result
+
+    return wrapper
+
 
 class ClientAsync(TraderClientObject):
     """Класс, представляющий клиент Steam Trader.
@@ -65,6 +89,7 @@ class ClientAsync(TraderClientObject):
             raise Unauthorized('Неправильный api-токен')
         return result['balance']
 
+    @log
     async def sell(self, itemid: int, assetid: int, price: float) -> Optional['SellResult']:
         """Создать предложение о продаже определённого предмета.
 
@@ -91,6 +116,7 @@ class ClientAsync(TraderClientObject):
         )
         return SellResult.de_json(result.json(), self)
 
+    @log
     async def buy(self, _id: Union[int, str], _type: int, price: float, currency: int = 1) -> Optional['BuyResult']:
         """Создать предложение о покупке предмета по строго указанной цене.
 
@@ -121,6 +147,7 @@ class ClientAsync(TraderClientObject):
         )
         return BuyResult.de_json(result.json(), self)
 
+    @log
     async def create_buy_order(self, gid: int, price: float, *, count: int = 1) -> Optional['BuyOrderResult']:
         """Создать заявку на покупку предмета с определённым GID.
 
@@ -147,6 +174,7 @@ class ClientAsync(TraderClientObject):
         )
         return BuyOrderResult.de_json(result.json(), self)
 
+    @log
     async def multi_buy(self, gid: int, max_price: float, count: int) -> Optional['MultiBuyResult']:
         """Создать запрос о покупке нескольких предметов с определённым GID.
 
@@ -177,6 +205,7 @@ class ClientAsync(TraderClientObject):
         )
         return MultiBuyResult.de_json(result.json(), self)
 
+    @log
     async def edit_price(self, _id: int, price: float) -> Optional['EditPriceResult']:
         """Редактировать цену предмета/заявки на покупку.
 
@@ -199,6 +228,7 @@ class ClientAsync(TraderClientObject):
         )
         return EditPriceResult.de_json(result.json(), self)
 
+    @log
     async def delete_item(self, _id: int) -> Optional['DeleteItemResult']:
         """Снять предмет с продажи/заявку на покупку.
 
@@ -218,6 +248,7 @@ class ClientAsync(TraderClientObject):
         )
         return DeleteItemResult.de_json(result.json(), self)
 
+    @log
     async def get_down_orders(self, gameid: int, *, order_type: LiteralString = 'sell') -> Optional['GetDownOrdersResult']:
         """Снять все заявки на продажу/покупку предметов.
 
@@ -243,6 +274,7 @@ class ClientAsync(TraderClientObject):
         )
         return GetDownOrdersResult.de_json(result.json(), self)
 
+    @log
     async def get_items_for_exchange(self) -> Optional['ItemsForExchange']:
         """Получить список предметов для обмена с ботом.
 
@@ -258,6 +290,7 @@ class ClientAsync(TraderClientObject):
         )
         return ItemsForExchange.de_json(result.json(), self)
 
+    @log
     async def exchange(self) -> Optional['ExchangeResult']:
         """Выполнить обмен с ботом.
 
@@ -277,6 +310,7 @@ class ClientAsync(TraderClientObject):
         )
         return ExchangeResult.de_json(result.json(), self)
 
+    @log
     async def get_items_for_exchange_p2p(self) -> Optional['ItemsForExchange']:
         """Получить список предметов для p2p обмена.
 
@@ -292,6 +326,7 @@ class ClientAsync(TraderClientObject):
         )
         return ItemsForExchange.de_json(result.json(), self)
 
+    @log
     async def exchange_p2p(self) -> Optional['ExchangeP2PResult']:
         """Выполнить p2p обмен.
 
@@ -311,6 +346,7 @@ class ClientAsync(TraderClientObject):
         )
         return ExchangeP2PResult.de_json(result.json(), self)
 
+    @log
     async def get_min_prices(self, gid: int, currency: int = 1) -> Optional['MinPrices']:
         """Получить минимальные/максимальные цены предмета.
 
@@ -333,6 +369,7 @@ class ClientAsync(TraderClientObject):
         )
         return MinPrices.de_json(result.json(), self)
 
+    @log
     async def get_item_info(self, gid: int) -> Optional['ItemInfo']:
         """Получить информацию о группе предметов.
 
@@ -351,6 +388,7 @@ class ClientAsync(TraderClientObject):
         )
         return ItemInfo.de_json(result.json(), self)
 
+    @log
     async def get_order_book(
             self,
             gid: int,
@@ -380,12 +418,14 @@ class ClientAsync(TraderClientObject):
         )
         return OrderBook.de_json(result.json(), self)
 
+    @log
     async def get_web_socket_token(self) -> Optional['WSToken']:
         """Возварщает токен для авторизации в WebSocket. Незадокументированно."""
         url = self.base_url + "getwstoken/"
         result = await self._async_client.get(url)
         return WSToken.de_json(result.json(), self)
 
+    @log
     async def get_inventory(self, gameid: int, *, status: Optional[List[int]] = None) -> Optional['Inventory']:
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
@@ -422,6 +462,7 @@ class ClientAsync(TraderClientObject):
         )
         return Inventory.de_json(result.json(), self)
 
+    @log
     async def get_buy_orders(self, *, gameid: Optional[int] = None, gid: Optional[int] = None) -> Optional['BuyOrders']:
         """Получить последовательность заявок на покупку. По умолчанию возвращаются заявки для всех
         предметов из всех разделов.
@@ -451,6 +492,7 @@ class ClientAsync(TraderClientObject):
         )
         return BuyOrders.de_json(result.json(), self)
 
+    @log
     async def get_discounts(self) -> Optional['Discounts']:
         """Получить комиссии/скидки и оборот на сайте.
 
@@ -468,6 +510,7 @@ class ClientAsync(TraderClientObject):
         )
         return Discounts.de_json(result.json(), self)
 
+    @log
     async def set_trade_link(self, trade_link: str) -> None:
         """Установить ссылку для обмена.
 
@@ -496,6 +539,7 @@ class ClientAsync(TraderClientObject):
             except KeyError:
                 raise WrongTradeLink('Вы указали ссылку для обмена от другого Steam аккаунта')
 
+    @log
     async def remove_trade_link(self) -> None:
         """Удалить ссылку для обмена."""
 
@@ -516,6 +560,7 @@ class ClientAsync(TraderClientObject):
                 case 1:
                     raise SaveFail('Не удалось удалить ссылку обмена')
 
+    @log
     async def get_operations_history(self, *, operation_type: Optional[int] = None) -> Optional['OperationsHistory']:
         """Получить историю операций (По умолчанию все типы).
 
@@ -542,6 +587,7 @@ class ClientAsync(TraderClientObject):
         )
         return OperationsHistory.de_json(result.json(), self)
 
+    @log
     async def update_inventory(self, gameid: int) -> None:
         """Обновить инвентарь игры на сайте.
 
@@ -565,6 +611,7 @@ class ClientAsync(TraderClientObject):
                 case 401:
                     raise Unauthorized('Неправильный api-токен')
 
+    @log
     async def get_inventory_state(self, gameid: int) -> Optional['InventoryState']:
         """Получить текущий статус обновления инвентаря.
 
@@ -586,6 +633,7 @@ class ClientAsync(TraderClientObject):
         )
         return InventoryState.de_json(result.json(), self)
 
+    @log
     async def trigger_alt_web_socket(self) -> Optional['AltWebSocket']:
         """Создать запрос альтернативным WebSocket.
         Для поддержания активного соединения нужно делать этот запрос каждые 2 минуты.
