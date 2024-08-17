@@ -108,14 +108,15 @@ class Filter(TraderClientObject):
     """Класс, представляющий фильтр.
 
     Attributes:
-        id (:obj:`int`, optional): ID данного фильтра, может быть пустым.
+        id (:obj:`int`, optional): ID данного фильтра, может быть пустым. Если вы создаёте класс вручную,
+            то обязательно укажите этот параметр.
         title (:obj:`str`, optional): Тайтл данного фильтра, может быть пустым.
         color (:obj:`str`, optionl): Цвет данного фильтра, может быть пустым.
     """
 
     id: Optional[int]
-    title: Optional[str]
-    color: Optional[str]
+    title: Optional[str] = None
+    color: Optional[str] = None
 
     @classmethod
     def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['Filter']:
