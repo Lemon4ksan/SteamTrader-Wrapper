@@ -150,6 +150,7 @@ class ExtClientAsync(ClientAsync):
 
         return inventory
 
+    @log
     async def multi_sell(self, gameid: int, gid: int, price: float, count: int) -> Sequence[Optional['SellResult']]:
         """Продать множество вещей из инвенторя с одним gid.
 
