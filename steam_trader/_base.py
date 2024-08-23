@@ -12,6 +12,7 @@ except ImportError:
 
 if TYPE_CHECKING:
     from ._client import Client
+    from ._client_async import ClientAsync
 
 class TraderClientObject:
     """Базовый класс для всех объектов библиотеки."""
@@ -35,7 +36,7 @@ class TraderClientObject:
         return data and isinstance(data, dict)
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional[dict]:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional[dict]:
         """Десериализация объекта.
 
         Args:

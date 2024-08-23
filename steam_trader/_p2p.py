@@ -6,6 +6,7 @@ from ._misc import ExchangeItem
 
 if TYPE_CHECKING:
     from ._client import Client
+    from ._client_async import ClientAsync
 
 @dataclass
 class P2PTradeOffer(TraderClientObject):
@@ -30,7 +31,7 @@ class P2PTradeOffer(TraderClientObject):
     trade_offer_create_params: str
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['P2PTradeOffer']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['P2PTradeOffer']:
         """Десериализация объекта.
 
         Args:
@@ -63,7 +64,7 @@ class P2PSendObject(TraderClientObject):
     trade_offer: Optional['P2PTradeOffer']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['P2PSendObject']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['P2PSendObject']:
         """Десериализация объекта.
 
         Args:
@@ -105,7 +106,7 @@ class P2PReceiveObject(TraderClientObject):
     partner_steamid: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['P2PReceiveObject']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['P2PReceiveObject']:
         """Десериализация объекта.
 
         Args:
@@ -145,7 +146,7 @@ class P2PConfirmObject(TraderClientObject):
     partner_steamid: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['P2PConfirmObject']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['P2PConfirmObject']:
         """Десериализация объекта.
 
         Args:
