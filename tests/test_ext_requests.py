@@ -22,6 +22,7 @@ class IndependentTests(unittest.TestCase):
             type=[Filter(id=TF2_TYPE_PRIMARY), Filter(id=DOTA2_TYPE_STICKER)],
             used_by=[Filter(id=TF2_CLASS_ENGINEER), Filter(id=TF2_CLASS_SCOUT)]
         )
+        self.SKIP_SELL_TESTS = True
 
     def test_get_inventory(self):
         inventory = self.client.get_inventory(TEAM_FORTRESS_APPID)
@@ -30,6 +31,13 @@ class IndependentTests(unittest.TestCase):
     def test_get_inventory_with_filters(self):
         inventory = self.client.get_inventory(TEAM_FORTRESS_APPID, filters=self.filters)
         self.assertTrue(inventory.success)
+
+    def test_multi_sell(self):
+        if self.SKIP_SELL_TESTS:
+            self.skipTest('Тест на мульти-продажу пропущен.')
+
+        multi_sell_result = self.client.multi_sell(440, 1226, 2.92, 1)
+        self.assertTrue(multi_sell_result[0].success)
 
 if __name__ == '__main__':
     unittest.main()
