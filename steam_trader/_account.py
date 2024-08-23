@@ -7,6 +7,7 @@ from ._misc import InventoryItem, BuyOrder, Discount, OperationsHistoryItem, Alt
 
 if TYPE_CHECKING:
     from ._client import Client
+    from ._client_async import ClientAsync
 
 @dataclass
 class WSToken(TraderClientObject):
@@ -25,7 +26,7 @@ class WSToken(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['WSToken']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['WSToken']:
         """Десериализация объекта.
 
         Args:
@@ -69,7 +70,7 @@ class Inventory(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['Inventory']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['Inventory']:
         """Десериализация объекта.
 
         Args:
@@ -115,7 +116,7 @@ class BuyOrders(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['BuyOrders']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['BuyOrders']:
         """Десериализация объекта.
 
         Args:
@@ -160,7 +161,7 @@ class Discounts(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['Discounts']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['Discounts']:
         """Десериализация объекта.
 
         Args:
@@ -203,7 +204,7 @@ class OperationsHistory(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['OperationsHistory']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['OperationsHistory']:
         """Десериализация объекта.
 
         Args:
@@ -250,7 +251,7 @@ class InventoryState(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['InventoryState']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['InventoryState']:
         """Десериализация объекта.
 
         Args:
@@ -297,7 +298,7 @@ class AltWebSocket(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['AltWebSocket']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['AltWebSocket']:
         """Десериализация объекта.
 
         Args:

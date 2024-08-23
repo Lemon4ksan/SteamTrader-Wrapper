@@ -6,6 +6,7 @@ from ._base import TraderClientObject
 
 if TYPE_CHECKING:
     from ._client import Client
+    from ._client_async import ClientAsync
 
 @dataclass
 class SellResult(TraderClientObject):
@@ -34,7 +35,7 @@ class SellResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['SellResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['SellResult']:
         """Десериализация объекта.
 
         Args:

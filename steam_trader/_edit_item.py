@@ -6,6 +6,7 @@ from ._base import TraderClientObject
 
 if TYPE_CHECKING:
     from steam_trader import Client
+    from ._client_async import ClientAsync
 
 @dataclass
 class EditPriceResult(TraderClientObject):
@@ -35,7 +36,7 @@ class EditPriceResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['EditPriceResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['EditPriceResult']:
         """Десериализация объекта.
 
         Args:
@@ -91,7 +92,7 @@ class DeleteItemResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['DeleteItemResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['DeleteItemResult']:
         """Десериализация объекта.
 
         Args:
@@ -137,7 +138,7 @@ class GetDownOrdersResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['GetDownOrdersResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['GetDownOrdersResult']:
         """Десериализация объекта.
 
         Args:

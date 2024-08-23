@@ -8,6 +8,7 @@ from ._misc import SellHistoryItem, Filters
 
 if TYPE_CHECKING:
     from steam_trader import Client
+    from steam_trader import ClientAsync
 
 @dataclass
 class MinPrices(TraderClientObject):
@@ -32,7 +33,7 @@ class MinPrices(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['MinPrices']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['MinPrices']:
         """Десериализация объекта.
 
         Args:
@@ -109,7 +110,7 @@ class ItemInfo(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['ItemInfo']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['ItemInfo']:
         """Десериализация объекта.
 
         Args:
@@ -171,7 +172,7 @@ class OrderBook(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['OrderBook']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['OrderBook']:
         """Десериализация объекта.
 
         Args:

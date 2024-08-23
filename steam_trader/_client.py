@@ -1,7 +1,7 @@
 import httpx
 import logging
 import functools
-from typing import Optional, LiteralString, Union, List, TypeVar, Callable, Any
+from typing import Optional, LiteralString, Union, Sequence, TypeVar, Callable, Any
 
 from .constants import SUPPORTED_APPIDS
 from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsupportedAppID, Unauthorized
@@ -423,7 +423,7 @@ class Client(TraderClientObject):
         return WSToken.de_json(result, self)
 
     @log
-    def get_inventory(self, gameid: int, *, status: Optional[List[int]] = None) -> Optional['Inventory']:
+    def get_inventory(self, gameid: int, *, status: Optional[Sequence[int]] = None) -> Optional['Inventory']:
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         По умолчанию (то есть всегда) возвращает список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
@@ -433,7 +433,7 @@ class Client(TraderClientObject):
 
         Args:
             gameid (:obj:`int`): AppID приложения в Steam.
-            status (:list:`int`, optional): Указывается, чтобы получить список предметов с определенным статусом.
+            status (Sequence[:obj:`int`], optional): Указывается, чтобы получить список предметов с определенным статусом.
 
                 Возможные статусы:
                 0 - В продаже
