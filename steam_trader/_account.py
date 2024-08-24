@@ -45,7 +45,7 @@ class WSToken(TraderClientObject):
                 match data['code']:
                     case 401:
                         raise Unauthorized('Вы не зарегистрированны')
-        except ValueError:
+        except KeyError:
             pass
 
         data = super(WSToken, cls).de_json(data, client)
