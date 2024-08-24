@@ -79,7 +79,7 @@ class Client(TraderClientObject):
             headers=self.headers
         ).json()
         if not result['success']:
-            raise Unauthorized('Неправильный api-токен')
+            raise Unauthorized('Неправильный api-токен.')
         return result['balance']
 
     @log
@@ -269,7 +269,7 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         if order_type not in ['sell', 'buy']:
             raise ValueError(f'Неизвестный тип {order_type}')
@@ -467,7 +467,7 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         if status not in range(5) and status is not None:
             raise ValueError(f'Неизвестный статус {status}')
@@ -500,7 +500,7 @@ class Client(TraderClientObject):
         """
 
         if gameid is not None and gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'getbuyorders/'
         result = httpx.get(
@@ -548,11 +548,11 @@ class Client(TraderClientObject):
             try:
                 match result['code']:
                     case 400:
-                        raise BadRequestError('Неправильный запрос')
+                        raise BadRequestError('Неправильный запрос.')
                     case 401:
-                        raise Unauthorized('Неправильный api-токен')
+                        raise Unauthorized('Неправильный api-токен.')
                     case 1:
-                        raise SaveFail('Не удалось сохранить ссылку обмена')
+                        raise SaveFail('Не удалось сохранить ссылку обмена.')
             except KeyError:
                 raise WrongTradeLink('Вы указали ссылку для обмена от другого Steam аккаунта')
 
@@ -569,12 +569,10 @@ class Client(TraderClientObject):
 
         if not result['success']:
             match result['code']:
-                case 400:
-                    raise BadRequestError('Неправильный запрос')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise SaveFail('Не удалось удалить ссылку обмена')
+                    raise SaveFail('Не удалось удалить ссылку обмена.')
 
     @log
     def get_operations_history(self, *, operation_type: Optional[int] = None) -> Optional['OperationsHistory']:
@@ -615,7 +613,7 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'updateinventory/'
         result = httpx.get(
@@ -641,7 +639,7 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'inventorystate/'
         result = httpx.get(

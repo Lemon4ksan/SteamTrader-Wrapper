@@ -86,7 +86,7 @@ class ClientAsync(TraderClientObject):
         )
         result = result.json()
         if not result['success']:
-            raise Unauthorized('Неправильный api-токен')
+            raise Unauthorized('Неправильный api-токен.')
         return result['balance']
 
     @log
@@ -276,7 +276,7 @@ class ClientAsync(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         if order_type not in ['sell', 'buy']:
             raise ValueError(f'Неизвестный тип {order_type}')
@@ -470,7 +470,7 @@ class ClientAsync(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         if status not in range(5) and status is not None:
             raise ValueError(f'Неизвестный статус {status}')
@@ -503,7 +503,7 @@ class ClientAsync(TraderClientObject):
         """
 
         if gameid is not None and gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'getbuyorders/'
         result = await self._async_client.get(
@@ -620,7 +620,7 @@ class ClientAsync(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'updateinventory/'
         result = await self._async_client.get(
@@ -633,7 +633,7 @@ class ClientAsync(TraderClientObject):
         if not result['success']:
             match result['code']:
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
 
     @log
     async def get_inventory_state(self, gameid: int) -> Optional['InventoryState']:
@@ -647,7 +647,7 @@ class ClientAsync(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'inventorystate/'
         result = await self._async_client.get(

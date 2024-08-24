@@ -52,15 +52,15 @@ class SellResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Вы не зарегистрированны')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
                     raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 2:
                     raise exceptions.UnknownItem('Неизвестный предмет.')
                 case 3:
-                    raise exceptions.NoTradeLink('У Вас нет ссылки для обмена.')
+                    raise exceptions.NoTradeLink('У вас нет ссылки для обмена.')
                 case 4:
                     raise exceptions.IncorrectPrice(data['error'])
                 case 5:
