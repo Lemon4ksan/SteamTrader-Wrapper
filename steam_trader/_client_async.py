@@ -108,6 +108,8 @@ class ClientAsync(TraderClientObject):
             :class:`steam_trader.SellResult, optional`: Результат создания предложения о продаже.
         """
 
+        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
+
         url = self.base_url + 'sale/'
         result = await self._async_client.post(
             url,
@@ -139,6 +141,8 @@ class ClientAsync(TraderClientObject):
             :class:`steam_trader.BuyResult`, optional: Результат создания запроса о покупке.
         """
 
+        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
+
         url = self.base_url + 'buy/'
         result = await self._async_client.post(
             url,
@@ -165,6 +169,9 @@ class ClientAsync(TraderClientObject):
         Returns:
             :class:`steam_trader.BuyOrderResult, optional`: Результат созданния заявки на покупку.
         """
+
+        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
+        assert 1 <= count <= 500, f'Количество заявок должно быть от 1 до 500 (не {count})'
 
         url = self.base_url + 'createbuyorder/'
         result = await self._async_client.post(
@@ -197,6 +204,9 @@ class ClientAsync(TraderClientObject):
             :class:`steam_trader.MultiBuyResult`, optional: Результат создания запроса на мульти-покупку.
         """
 
+        assert max_price >= 0.5, f'Максимальная цена должна быть больше или равна 0.5 (не {max_price})'
+        assert count >= 1, f'Количество предметов для покупки должно быть больше 1 (не {count})'
+
         url = self.base_url + 'multibuy/'
         result = await self._async_client.post(
             url,
@@ -219,6 +229,8 @@ class ClientAsync(TraderClientObject):
         Returns:
             :class:`steam_trader.EditPriceResult`, optional: Результат запроса на изменение цены.
         """
+
+        assert price >= 0.5, f'Цена на продажу должна быть больше или равна 0.5 (не {price})'
 
         url = self.base_url + 'editprice/'
         result = await self._async_client.post(
@@ -265,6 +277,9 @@ class ClientAsync(TraderClientObject):
 
         if gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+
+        if order_type not in ['sell', 'buy']:
+            raise ValueError(f'Неизвестный тип {order_type}')
 
         url = self.base_url + 'getdownorders/'
         result = await self._async_client.post(
@@ -410,6 +425,9 @@ class ClientAsync(TraderClientObject):
             :class:`steam_trader.OrderBook`, optional: Заявки о покупке/продаже предмета.
         """
 
+        if mode not in ['all', 'sell', 'buy']:
+            raise ValueError(f'Неизвестный режим {mode}')
+
         url = self.base_url + "orderbook/"
         result = await self._async_client.get(
             url,
@@ -453,6 +471,9 @@ class ClientAsync(TraderClientObject):
 
         if gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+
+        if status not in range(5) and status is not None:
+            raise ValueError(f'Неизвестный статус {status}')
 
         url = self.base_url + 'getinventory/'
         result = await self._async_client.get(
@@ -578,6 +599,9 @@ class ClientAsync(TraderClientObject):
         Returns:
               :class:`steam_trader.OperationsHistory`, optional: История операций.
         """
+
+        if operation_type not in range(1, 11) and operation_type is not None:
+            raise ValueError(f'Неизвестный тип {operation_type}')
 
         url = self.base_url + 'operationshistory/'
         result = await self._async_client.get(
