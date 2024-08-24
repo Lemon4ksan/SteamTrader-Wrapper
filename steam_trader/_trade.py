@@ -134,6 +134,7 @@ class ExchangeResult(TraderClientObject):
             'bot_steamid': data['botSteamId'],
             'bot_nick': data['botNick']
         })
+        del data['offerId'], data['botSteamId'], data['botNick']
 
         for i, item in enumerate(data['items']):
             data['items'][i] = ExchangeItem.de_json(item)
@@ -209,6 +210,6 @@ class ExchangeP2PResult(TraderClientObject):
         for i, item in enumerate(data['confirm']):
             data['confirm'][i] = P2PConfirmObject.de_json(item)
 
-        data = super(ExchangeResult, cls).de_json(data, client)
+        data = super(ExchangeP2PResult, cls).de_json(data, client)
 
         return cls(client=client, **data)
