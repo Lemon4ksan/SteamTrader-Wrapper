@@ -1,8 +1,7 @@
 import asyncio
-from typing import Optional, LiteralString, Sequence
 import logging
 import functools
-from typing import Optional, List, LiteralString, Sequence, TypeVar, Callable, Any
+from typing import Optional, Sequence, TypeVar, Callable, Any
 
 from steam_trader import *
 from steam_trader.constants import *
@@ -80,7 +79,7 @@ class ExtClientAsync(ClientAsync):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         if status not in range(5) and status is not None:
             raise ValueError(f'Неизвестный статус {status}')

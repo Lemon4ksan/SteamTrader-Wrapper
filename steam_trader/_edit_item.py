@@ -53,9 +53,9 @@ class EditPriceResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
                     raise exceptions.InternalError('Ошибка редактирования предмета.')
                 case 2:
@@ -109,13 +109,13 @@ class DeleteItemResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
                     raise exceptions.InternalError('Ошибка редактирования предмета.')
                 case 2:
-                    raise exceptions.UnknownItem('	Неизвестный предмет.')
+                    raise exceptions.UnknownItem('Неизвестный предмет.')
 
         data = super(DeleteItemResult, cls).de_json(data, client)
 
@@ -155,13 +155,13 @@ class GetDownOrdersResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.InternalError('Ошибка редактирования предмета')
+                    raise exceptions.InternalError('Ошибка редактирования предмета.')
                 case 2:
-                    raise exceptions.NoTradeItems('Нет заявок на продажу/покупку')
+                    raise exceptions.NoTradeItems('Нет заявок на продажу/покупку.')
 
         data = super(GetDownOrdersResult, cls).de_json(data, client)
 

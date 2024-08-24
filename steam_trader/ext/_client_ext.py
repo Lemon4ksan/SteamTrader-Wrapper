@@ -81,7 +81,7 @@ class ExtClient(Client):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         if status not in range(5) and status is not None:
             raise ValueError(f'Неизвестный статус {status}')

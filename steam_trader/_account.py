@@ -43,7 +43,7 @@ class WSToken(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 401:
-                    raise Unauthorized('Вы не зарегистрированны')
+                    raise Unauthorized('Вы не зарегистрированны.')
 
         data = super(WSToken, cls).de_json(data, client)
 
@@ -88,9 +88,9 @@ class Inventory(TraderClientObject):
             try:
                 match data['code']:
                     case 400:
-                        raise BadRequestError('Неправильный запрос')
+                        raise BadRequestError('Неправильный запрос.')
                     case 401:
-                        raise Unauthorized('Неправильный api-токен')
+                        raise Unauthorized('Неправильный api-токен.')
             except KeyError:
                 pass
 
@@ -133,11 +133,11 @@ class BuyOrders(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise NoBuyOrders('Нет запросов на покупку')
+                    raise NoBuyOrders('Нет запросов на покупку.')
 
         for i, offer in enumerate(data['data']):
             data['data'][i] = BuyOrder.de_json(offer)
@@ -178,9 +178,9 @@ class Discounts(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
 
         # Конвертируем ключ в число для совместимости с константами
         new_data = {int(appid): Discount.de_json(_dict) for appid, _dict in data['data'].items()}
@@ -221,9 +221,9 @@ class OperationsHistory(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
 
         for i, item in enumerate(data['data']):
             data['data'][i] = OperationsHistoryItem.de_json(item)
@@ -274,9 +274,9 @@ class InventoryState(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
 
         data = super(InventoryState, cls).de_json(data, client)
 

@@ -49,13 +49,13 @@ class MinPrices(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise InternalError('При выполнении запроса произошла ошибка')
+                    raise InternalError('При выполнении запроса произошла ошибка.')
                 case 2:
-                    raise UnknownItem('Неизвестный предмет')
+                    raise UnknownItem('Неизвестный предмет.')
 
         data = super(MinPrices, cls).de_json(data, client)
 
@@ -126,13 +126,13 @@ class ItemInfo(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise InternalError('При выполнении запроса произошла ошибка')
+                    raise InternalError('При выполнении запроса произошла ошибка.')
                 case 2:
-                    raise UnknownItem('Неизвестный предмет')
+                    raise UnknownItem('Неизвестный предмет.')
 
         data['filters'] = Filters.de_json(data['filters'])
 
@@ -188,11 +188,11 @@ class OrderBook(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise InternalError('При выполнении запроса произошла ошибка')
+                    raise InternalError('При выполнении запроса произошла ошибка.')
 
         data = super(OrderBook, cls).de_json(data, client)
 
