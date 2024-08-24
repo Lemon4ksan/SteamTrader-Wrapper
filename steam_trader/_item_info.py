@@ -8,6 +8,7 @@ from ._misc import SellHistoryItem, Filters
 
 if TYPE_CHECKING:
     from steam_trader import Client
+    from steam_trader import ClientAsync
 
 @dataclass
 class MinPrices(TraderClientObject):
@@ -32,7 +33,7 @@ class MinPrices(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['MinPrices']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['MinPrices']:
         """Десериализация объекта.
 
         Args:
@@ -48,13 +49,13 @@ class MinPrices(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise InternalError('При выполнении запроса произошла ошибка')
+                    raise InternalError('При выполнении запроса произошла ошибка.')
                 case 2:
-                    raise UnknownItem('Неизвестный предмет')
+                    raise UnknownItem('Неизвестный предмет.')
 
         data = super(MinPrices, cls).de_json(data, client)
 
@@ -109,7 +110,7 @@ class ItemInfo(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['ItemInfo']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['ItemInfo']:
         """Десериализация объекта.
 
         Args:
@@ -125,13 +126,13 @@ class ItemInfo(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise InternalError('При выполнении запроса произошла ошибка')
+                    raise InternalError('При выполнении запроса произошла ошибка.')
                 case 2:
-                    raise UnknownItem('Неизвестный предмет')
+                    raise UnknownItem('Неизвестный предмет.')
 
         data['filters'] = Filters.de_json(data['filters'])
 
@@ -171,7 +172,7 @@ class OrderBook(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['OrderBook']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['OrderBook']:
         """Десериализация объекта.
 
         Args:
@@ -187,11 +188,11 @@ class OrderBook(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise BadRequestError('Неправильный запрос')
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise InternalError('При выполнении запроса произошла ошибка')
+                    raise InternalError('При выполнении запроса произошла ошибка.')
 
         data = super(OrderBook, cls).de_json(data, client)
 

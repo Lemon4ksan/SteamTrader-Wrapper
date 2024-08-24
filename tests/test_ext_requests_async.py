@@ -23,6 +23,7 @@ class IndependentTests(unittest.IsolatedAsyncioTestCase):
             type=[Filter(id=TF2_TYPE_PRIMARY), Filter(id=DOTA2_TYPE_STICKER)],
             used_by=[Filter(id=TF2_CLASS_ENGINEER), Filter(id=TF2_CLASS_SCOUT)]
         )
+        self.SKIP_SELL_TESTS = True
 
     async def test_get_inventory(self):
         async with self.client:
@@ -33,6 +34,13 @@ class IndependentTests(unittest.IsolatedAsyncioTestCase):
         async with self.client:
             inventory = await self.client.get_inventory(TEAM_FORTRESS_APPID, filters=self.filters)
             self.assertTrue(inventory.success)
+
+    async def test_multi_sell(self):
+        if self.SKIP_SELL_TESTS:
+            self.skipTest('Тест на мульти-продажу пропущен.')
+
+        multi_sell_result = await self.client.multi_sell(440, 1226, 2.92, 1)
+        self.assertTrue(multi_sell_result[0].success)
 
 if __name__ == '__main__':
     unittest.main()

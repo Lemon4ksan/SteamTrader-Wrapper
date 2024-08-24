@@ -6,6 +6,7 @@ from ._base import TraderClientObject
 
 if TYPE_CHECKING:
     from steam_trader import Client
+    from ._client_async import ClientAsync
 
 @dataclass
 class EditPriceResult(TraderClientObject):
@@ -35,7 +36,7 @@ class EditPriceResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['EditPriceResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['EditPriceResult']:
         """Десериализация объекта.
 
         Args:
@@ -52,9 +53,9 @@ class EditPriceResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
                     raise exceptions.InternalError('Ошибка редактирования предмета.')
                 case 2:
@@ -91,7 +92,7 @@ class DeleteItemResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['DeleteItemResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['DeleteItemResult']:
         """Десериализация объекта.
 
         Args:
@@ -108,13 +109,13 @@ class DeleteItemResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
                     raise exceptions.InternalError('Ошибка редактирования предмета.')
                 case 2:
-                    raise exceptions.UnknownItem('	Неизвестный предмет.')
+                    raise exceptions.UnknownItem('Неизвестный предмет.')
 
         data = super(DeleteItemResult, cls).de_json(data, client)
 
@@ -137,7 +138,7 @@ class GetDownOrdersResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['GetDownOrdersResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['GetDownOrdersResult']:
         """Десериализация объекта.
 
         Args:
@@ -154,13 +155,13 @@ class GetDownOrdersResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.InternalError('Ошибка редактирования предмета')
+                    raise exceptions.InternalError('Ошибка редактирования предмета.')
                 case 2:
-                    raise exceptions.NoTradeItems('Нет заявок на продажу/покупку')
+                    raise exceptions.NoTradeItems('Нет заявок на продажу/покупку.')
 
         data = super(GetDownOrdersResult, cls).de_json(data, client)
 

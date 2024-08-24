@@ -1,7 +1,7 @@
 import httpx
 import logging
 import functools
-from typing import Optional, LiteralString, Union, List, TypeVar, Callable, Any
+from typing import Optional, LiteralString, Union, Sequence, TypeVar, Callable, Any
 
 from .constants import SUPPORTED_APPIDS
 from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsupportedAppID, Unauthorized
@@ -79,7 +79,7 @@ class Client(TraderClientObject):
             headers=self.headers
         ).json()
         if not result['success']:
-            raise Unauthorized('Неправильный api-токен')
+            raise Unauthorized('Неправильный api-токен.')
         return result['balance']
 
     @log
@@ -100,6 +100,8 @@ class Client(TraderClientObject):
         Returns:
             :class:`steam_trader.SellResult, optional`: Результат создания предложения о продаже.
         """
+
+        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
 
         url = self.base_url + 'sale/'
         result = httpx.post(
@@ -132,6 +134,8 @@ class Client(TraderClientObject):
             :class:`steam_trader.BuyResult`, optional: Результат создания запроса о покупке.
         """
 
+        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
+
         url = self.base_url + 'buy/'
         result = httpx.post(
             url,
@@ -158,6 +162,9 @@ class Client(TraderClientObject):
         Returns:
             :class:`steam_trader.BuyOrderResult, optional`: Результат созданния заявки на покупку.
         """
+
+        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
+        assert 1 <= count <= 500, f'Количество заявок должно быть от 1 до 500 (не {count})'
 
         url = self.base_url + 'createbuyorder/'
         result = httpx.post(
@@ -190,6 +197,9 @@ class Client(TraderClientObject):
             :class:`steam_trader.MultiBuyResult`, optional: Результат создания запроса на мульти-покупку.
         """
 
+        assert max_price >= 0.5, f'Максимальная цена должна быть больше или равна 0.5 (не {max_price})'
+        assert count >= 1, f'Количество предметов для покупки должно быть больше 1 (не {count})'
+
         url = self.base_url + 'multibuy/'
         result = httpx.post(
             url,
@@ -212,6 +222,8 @@ class Client(TraderClientObject):
         Returns:
             :class:`steam_trader.EditPriceResult`, optional: Результат запроса на изменение цены.
         """
+
+        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
 
         url = self.base_url + 'editprice/'
         result = httpx.post(
@@ -257,7 +269,10 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
+
+        if order_type not in ['sell', 'buy']:
+            raise ValueError(f'Неизвестный тип {order_type}')
 
         url = self.base_url + 'getdownorders/'
         result = httpx.post(
@@ -407,6 +422,9 @@ class Client(TraderClientObject):
             :class:`steam_trader.OrderBook`, optional: Заявки о покупке/продаже предмета.
         """
 
+        if mode not in ['all', 'sell', 'buy']:
+            raise ValueError(f'Неизвестный режим {mode}')
+
         url = self.base_url + "orderbook/"
         result = httpx.get(
             url,
@@ -423,7 +441,7 @@ class Client(TraderClientObject):
         return WSToken.de_json(result, self)
 
     @log
-    def get_inventory(self, gameid: int, *, status: Optional[List[int]] = None) -> Optional['Inventory']:
+    def get_inventory(self, gameid: int, *, status: Optional[Sequence[int]] = None) -> Optional['Inventory']:
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         По умолчанию (то есть всегда) возвращает список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
@@ -433,7 +451,7 @@ class Client(TraderClientObject):
 
         Args:
             gameid (:obj:`int`): AppID приложения в Steam.
-            status (:list:`int`, optional): Указывается, чтобы получить список предметов с определенным статусом.
+            status (Sequence[:obj:`int`], optional): Указывается, чтобы получить список предметов с определенным статусом.
 
                 Возможные статусы:
                 0 - В продаже
@@ -449,7 +467,10 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
+
+        if status not in range(5) and status is not None:
+            raise ValueError(f'Неизвестный статус {status}')
 
         url = self.base_url + 'getinventory/'
         result = httpx.get(
@@ -479,7 +500,7 @@ class Client(TraderClientObject):
         """
 
         if gameid is not None and gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'getbuyorders/'
         result = httpx.get(
@@ -527,11 +548,11 @@ class Client(TraderClientObject):
             try:
                 match result['code']:
                     case 400:
-                        raise BadRequestError('Неправильный запрос')
+                        raise BadRequestError('Неправильный запрос.')
                     case 401:
-                        raise Unauthorized('Неправильный api-токен')
+                        raise Unauthorized('Неправильный api-токен.')
                     case 1:
-                        raise SaveFail('Не удалось сохранить ссылку обмена')
+                        raise SaveFail('Не удалось сохранить ссылку обмена.')
             except KeyError:
                 raise WrongTradeLink('Вы указали ссылку для обмена от другого Steam аккаунта')
 
@@ -548,12 +569,10 @@ class Client(TraderClientObject):
 
         if not result['success']:
             match result['code']:
-                case 400:
-                    raise BadRequestError('Неправильный запрос')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise SaveFail('Не удалось удалить ссылку обмена')
+                    raise SaveFail('Не удалось удалить ссылку обмена.')
 
     @log
     def get_operations_history(self, *, operation_type: Optional[int] = None) -> Optional['OperationsHistory']:
@@ -574,6 +593,9 @@ class Client(TraderClientObject):
               :class:`steam_trader.OperationsHistory`, optional: История операций.
         """
 
+        if operation_type not in range(1, 11) and operation_type is not None:
+            raise ValueError(f'Неизвестный тип {operation_type}')
+
         url = self.base_url + 'operationshistory/'
         result = httpx.get(
             url,
@@ -591,7 +613,7 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'updateinventory/'
         result = httpx.get(
@@ -617,7 +639,7 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'inventorystate/'
         result = httpx.get(

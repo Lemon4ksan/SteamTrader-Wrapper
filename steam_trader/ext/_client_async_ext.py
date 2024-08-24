@@ -1,22 +1,55 @@
-import httpx
 import asyncio
-from typing import Optional, List, LiteralString, Sequence
+import logging
+import functools
+from typing import Optional, Sequence, TypeVar, Callable, Any
 
 from steam_trader import *
 from steam_trader.constants import *
 from steam_trader.exceptions import *
 
 
-class ExtClientAsync(ClientAsync):
-    def __init__(self, api_token: str, *, base_url: str | None = None, headers: dict | None = None) -> None:
-        """Данный класс представляет расширенную версию обычного клиента.
+logging.getLogger(__name__).addHandler(logging.NullHandler())
 
-        Изменённые методы:
-            get_inventory - Добавлена возможность указывать фильтр для отсеивания предметов.
-        """
+F = TypeVar('F', bound=Callable[..., Any])
+
+def log(method: F) -> F:
+    logger = logging.getLogger(method.__module__)
+
+    @functools.wraps(method)
+    def wrapper(*args, **kwargs) -> Any:
+        logger.debug(f'Entering: {method.__name__}')
+
+        result = method(*args, **kwargs)
+        logger.info(result)
+
+        logger.debug(f'Exiting: {method.__name__}')
+
+        return result
+
+    return wrapper
+
+class ExtClientAsync(ClientAsync):
+    """Данный класс представляет расширенную версию обычного клиента.
+
+    Изменённые методы:
+        get_inventory - Добавлена возможность указывать фильтр для отсеивания предметов
+        (очень медленно на синхронном клиенте).
+
+    Новые методы:
+        multi_sell - Аналог multi_buy. В отличие от него, возвращает последовательность из результатов продаж, а не один объект.
+    """
+
+    def __init__(self, api_token: str, *, base_url: str | None = None, headers: dict | None = None) -> None:
         super().__init__(api_token, base_url=base_url, headers=headers)
 
-    async def get_inventory(self, gameid: int, *, filters: Optional['Filters'] = None, status: Optional[List[int]] = None):
+    @log
+    async def get_inventory(
+            self,
+            gameid: int,
+            *,
+            filters: Optional['Filters'] = None,
+            status: Optional[Sequence[int]] = None
+    ) -> Optional['Inventory']:
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         EXT:
@@ -30,7 +63,7 @@ class ExtClientAsync(ClientAsync):
         Args:
             gameid (:obj:`int`): AppID приложения в Steam.
             filters (:class:`steam_trader.Filters`, optional): Фильтр для отсеивания предметов.
-            status (:list:`int`, optional): Указывается, чтобы получить список предметов с определенным статусом.
+            status (Sequence[:obj:`int`], optional): Указывается, чтобы получить список предметов с определенным статусом.
 
                 Возможные статусы:
                 0 - В продаже
@@ -46,7 +79,10 @@ class ExtClientAsync(ClientAsync):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
+
+        if status not in range(5) and status is not None:
+            raise ValueError(f'Неизвестный статус {status}')
 
         url = self.base_url + 'getinventory/'
         result = await self._async_client.get(
@@ -121,3 +157,34 @@ class ExtClientAsync(ClientAsync):
             inventory.items = new_items
 
         return inventory
+
+    @log
+    async def multi_sell(self, gameid: int, gid: int, price: float, count: int) -> Sequence[Optional['SellResult']]:
+        """Продать множество вещей из инвенторя с одним gid.
+
+        Args:
+            gameid (:obj:`int`): ID инвентаря из которого будет произходить продажа.
+            gid (:obj:`int`): ID группы предметов.
+            price (:obj:`int`): Цена для выставления на продажу.
+            count (:obj:`int`): Количество предметов для продажи. Если число больше чем предметов в инвенторе,
+                будут проданы те, что имеются.
+
+        Returns:
+            Sequence[:class:`steam_trader.SellResult, optional`]: Последовательноасть с результатами продаж.
+        """
+
+        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
+
+        inventory = await self.get_inventory(gameid)
+        tasks = []
+
+        for item in inventory.items:
+            if count == 0:
+                break
+            if item.gid == gid:
+                tasks.append(self.sell(item.itemid, item.assetid, price))
+                count -= 1
+
+        results = await asyncio.gather(*tasks)
+
+        return results

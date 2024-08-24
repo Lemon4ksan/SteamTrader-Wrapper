@@ -7,6 +7,7 @@ from ._base import TraderClientObject
 
 if TYPE_CHECKING:
     from ._client import Client
+    from ._client_async import ClientAsync
 
 @dataclass
 class BuyResult(TraderClientObject):
@@ -33,7 +34,7 @@ class BuyResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['BuyResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['BuyResult']:
         """Десериализация объекта.
 
         Args:
@@ -50,9 +51,9 @@ class BuyResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Вы не зарегистрированны')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
                     raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 3:
@@ -60,7 +61,7 @@ class BuyResult(TraderClientObject):
                 case 4:
                     raise exceptions.NoLongerExists('Извините, данное предложение больше недействительно.')
                 case 5:
-                    raise exceptions.NotEnoughMoney('Для покупки не достаточно средств.')
+                    raise exceptions.NotEnoughMoney('Для покупки недостаточно средств.')
 
         data = super(BuyResult, cls).de_json(data, client)
 
@@ -83,7 +84,7 @@ class BuyOrderResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['BuyOrderResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['BuyOrderResult']:
         """Десериализация объекта.
 
         Args:
@@ -102,19 +103,19 @@ class BuyOrderResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Вы не зарегистрированны')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
                     raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 2:
-                    raise exceptions.UnknownItem('Неизвестный предмет')
+                    raise exceptions.UnknownItem('Неизвестный предмет.')
                 case 3:
                     raise exceptions.NoTradeLink('У Вас нет ссылки для обмена.')
                 case 4:
-                    raise exceptions.NoLongerExists('Извините, данное предложение больше недействительно.')
+                    raise exceptions.NoLongerExists('Данное предложение больше недействительно.')
                 case 5:
-                    raise exceptions.NotEnoughMoney('Для покупки не достаточно средств.')
+                    raise exceptions.NotEnoughMoney('Для покупки недостаточно средств.')
 
         data = super(BuyOrderResult, cls).de_json(data, client)
 
@@ -139,7 +140,7 @@ class MultiBuyResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['MultiBuyResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['MultiBuyResult']:
         """Десериализация объекта.
 
         Args:
@@ -156,9 +157,9 @@ class MultiBuyResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Вы не зарегистрированны')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
                     raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 2:

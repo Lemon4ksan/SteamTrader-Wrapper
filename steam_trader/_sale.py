@@ -6,6 +6,7 @@ from ._base import TraderClientObject
 
 if TYPE_CHECKING:
     from ._client import Client
+    from ._client_async import ClientAsync
 
 @dataclass
 class SellResult(TraderClientObject):
@@ -34,7 +35,7 @@ class SellResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['SellResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['SellResult']:
         """Десериализация объекта.
 
         Args:
@@ -51,15 +52,15 @@ class SellResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Вы не зарегистрированны')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
                     raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 2:
                     raise exceptions.UnknownItem('Неизвестный предмет.')
                 case 3:
-                    raise exceptions.NoTradeLink('У Вас нет ссылки для обмена.')
+                    raise exceptions.NoTradeLink('У вас нет ссылки для обмена.')
                 case 4:
                     raise exceptions.IncorrectPrice(data['error'])
                 case 5:

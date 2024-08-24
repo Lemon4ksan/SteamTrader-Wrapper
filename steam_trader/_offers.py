@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING, Optional
 from ._base import TraderClientObject
 
 if TYPE_CHECKING:
-    from steam_trader import Client
+    from ._client import Client
+    from ._client_async import ClientAsync
 
 @dataclass
 class SellOffer(TraderClientObject):
@@ -27,7 +28,7 @@ class SellOffer(TraderClientObject):
     currency: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['SellOffer']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['SellOffer']:
         """Десериализация объекта.
 
         Args:
@@ -60,7 +61,7 @@ class BuyOffer(TraderClientObject):
     currency: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['BuyOffer']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['BuyOffer']:
         """Десериализация объекта.
 
         Args:

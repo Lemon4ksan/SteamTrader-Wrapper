@@ -7,7 +7,8 @@ from ._misc import TradeDescription, ItemForExchange, ExchangeItem
 from ._p2p import P2PConfirmObject, P2PReceiveObject, P2PSendObject
 
 if TYPE_CHECKING:
-    from steam_trader import Client
+    from ._client import Client
+    from ._client_async import ClientAsync
 
 @dataclass
 class ItemsForExchange(TraderClientObject):
@@ -27,7 +28,7 @@ class ItemsForExchange(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['ItemsForExchange']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['ItemsForExchange']:
         """Десериализация объекта.
 
         Args:
@@ -44,13 +45,13 @@ class ItemsForExchange(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
                     raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 2:
-                    raise exceptions.NoTradeItems('У вас нет предметов для обмена')
+                    raise exceptions.NoTradeItems('У вас нет предметов для обмена.')
 
         for i, item in enumerate(data['items']):
             data['items'][i] = ItemForExchange.de_json(item)
@@ -85,7 +86,7 @@ class ExchangeResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['ExchangeResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['ExchangeResult']:
         """Десериализация объекта.
 
         Args:
@@ -102,25 +103,25 @@ class ExchangeResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.OfferCreationFail('Ошибка создания заявки')
+                    raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 2:
-                    raise exceptions.NoTradeLink('У Вас нет ссылки для обмена')
+                    raise exceptions.NoTradeLink('У вас нет ссылки для обмена')
                 case 3:
-                    raise exceptions.TradeCreationFail('Не удалось создать предложение обмена. Повторите попытку позже')
+                    raise exceptions.TradeCreationFail('Не удалось создать предложение обмена. Повторите попытку позже.')
                 case 4:
-                    raise exceptions.NoTradeItems('У вас нет предметов для обмена')
+                    raise exceptions.NoTradeItems('У вас нет предметов для обмена.')
                 case 5:
-                    raise exceptions.ExpiredTradeLink('Ваша ссылка для обмена больше недействительна')
+                    raise exceptions.ExpiredTradeLink('Ваша ссылка для обмена больше недействительна.')
                 case 6:
-                    raise exceptions.TradeBlockError('Возможно, у вас не включён Steam Guard или стоит блокировка обменов')
+                    raise exceptions.TradeBlockError('Возможно, у вас не включён Steam Guard или стоит блокировка обменов.')
                 case 7:
-                    raise exceptions.TradeCreationFail('Бот не может отправить предложение обмена, так как обмены в Steam временно не работают')
+                    raise exceptions.TradeCreationFail('Бот не может отправить предложение обмена, так как обмены в Steam временно не работают.')
                 case 8:
-                    raise exceptions.MissingRequiredItems('В вашем инвентаре Steam отсутствуют необходимые для передачи предметы. Проверьте их наличие и повторите попытку позже')
+                    raise exceptions.MissingRequiredItems('В вашем инвентаре Steam отсутствуют необходимые для передачи предметы. Проверьте их наличие и повторите попытку позже.')
                 case 9:
                     raise exceptions.HiddenInventory('Ваш инвентарь скрыт. Откройте его в своих настройках Steam.')
                 case 10:
@@ -165,7 +166,7 @@ class ExchangeP2PResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] = None) -> Optional['ExchangeP2PResult']:
+    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['ExchangeP2PResult']:
         """Десериализация объекта.
 
         Args:
@@ -182,21 +183,21 @@ class ExchangeP2PResult(TraderClientObject):
         if not data['success']:
             match data['code']:
                 case 400:
-                    raise exceptions.BadRequestError('Неправильный запрос')
+                    raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise exceptions.Unauthorized('Неправильный api-токен')
+                    raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.OfferCreationFail('Ошибка создания заявки')
+                    raise exceptions.OfferCreationFail('Ошибка создания заявки.')
                 case 2:
-                    raise exceptions.NoTradeLink('У Вас нет ссылки для обмена')
+                    raise exceptions.NoTradeLink('У вас нет ссылки для обмена.')
                 case 3:
-                    raise exceptions.TradeCreationFail('Не удалось создать предложение обмена. Повторите попытку позже')
+                    raise exceptions.TradeCreationFail('Не удалось создать предложение обмена. Повторите попытку позже.')
                 case 4:
-                    raise exceptions.NoTradeItems('У вас нет предметов для обмена')
+                    raise exceptions.NoTradeItems('У вас нет предметов для обмена.')
                 case 5:
-                    raise exceptions.NoSteamAPIKey('У вас нет ключа Steam API')
+                    raise exceptions.NoSteamAPIKey('У вас нет ключа Steam API.')
                 case 6:
-                    raise exceptions.TradeCreationFail('Невозможно создать обмен. Покупатель не указал свою ссылку для обмена')
+                    raise exceptions.TradeCreationFail('Невозможно создать обмен. Покупатель не указал свою ссылку для обмена.')
                 case 7:
                     raise exceptions.AuthenticatorError('У вас не подключён мобильный аутентификатор или с момента его подключения ещё не прошло 7 дней.')
 
