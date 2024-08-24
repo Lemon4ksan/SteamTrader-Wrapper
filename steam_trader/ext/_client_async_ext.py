@@ -44,7 +44,13 @@ class ExtClientAsync(ClientAsync):
         super().__init__(api_token, base_url=base_url, headers=headers)
 
     @log
-    async def get_inventory(self, gameid: int, *, filters: Optional['Filters'] = None, status: Optional[Sequence[int]] = None):
+    async def get_inventory(
+            self,
+            gameid: int,
+            *,
+            filters: Optional['Filters'] = None,
+            status: Optional[Sequence[int]] = None
+    ) -> Optional['Inventory']:
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         EXT:
@@ -75,6 +81,9 @@ class ExtClientAsync(ClientAsync):
 
         if gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+
+        if status not in range(5) and status is not None:
+            raise ValueError(f'Неизвестный статус {status}')
 
         url = self.base_url + 'getinventory/'
         result = await self._async_client.get(
@@ -164,6 +173,8 @@ class ExtClientAsync(ClientAsync):
         Returns:
             Sequence[:class:`steam_trader.SellResult, optional`]: Последовательноасть с результатами продаж.
         """
+
+        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
 
         inventory = await self.get_inventory(gameid)
         tasks = []

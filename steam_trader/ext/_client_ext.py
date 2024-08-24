@@ -1,17 +1,17 @@
 import httpx
-from typing import Optional, LiteralString, Sequence
+from typing import Sequence
 import logging
 import functools
-from typing import Optional, List, LiteralString, TypeVar, Callable, Any
+from typing import Optional, TypeVar, Callable, Any
 
 from steam_trader import *
 from steam_trader.constants import *
 from steam_trader.exceptions import *
 
-
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 F = TypeVar('F', bound=Callable[..., Any])
+
 
 def log(method: F) -> F:
     logger = logging.getLogger(method.__module__)
@@ -29,6 +29,7 @@ def log(method: F) -> F:
 
     return wrapper
 
+
 class ExtClient(Client):
     """Данный класс представляет расширенную версию обычного клиента.
 
@@ -44,7 +45,13 @@ class ExtClient(Client):
         super().__init__(api_token, base_url=base_url, headers=headers)
 
     @log
-    def get_inventory(self, gameid: int, *, filters: Optional['Filters'] = None, status: Optional[Sequence[int]] = None) -> Optional['Inventory']:
+    def get_inventory(
+            self,
+            gameid: int,
+            *,
+            filters: Optional['Filters'] = None,
+            status: Optional[Sequence[int]] = None
+    ) -> Optional['Inventory']:
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         EXT:
@@ -75,6 +82,9 @@ class ExtClient(Client):
 
         if gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается')
+
+        if status not in range(5) and status is not None:
+            raise ValueError(f'Неизвестный статус {status}')
 
         url = self.base_url + 'getinventory/'
         result = httpx.get(
@@ -160,6 +170,8 @@ class ExtClient(Client):
         Returns:
             Sequence[:class:`steam_trader.SellResult, optional`]: Последовательноасть с результатами продаж.
         """
+
+        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
 
         inventory = self.get_inventory(gameid)
         results = []
