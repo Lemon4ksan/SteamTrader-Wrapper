@@ -16,7 +16,7 @@ setup(
     long_description=readme,
     long_description_content_type='text/markdown',
     packages=find_packages(),
-    install_requires='httpx',
+    install_requires=['httpx'],
     include_package_data=True,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
