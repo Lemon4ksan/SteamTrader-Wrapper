@@ -1,4 +1,3 @@
-from steam_trader.__version__ import __version__
 from setuptools import find_packages, setup
 
 with open('README.md', 'r', encoding='UTF-8') as f:
@@ -6,7 +5,7 @@ with open('README.md', 'r', encoding='UTF-8') as f:
 
 setup(
     name='steam-trader',
-    version=__version__,
+    version='0.2.0',
     author='Lemon4ksan (Bananchiki)',
     author_email='senya20151718@gmail.com',
     license='BSD License',
