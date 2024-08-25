@@ -19,6 +19,7 @@ jobs:
         pip install setuptools wheel twine httpx
     - name: Build and publish
       env:
+        TWINE_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
       run: |
