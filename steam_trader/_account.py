@@ -40,10 +40,13 @@ class WSToken(TraderClientObject):
         if not cls.is_valid_model_data(data):
             return
 
-        if not data['success']:
-            match data['code']:
-                case 401:
-                    raise Unauthorized('Вы не зарегистрированны.')
+        try:
+            if not data['success']:
+                match data['code']:
+                    case 401:
+                        raise Unauthorized('Вы не зарегистрированны')
+        except KeyError:
+            pass
 
         data = super(WSToken, cls).de_json(data, client)
 
@@ -271,6 +274,8 @@ class InventoryState(TraderClientObject):
             'items_in_cache': data['itemsInCache']
         })
 
+        del data['updatingNow'], data['lastUpdate'], data['itemsInCache']
+
         if not data['success']:
             match data['code']:
                 case 400:
@@ -316,8 +321,8 @@ class AltWebSocket(TraderClientObject):
             return
 
         for i, message in enumerate(data['messages']):
-            data['messages'][i] = BuyOrder.de_json(message)
+            data['messages'][i] = AltWebSocketMessage.de_json(message)
 
-        data = super(AltWebSocketMessage, cls).de_json(data, client)
+        data = super(AltWebSocket, cls).de_json(data, client)
 
         return cls(client=client, **data)
