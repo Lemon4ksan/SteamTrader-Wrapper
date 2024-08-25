@@ -30,10 +30,12 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install setuptools
+        python3 -m pip install httpx
+        python3 -m pip install twine
     - name: Build package
-      run: python -m setup.py
+      run: python setup.py sdist
     - name: Publish package
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+      uses: twine upload dist/*
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
