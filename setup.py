@@ -1,4 +1,4 @@
-from steam_trader import __version__
+from steam_trader.__version__ import __version__
 from setuptools import find_packages, setup
 
 with open('README.md', 'r', encoding='UTF-8') as f:
