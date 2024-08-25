@@ -1,4 +1,4 @@
-import re
+from steam_trader import __version__
 from setuptools import find_packages, setup
 
 with open('README.md', 'r', encoding='UTF-8') as f:
@@ -6,7 +6,7 @@ with open('README.md', 'r', encoding='UTF-8') as f:
 
 setup(
     name='steam-trader',
-    version='0.1.0',
+    version=__version__,
     author='Lemon4ksan (Bananchiki)',
     author_email='senya20151718@gmail.com',
     license='BSD License',
@@ -17,13 +17,13 @@ setup(
     long_description=readme,
     long_description_content_type='text/markdown',
     packages=find_packages(),
-    install_requires=['httpx',],
+    install_requires='httpx',
     include_package_data=True,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Natural Language :: Russian',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD 3-Clause License',
+        'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Topic :: Internet',
         'Topic :: Software Development :: Libraries',
@@ -31,6 +31,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: Implementation',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',

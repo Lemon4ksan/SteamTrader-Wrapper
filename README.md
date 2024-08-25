@@ -30,6 +30,12 @@
 Вы можете установить или обновить Steam-Trader API с помощью команды:
 
 ```shell
+pip install steam-trader
+```
+
+Или можете построить билд на основе репозитория:
+
+```shell
 git clone https://github.com/Lemon4ksan/SteamTrader-Wrapper
 cd SteamTrader-Wrapper
 python setup.py install
