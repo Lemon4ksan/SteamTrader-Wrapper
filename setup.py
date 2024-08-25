@@ -10,7 +10,7 @@ setup(
     author='Lemon4ksan (Bananchiki)',
     author_email='senya20151718@gmail.com',
     license='BSD License',
-    url='https://github.com/MarshalX/yandex-music-api/',
+    url='https://github.com/Lemon4ksan/SteamTrader-Wrapper',
     keywords='python steam trader api wrapper library client питон пайтон '
     'стим трейдер апи обёртка библиотека клиент',
     description='Неофициальная Python библиотека для работы с API сервиса Steam-Trader.',
