@@ -40,11 +40,8 @@ class IndependentTests(unittest.TestCase):
             self.assertTrue(order_book.success)
 
     def test_get_web_socket_token(self):
-        try:
-            token = self.client.get_web_socket_token()
-            self.assertIsInstance(token, steam_trader.WSToken)
-        except Unauthorized:
-            pass
+        token = self.client.get_web_socket_token()
+        self.assertIsInstance(token, steam_trader.WSToken)
 
     def test_get_inventory(self):
         for appid in self.test_appids:

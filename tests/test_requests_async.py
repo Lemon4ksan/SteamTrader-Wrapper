@@ -2,7 +2,7 @@
 Эти тесты проверяют отправку асинхронных get и post запросов на сервер.
 Тесты, которые могут повлиять на состояние вашего инвентаря по умолчанию пропускаются
 """
-import asyncio
+
 import os
 import unittest
 import steam_trader
@@ -48,12 +48,9 @@ class IndependentTests(unittest.IsolatedAsyncioTestCase):
                 self.assertTrue(order_book.success)
 
     async def test_get_web_socket_token(self):
-        try:
-            async with self.client:
-                token = await self.client.get_web_socket_token()
-                self.assertIsInstance(token, steam_trader.WSToken)
-        except Unauthorized:
-            pass
+        async with self.client:
+            token = await self.client.get_web_socket_token()
+            self.assertIsInstance(token, steam_trader.WSToken)
 
     async def test_get_inventory(self):
         async with self.client:
