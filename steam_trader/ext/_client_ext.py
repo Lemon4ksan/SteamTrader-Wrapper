@@ -88,16 +88,21 @@ class ExtClient(Client):
         if gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
-        if status not in range(5) and status is not None:
-            raise ValueError(f'Неизвестный статус {status}')
-
         url = self.base_url + 'getinventory/'
+        params = {"gameid": gameid, "key": self.api_token}
+
+        if status is not None:
+            for i, s in enumerate(status):
+                if s not in range(5):
+                    raise ValueError(f'Неизвестный статус {s}')
+                params[f'status[{i}]'] = s
+
         result = httpx.get(
             url,
-            params={"gameid": gameid, 'status': status, "key": self.api_token},
+            params=params,
             headers=self.headers
         ).json()
-        inventory = Inventory.de_json(result, self)
+        inventory = Inventory.de_json(result, status, self)
 
         if filters is not None:
             logging.warning(
