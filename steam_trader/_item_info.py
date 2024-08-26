@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Sequence, List
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Optional, Union
 
 from .exceptions import BadRequestError, Unauthorized, InternalError, UnknownItem
 from ._base import TraderClientObject
@@ -30,15 +31,15 @@ class MinPrices(TraderClientObject):
     steam_price: Optional[float]
     count_sell_offers: int
     count_buy_offers: int
-    client: Optional['Client'] = None
+    client: Optional['Client']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['MinPrices']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['MinPrices']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.MinPrices`, optional: Минимальная/максимальная цена на предмет.
@@ -107,15 +108,15 @@ class ItemInfo(TraderClientObject):
     sell_offers: Sequence[Optional['SellOffer']]
     buy_offers: Sequence[Optional['BuyOffer']]
     sell_history: Sequence[Optional['SellHistoryItem']]
-    client: Optional['Client'] = None
+    client: Optional['Client']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['ItemInfo']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['ItemInfo']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.ItemInfo`, optional: Группа предметов на сайте.
@@ -155,9 +156,9 @@ class OrderBook(TraderClientObject):
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
-        sell (Sequence[List[:obj:`int`, :obj:`int`]]): Сгруппированный по цене список заявок на продажу.
+        sell (Sequence[Sequence[:obj:`int`, :obj:`int`]]): Сгруппированный по цене список заявок на продажу.
             Каждый элемент в списке является массивом, где первый элемент - это цена, а второй - количество заявок.
-        buy (Sequence[List[:obj:`int`, :obj:`int`]]): Сгруппированный по цене список заявок на покупку.
+        buy (Sequence[Sequence[:obj:`int`, :obj:`int`]]): Сгруппированный по цене список заявок на покупку.
             Каждый элемент в списке является массивом, где первый элемент - это цена, а второй - количество заявок.
         total_sell (:obj:`int`): Количество всех заявок на продажу.
         total_buy (:obj:`int`): Количество всех заявок на покупку.
@@ -165,19 +166,19 @@ class OrderBook(TraderClientObject):
     """
 
     success: bool
-    sell: Sequence[List[int]]
-    buy: Sequence[List[int]]
+    sell: Sequence[Sequence[int]]
+    buy: Sequence[Sequence[int]]
     total_sell: int
     total_buy: int
-    client: Optional['Client'] = None
+    client: Optional['Client']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['OrderBook']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['OrderBook']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.OrderBook`, optional: Список заявок о покупке/продаже предмета.
