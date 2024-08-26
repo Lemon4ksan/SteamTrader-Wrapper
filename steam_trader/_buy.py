@@ -63,7 +63,7 @@ class BuyResult(TraderClientObject):
                 case 5:
                     raise exceptions.NotEnoughMoney('Для покупки недостаточно средств.')
 
-        data = super(BuyResult, cls).de_json(data, client)
+        data = super(BuyResult, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -117,7 +117,7 @@ class BuyOrderResult(TraderClientObject):
                 case 5:
                     raise exceptions.NotEnoughMoney('Для покупки недостаточно средств.')
 
-        data = super(BuyOrderResult, cls).de_json(data, client)
+        data = super(BuyOrderResult, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -172,6 +172,6 @@ class MultiBuyResult(TraderClientObject):
         for i, offer in enumerate(data['orders']):
             data['orders'][i] = MultiBuyOrder.de_json(offer)
 
-        data = super(MultiBuyResult, cls).de_json(data, client)
+        data = super(MultiBuyResult, cls).de_json(data)
 
         return cls(client=client, **data)

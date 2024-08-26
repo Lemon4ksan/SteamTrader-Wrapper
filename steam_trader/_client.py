@@ -296,7 +296,6 @@ class Client(TraderClientObject):
             params={"key": self.api_token},
             headers=self.headers
         ).json()
-
         return ItemsForExchange.de_json(result, self)
 
     @log
@@ -317,7 +316,6 @@ class Client(TraderClientObject):
             params={"key": self.api_token},
             headers=self.headers
         ).json()
-
         return ExchangeResult.de_json(result, self)
 
     @log
@@ -469,8 +467,10 @@ class Client(TraderClientObject):
         if gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
-        if status not in range(5) and status is not None:
-            raise ValueError(f'Неизвестный статус {status}')
+        if status is not None:
+            for s in status:
+                if s not in range(5):
+                    raise ValueError(f'Неизвестный статус {s}')
 
         url = self.base_url + 'getinventory/'
         result = httpx.get(
@@ -487,10 +487,6 @@ class Client(TraderClientObject):
 
         При указании соответствующих параметров можно получить заявки из определённого раздела и/или предмета.
 
-        Note:
-            Во время тестирования мои запросы на покупку отображались только тогда,
-            когда я указал конкретный appid игры и gid предмета.
-
         Args:
             gameid (:obj:`int`, optional): AppID приложения в Steam.
             gid (:obj:`int`, optional): ID группы предметов.
@@ -502,10 +498,16 @@ class Client(TraderClientObject):
         if gameid is not None and gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
+        params = {"key": self.api_token}
+        if gameid is not None:
+            params['gameid'] = gameid
+        if gid is not None:
+            params['gid'] = gid
+
         url = self.base_url + 'getbuyorders/'
         result = httpx.get(
             url,
-            params={"gameid": gameid, 'gid': gid, "key": self.api_token},
+            params=params,
             headers=self.headers
         ).json()
         return BuyOrders.de_json(result, self)

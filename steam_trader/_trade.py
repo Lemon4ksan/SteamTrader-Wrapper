@@ -59,7 +59,7 @@ class ItemsForExchange(TraderClientObject):
         # Конвертируем ключ в число
         new_data = {int(_id): TradeDescription.de_json(_dict) for _id, _dict in data['descriptions'].items()}
         data['descriptions'] = new_data
-        data = super(ItemsForExchange, cls).de_json(data, client)
+        data = super(ItemsForExchange, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -134,12 +134,13 @@ class ExchangeResult(TraderClientObject):
             'bot_steamid': data['botSteamId'],
             'bot_nick': data['botNick']
         })
+
         del data['offerId'], data['botSteamId'], data['botNick']
 
         for i, item in enumerate(data['items']):
             data['items'][i] = ExchangeItem.de_json(item)
 
-        data = super(ExchangeResult, cls).de_json(data, client)
+        data = super(ExchangeResult, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -210,6 +211,6 @@ class ExchangeP2PResult(TraderClientObject):
         for i, item in enumerate(data['confirm']):
             data['confirm'][i] = P2PConfirmObject.de_json(item)
 
-        data = super(ExchangeP2PResult, cls).de_json(data, client)
+        data = super(ExchangeP2PResult, cls).de_json(data)
 
         return cls(client=client, **data)

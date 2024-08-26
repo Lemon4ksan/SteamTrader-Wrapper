@@ -68,6 +68,6 @@ class SellResult(TraderClientObject):
                 case 6:
                     raise exceptions.AuthenticatorError('У вас не подключён мобильный аутентификатор или с момента его подключения ещё не прошло 7 дней.')
 
-        data = super(SellResult, cls).de_json(data, client)
+        data = super(SellResult, cls).de_json(data)
 
         return cls(client=client, **data)

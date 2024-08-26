@@ -472,8 +472,10 @@ class ClientAsync(TraderClientObject):
         if gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
-        if status not in range(5) and status is not None:
-            raise ValueError(f'Неизвестный статус {status}')
+        if status is not None:
+            for s in status:
+                if s not in range(5):
+                    raise ValueError(f'Неизвестный статус {s}')
 
         url = self.base_url + 'getinventory/'
         result = await self._async_client.get(
@@ -505,10 +507,16 @@ class ClientAsync(TraderClientObject):
         if gameid is not None and gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
+        params = {"key": self.api_token}
+        if gameid is not None:
+            params['gameid'] = gameid
+        if gid is not None:
+            params['gid'] = gid
+
         url = self.base_url + 'getbuyorders/'
         result = await self._async_client.get(
             url,
-            params={"gameid": gameid, 'gid': gid, "key": self.api_token},
+            params=params,
             headers=self.headers
         )
         return BuyOrders.de_json(result.json(), self)

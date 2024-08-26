@@ -65,7 +65,7 @@ class EditPriceResult(TraderClientObject):
                 case 5:
                     raise exceptions.NotEnoughMoney('Для покупки не достаточно средств.')
 
-        data = super(EditPriceResult, cls).de_json(data, client)
+        data = super(EditPriceResult, cls).de_json(data)
 
         return cls(**data)
 
@@ -117,7 +117,7 @@ class DeleteItemResult(TraderClientObject):
                 case 2:
                     raise exceptions.UnknownItem('Неизвестный предмет.')
 
-        data = super(DeleteItemResult, cls).de_json(data, client)
+        data = super(DeleteItemResult, cls).de_json(data)
 
         return cls(**data)
 
@@ -163,6 +163,6 @@ class GetDownOrdersResult(TraderClientObject):
                 case 2:
                     raise exceptions.NoTradeItems('Нет заявок на продажу/покупку.')
 
-        data = super(GetDownOrdersResult, cls).de_json(data, client)
+        data = super(GetDownOrdersResult, cls).de_json(data)
 
         return cls(**data)
