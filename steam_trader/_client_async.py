@@ -41,12 +41,14 @@ class ClientAsync(TraderClientObject):
 
     Args:
         api_token (:obj:`str`): Уникальный ключ для аутентификации.
+        proxy (:obj:`str`, optional): Прокси для запросов.
         base_url (:obj:`str`, optional): Ссылка на API Steam Trader.
         headers (:obj:`dict`, optional): Словарь, содержащий сведения об устройстве, с которого выполняются запросы.
             Используется при каждом запросе на сайт.
 
     Attributes:
         api_token (:obj:`str`): Уникальный ключ для аутентификации.
+        proxy (:obj:`str`, optional): Прокси для запросов.
         base_url (:obj:`str`, optional): Ссылка на API Steam Trader.
         headers (:obj:`dict`, optional): Словарь, содержащий сведения об устройстве, с которого выполняются запросы.
             Используется при каждом запросе на сайт.
@@ -56,6 +58,7 @@ class ClientAsync(TraderClientObject):
             self,
             api_token: str,
             *,
+            proxy: Optional[str] = None,
             base_url: Optional[str] = None,
             headers: Optional[dict] = None) -> None:
 
@@ -74,8 +77,10 @@ class ClientAsync(TraderClientObject):
             }
         self.headers = headers
 
+        self.proxy = proxy
+
     async def __aenter__(self):
-        self._async_client = httpx.AsyncClient()
+        self._async_client = httpx.AsyncClient(proxy=self.proxy)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self._async_client.aclose()

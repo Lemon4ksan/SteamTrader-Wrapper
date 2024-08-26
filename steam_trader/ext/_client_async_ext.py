@@ -37,15 +37,20 @@ class ExtClientAsync(ClientAsync):
     """Данный класс представляет расширенную версию обычного клиента.
 
     Изменённые методы:
-        get_inventory - Добавлена возможность указывать фильтр для отсеивания предметов
-        (очень медленно на синхронном клиенте).
+        get_inventory - Добавлена возможность указывать фильтр для отсеивания предметов.
 
     Новые методы:
         multi_sell - Аналог multi_buy. В отличие от него, возвращает последовательность из результатов продаж, а не один объект.
     """
 
-    def __init__(self, api_token: str, *, base_url: str | None = None, headers: dict | None = None) -> None:
-        super().__init__(api_token, base_url=base_url, headers=headers)
+    def __init__(
+            self,
+            api_token: str,
+            *,
+            proxy: Optional[str] = None,
+            base_url: Optional[str] = None,
+            headers: Optional[dict] = None) -> None:
+        super().__init__(api_token, proxy=proxy, base_url=base_url, headers=headers)
 
     @log
     async def get_inventory(

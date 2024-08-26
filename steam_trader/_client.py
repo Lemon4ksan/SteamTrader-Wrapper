@@ -41,12 +41,14 @@ class Client(TraderClientObject):
 
     Args:
         api_token (:obj:`str`): Уникальный ключ для аутентификации.
+        proxy (:obj:`str`, optional): Прокси для запросов. Для работы необходимо использовать контекстный менеджер with.
         base_url (:obj:`str`, optional): Ссылка на API Steam Trader.
         headers (:obj:`dict`, optional): Словарь, содержащий сведения об устройстве, с которого выполняются запросы.
             Используется при каждом запросе на сайт.
 
     Attributes:
         api_token (:obj:`str`): Уникальный ключ для аутентификации.
+        proxy (:obj:`str`, optional): Прокси для запросов.
         base_url (:obj:`str`, optional): Ссылка на API Steam Trader.
         headers (:obj:`dict`, optional): Словарь, содержащий сведения об устройстве, с которого выполняются запросы.
             Используется при каждом запросе на сайт.
@@ -56,6 +58,7 @@ class Client(TraderClientObject):
             self,
             api_token: str,
             *,
+            proxy: Optional[str] = None,
             base_url: Optional[str] = None,
             headers: Optional[dict] = None) -> None:
 
@@ -74,12 +77,21 @@ class Client(TraderClientObject):
             }
         self.headers = headers
 
+        self._httpx_client = None
+        self.proxy = proxy
+
+    def __enter__(self):
+        self._httpx_client = httpx.Client(proxy=self.proxy)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._httpx_client.close()
+
     @property
     def balance(self) -> float:
         """Баланс клиента."""
 
         url = self.base_url + 'getbalance/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             headers=self.headers
         ).json()
@@ -109,7 +121,7 @@ class Client(TraderClientObject):
         assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
 
         url = self.base_url + 'sale/'
-        result = httpx.post(
+        result = (self._httpx_client or httpx).post(
             url,
             data={"itemid": itemid, "assetid": assetid, "price": price},
             headers=self.headers
@@ -142,7 +154,7 @@ class Client(TraderClientObject):
         assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
 
         url = self.base_url + 'buy/'
-        result = httpx.post(
+        result = (self._httpx_client or httpx).post(
             url,
             data={"id": _id, "type": _type, "price": price, "currency": currency},
             headers=self.headers
@@ -172,7 +184,7 @@ class Client(TraderClientObject):
         assert 1 <= count <= 500, f'Количество заявок должно быть от 1 до 500 (не {count})'
 
         url = self.base_url + 'createbuyorder/'
-        result = httpx.post(
+        result = (self._httpx_client or httpx).post(
             url,
             data={"gid": gid, "price": price, "count": count},
             headers=self.headers
@@ -206,7 +218,7 @@ class Client(TraderClientObject):
         assert count >= 1, f'Количество предметов для покупки должно быть больше 1 (не {count})'
 
         url = self.base_url + 'multibuy/'
-        result = httpx.post(
+        result = (self._httpx_client or httpx).post(
             url,
             data={"gid": gid, "max_price": max_price, "count": count},
             headers=self.headers
@@ -231,7 +243,7 @@ class Client(TraderClientObject):
         assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
 
         url = self.base_url + 'editprice/'
-        result = httpx.post(
+        result = (self._httpx_client or httpx).post(
             url,
             data={"id": _id, "price": price},
             headers=self.headers
@@ -251,7 +263,7 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'deleteitem/'
-        result = httpx.post(
+        result = (self._httpx_client or httpx).post(
             url,
             data={"id": _id},
             headers=self.headers
@@ -280,7 +292,7 @@ class Client(TraderClientObject):
             raise ValueError(f'Неизвестный тип {order_type}')
 
         url = self.base_url + 'getdownorders/'
-        result = httpx.post(
+        result = (self._httpx_client or httpx).post(
             url,
             data={"gameid": gameid, "type": order_type},
             headers=self.headers
@@ -296,7 +308,7 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'itemsforexchange/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             headers=self.headers
         ).json()
@@ -315,7 +327,7 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'exchange/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             headers=self.headers
         ).json()
@@ -330,7 +342,7 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'itemsforexchangep2p/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             headers=self.headers
         ).json()
@@ -350,7 +362,7 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'exchange/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             headers=self.headers
         ).json()
@@ -373,7 +385,7 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + "getminprices/"
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             params={"gid": gid, "currency": currency},
             headers=self.headers
@@ -392,7 +404,7 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + "iteminfo/"
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             params={"gid": gid},
             headers=self.headers
@@ -425,7 +437,7 @@ class Client(TraderClientObject):
             raise ValueError(f'Неизвестный режим {mode}')
 
         url = self.base_url + "orderbook/"
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             params={"gid": gid, "mode": mode, "limit": limit},
             headers=self.headers
@@ -436,7 +448,7 @@ class Client(TraderClientObject):
     def get_web_socket_token(self) -> Optional['WSToken']:
         """Возварщает токен для авторизации в WebSocket."""
         url = self.base_url + "getwstoken/"
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             params={'key': self.api_token}
         ).json()
@@ -480,7 +492,7 @@ class Client(TraderClientObject):
                     raise ValueError(f'Неизвестный статус {s}')
                 params[f'status[{i}]'] = s
 
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             params=params,
             headers=self.headers
@@ -512,7 +524,7 @@ class Client(TraderClientObject):
             params['gid'] = gid
 
         url = self.base_url + 'getbuyorders/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             params=params,
             headers=self.headers
@@ -530,7 +542,7 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'getdiscounts/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             headers=self.headers
         ).json()
@@ -546,7 +558,7 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'settradelink/'
-        result = httpx.post(
+        result = (self._httpx_client or httpx).post(
             url,
             data={"trade_link": trade_link},
             headers=self.headers
@@ -569,7 +581,7 @@ class Client(TraderClientObject):
         """Удалить ссылку для обмена."""
 
         url = self.base_url + 'removetradelink/'
-        result = httpx.post(
+        result = (self._httpx_client or httpx).post(
             url,
             data={"trade_link": "1"},
             headers=self.headers
@@ -605,7 +617,7 @@ class Client(TraderClientObject):
             raise ValueError(f'Неизвестный тип {operation_type}')
 
         url = self.base_url + 'operationshistory/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             params={"type": operation_type},
             headers=self.headers
@@ -624,7 +636,7 @@ class Client(TraderClientObject):
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'updateinventory/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             params={"gameid": gameid},
             headers=self.headers
@@ -650,7 +662,7 @@ class Client(TraderClientObject):
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'inventorystate/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             params={"gameid": gameid},
             headers=self.headers
@@ -667,7 +679,7 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'altws/'
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             headers=self.headers
         ).json()
