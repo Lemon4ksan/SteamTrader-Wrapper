@@ -66,7 +66,12 @@ class ClientAsync(TraderClientObject):
         self.base_url = base_url
 
         if headers is None:
-            headers = {'user-agent': 'python3', 'wrapper': 'SteamTrader-Wrapper', 'manufacturer': 'Lemon4ksan'}
+            headers = {
+                'user-agent': 'python3',
+                'wrapper': 'SteamTrader-Wrapper',
+                'manufacturer': 'Lemon4ksan',
+                "Api-Key": self.api_token
+            }
         self.headers = headers
 
     async def __aenter__(self):
@@ -82,7 +87,6 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'getbalance/'
         result = await self._async_client.get(
             url,
-            params={"key": self.api_token},
             headers=self.headers
         )
         result = result.json()
@@ -114,7 +118,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'sale/'
         result = await self._async_client.post(
             url,
-            data={"itemid": itemid, "assetid": assetid, "price": price, "key": self.api_token},
+            data={"itemid": itemid, "assetid": assetid, "price": price},
             headers=self.headers
         )
         return SellResult.de_json(result.json(), self)
@@ -147,7 +151,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'buy/'
         result = await self._async_client.post(
             url,
-            data={"id": _id, "type": _type, "price": price, "currency": currency, "key": self.api_token},
+            data={"id": _id, "type": _type, "price": price, "currency": currency},
             headers=self.headers
         )
         return BuyResult.de_json(result.json(), self)
@@ -177,7 +181,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'createbuyorder/'
         result = await self._async_client.post(
             url,
-            data={"gid": gid, "price": price, "count": count, "key": self.api_token},
+            data={"gid": gid, "price": price, "count": count},
             headers=self.headers
         )
         return BuyOrderResult.de_json(result.json(), self)
@@ -211,7 +215,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'multibuy/'
         result = await self._async_client.post(
             url,
-            data={"gid": gid, "max_price": max_price, "count": count, "key": self.api_token},
+            data={"gid": gid, "max_price": max_price, "count": count},
             headers=self.headers
         )
         return MultiBuyResult.de_json(result.json(), self)
@@ -236,7 +240,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'editprice/'
         result = await self._async_client.post(
             url,
-            data={"id": _id, "price": price, "key": self.api_token},
+            data={"id": _id, "price": price},
             headers=self.headers
         )
         return EditPriceResult.de_json(result.json(), self)
@@ -256,7 +260,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'deleteitem/'
         result = await self._async_client.post(
             url,
-            data={"id": _id, "key": self.api_token},
+            data={"id": _id},
             headers=self.headers
         )
         return DeleteItemResult.de_json(result.json(), self)
@@ -285,7 +289,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'getdownorders/'
         result = await self._async_client.post(
             url,
-            data={"gameid": gameid, "type": order_type, "key": self.api_token},
+            data={"gameid": gameid, "type": order_type},
             headers=self.headers
         )
         return GetDownOrdersResult.de_json(result.json(), self)
@@ -301,7 +305,6 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'itemsforexchange/'
         result = await self._async_client.get(
             url,
-            params={"key": self.api_token},
             headers=self.headers
         )
         return ItemsForExchange.de_json(result.json(), self)
@@ -321,7 +324,6 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'exchange/'
         result = await self._async_client.get(
             url,
-            params={"key": self.api_token},
             headers=self.headers
         )
         return ExchangeResult.de_json(result.json(), self)
@@ -337,7 +339,6 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'itemsforexchangep2p/'
         result = await self._async_client.get(
             url,
-            params={"key": self.api_token},
             headers=self.headers
         )
         return ItemsForExchange.de_json(result.json(), self)
@@ -357,7 +358,6 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'exchange/'
         result = await self._async_client.get(
             url,
-            params={"key": self.api_token},
             headers=self.headers
         )
         return ExchangeP2PResult.de_json(result.json(), self)
@@ -380,7 +380,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + "getminprices/"
         result = await self._async_client.get(
             url,
-            params={"gid": gid, "currency": currency, "key": self.api_token},
+            params={"gid": gid, "currency": currency},
             headers=self.headers
         )
         return MinPrices.de_json(result.json(), self)
@@ -399,7 +399,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + "iteminfo/"
         result = await self._async_client.get(
             url,
-            params={"gid": gid, "key": self.api_token},
+            params={"gid": gid},
             headers=self.headers
         )
         return ItemInfo.de_json(result.json(), self)
@@ -432,7 +432,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + "orderbook/"
         result = await self._async_client.get(
             url,
-            params={"gid": gid, "mode": mode, "limit": limit, "key": self.api_token},
+            params={"gid": gid, "mode": mode, "limit": limit},
             headers=self.headers
         )
         return OrderBook.de_json(result.json(), self)
@@ -477,7 +477,7 @@ class ClientAsync(TraderClientObject):
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'getinventory/'
-        params = {"gameid": gameid, "key": self.api_token}
+        params = {"gameid": gameid}
 
         if status is not None:
             for i, s in enumerate(status):
@@ -514,7 +514,7 @@ class ClientAsync(TraderClientObject):
         if gameid is not None and gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
-        params = {"key": self.api_token}
+        params = {}
         if gameid is not None:
             params['gameid'] = gameid
         if gid is not None:
@@ -541,7 +541,6 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'getdiscounts/'
         result = await self._async_client.get(
             url,
-            params={"key": self.api_token},
             headers=self.headers
         )
         return Discounts.de_json(result.json(), self)
@@ -558,7 +557,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'settradelink/'
         result = await self._async_client.post(
             url,
-            data={"trade_link": trade_link, "key": self.api_token},
+            data={"trade_link": trade_link},
             headers=self.headers
         )
         result = result.json()
@@ -582,7 +581,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'removetradelink/'
         result = await self._async_client.post(
             url,
-            data={"trade_link": "1", "key": self.api_token},
+            data={"trade_link": "1"},
             headers=self.headers
         )
         result = result.json()
@@ -621,7 +620,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'operationshistory/'
         result = await self._async_client.get(
             url,
-            params={"type": operation_type, "key": self.api_token},
+            params={"type": operation_type},
             headers=self.headers
         )
         return OperationsHistory.de_json(result.json(), self)
@@ -640,7 +639,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'updateinventory/'
         result = await self._async_client.get(
             url,
-            params={"gameid": gameid, "key": self.api_token},
+            params={"gameid": gameid},
             headers=self.headers
         )
         result = result.json()
@@ -667,7 +666,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'inventorystate/'
         result = await self._async_client.get(
             url,
-            params={"gameid": gameid, "key": self.api_token},
+            params={"gameid": gameid},
             headers=self.headers
         )
         return InventoryState.de_json(result.json(), self)
@@ -684,7 +683,6 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'altws/'
         result = await self._async_client.get(
             url,
-            params={"key": self.api_token},
             headers=self.headers
         )
         return AltWebSocket.de_json(result.json(), self)

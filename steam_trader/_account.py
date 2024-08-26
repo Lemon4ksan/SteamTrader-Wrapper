@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from ._client import Client
     from ._client_async import ClientAsync
 
+
 @dataclass
 class WSToken(TraderClientObject):
     """Класс, представляющий WS токен. Незадокументированно.
@@ -53,6 +54,7 @@ class WSToken(TraderClientObject):
 
         return cls(client=client, **data)
 
+
 @dataclass
 class Inventory(TraderClientObject):
     """Класс, представляющий инвентарь клиента.
@@ -74,7 +76,8 @@ class Inventory(TraderClientObject):
     client: Optional['Client']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, status: Optional[Sequence[int]] = None, client: Union['Client', 'ClientAsync', None] = None) -> Optional['Inventory']:
+    def de_json(cls: dataclass, data: dict, status: Optional[Sequence[int]] = None,
+                client: Union['Client', 'ClientAsync', None] = None) -> Optional['Inventory']:
         """Десериализация объекта.
 
         Args:
@@ -99,17 +102,21 @@ class Inventory(TraderClientObject):
             except KeyError:
                 pass
 
-        new_data = []
+        if status is not None:
+            new_data = []
+            for i, offer in enumerate(data['items']):
+                if offer['status'] in status:
+                    new_data.append(InventoryItem.de_json(offer))
 
-        for i, offer in enumerate(data['items']):
-            if status is not None and offer['status'] in status:
-                new_data.append(InventoryItem.de_json(offer))
-
-        data['items'] = new_data
+            data['items'] = new_data
+        else:
+            for i, offer in enumerate(data['items']):
+                data['items'][i] = InventoryItem.de_json(offer)
 
         data = super(Inventory, cls).de_json(data)
 
         return cls(client=client, **data)
+
 
 @dataclass
 class BuyOrders(TraderClientObject):
@@ -126,7 +133,8 @@ class BuyOrders(TraderClientObject):
     client: Optional['Client']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['BuyOrders']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional[
+        'BuyOrders']:
         """Десериализация объекта.
 
         Args:
@@ -156,6 +164,7 @@ class BuyOrders(TraderClientObject):
 
         return cls(client=client, **data)
 
+
 @dataclass
 class Discounts(TraderClientObject):
     """Класс, представляющий комиссии/скидки на игры, доступные на сайте.
@@ -171,7 +180,8 @@ class Discounts(TraderClientObject):
     client: Optional['Client']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['Discounts']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional[
+        'Discounts']:
         """Десериализация объекта.
 
         Args:
@@ -199,6 +209,7 @@ class Discounts(TraderClientObject):
 
         return cls(client=client, **data)
 
+
 @dataclass
 class OperationsHistory(TraderClientObject):
     """Класс, представляющий истории операций, произведённых на сайте.
@@ -214,7 +225,8 @@ class OperationsHistory(TraderClientObject):
     client: Optional['Client']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['OperationsHistory']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional[
+        'OperationsHistory']:
         """Десериализация объекта.
 
         Args:
@@ -242,6 +254,7 @@ class OperationsHistory(TraderClientObject):
 
         return cls(client=client, **data)
 
+
 @dataclass
 class InventoryState(TraderClientObject):
     """Класс, представляющий текущий статус инвентаря.
@@ -261,7 +274,8 @@ class InventoryState(TraderClientObject):
     client: Optional['Client']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['InventoryState']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional[
+        'InventoryState']:
         """Десериализация объекта.
 
         Args:
@@ -294,6 +308,7 @@ class InventoryState(TraderClientObject):
 
         return cls(client=client, **data)
 
+
 @dataclass
 class AltWebSocket(TraderClientObject):
     """Класс, представляющий запрос альтернативным WebSocket.
@@ -310,7 +325,8 @@ class AltWebSocket(TraderClientObject):
     client: Optional['Client']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['AltWebSocket']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional[
+        'AltWebSocket']:
         """Десериализация объекта.
 
         Args:
