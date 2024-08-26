@@ -6,7 +6,7 @@
 import os
 import unittest
 import steam_trader
-from typing import Sequence
+from collections.abc import Sequence
 from steam_trader.constants import SUPPORTED_APPIDS, TEAM_FORTRESS_APPID
 from steam_trader.exceptions import WrongTradeLink, NoTradeItems, Unauthorized
 
@@ -45,7 +45,7 @@ class IndependentTests(unittest.TestCase):
 
     def test_get_inventory(self):
         for appid in self.test_appids:
-            inventory = self.client.get_inventory(appid)
+            inventory = self.client.get_inventory(appid, status=[0, 1, 2, 3, 4])
             if not inventory.success:
                 self.assertIsInstance(inventory.items, Sequence)
             else:

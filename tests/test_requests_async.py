@@ -7,9 +7,9 @@ import os
 import unittest
 import steam_trader
 import asyncio
-from typing import Sequence
+from collections.abc import Sequence
 from steam_trader.constants import SUPPORTED_APPIDS, TEAM_FORTRESS_APPID
-from steam_trader.exceptions import WrongTradeLink, NoTradeItems, Unauthorized
+from steam_trader.exceptions import WrongTradeLink, NoTradeItems
 
 from dotenv import load_dotenv
 load_dotenv()  # Для проведения тестов необходимо указать ваш токен и ссылку для обмена Steam в environemntal variables
@@ -54,7 +54,7 @@ class IndependentTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_get_inventory(self):
         async with self.client:
-            tasks = [self.client.get_inventory(appid) for appid in self.test_appids]
+            tasks = [self.client.get_inventory(appid, status=[0, 1, 2, 3, 4]) for appid in self.test_appids]
             responses = await asyncio.gather(*tasks)
             for inventory in responses:
                 if not inventory.success:
