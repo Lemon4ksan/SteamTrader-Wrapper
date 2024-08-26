@@ -1,7 +1,8 @@
 import httpx
 import logging
 import functools
-from typing import Optional, LiteralString, Union, Sequence, TypeVar, Callable, Any
+from collections.abc import Sequence, Callable
+from typing import Optional, LiteralString, Union, TypeVar, Any
 
 from .constants import SUPPORTED_APPIDS
 from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsupportedAppID, Unauthorized

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 from steam_trader import exceptions
 from ._base import TraderClientObject
@@ -35,7 +35,7 @@ class SellResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['SellResult']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['SellResult']:
         """Десериализация объекта.
 
         Args:
