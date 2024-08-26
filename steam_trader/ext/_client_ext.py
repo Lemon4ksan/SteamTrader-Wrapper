@@ -46,8 +46,14 @@ class ExtClient(Client):
         multi_sell - Аналог multi_buy. В отличие от него, возвращает последовательноасть из результатов продаж, а не один объект.
     """
 
-    def __init__(self, api_token: str, *, base_url: str | None = None, headers: dict | None = None) -> None:
-        super().__init__(api_token, base_url=base_url, headers=headers)
+    def __init__(
+            self,
+            api_token: str,
+            *,
+            proxy: Optional[str] = None,
+            base_url: Optional[str] = None,
+            headers: Optional[dict] = None) -> None:
+        super().__init__(api_token, proxy=proxy, base_url=base_url, headers=headers)
 
     @log
     def get_inventory(
@@ -97,7 +103,7 @@ class ExtClient(Client):
                     raise ValueError(f'Неизвестный статус {s}')
                 params[f'status[{i}]'] = s
 
-        result = httpx.get(
+        result = (self._httpx_client or httpx).get(
             url,
             params=params,
             headers=self.headers
