@@ -95,6 +95,7 @@ class ExtClient(Client):
         inventory = Inventory.de_json(result, self)
 
         if filters is not None:
+            logging.warning('Вы используете синхрорнный клиент. Запрос с фильрами может занять до 2 минут. Если хотите ускорить время, используйте асинхронную версию.')
             new_items = []
 
             for item in inventory.items:

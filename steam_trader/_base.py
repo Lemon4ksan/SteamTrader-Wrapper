@@ -1,4 +1,5 @@
 import dataclasses
+import logging
 from abc import ABCMeta
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Optional
@@ -53,12 +54,15 @@ class TraderClientObject:
         fields = {f.name for f in dataclasses.fields(cls)}
 
         cleaned_data = {}
-        unknown_data = {}  # Добавить действие при получении неизвестных данных
+        unknown_data = {}
 
         for k, v in data.items():
             if k in fields:
                 cleaned_data[k] = v
             else:
                 unknown_data[k] = v
+
+        if unknown_data:
+            logging.warning(f'Got an unexpected result from a server for class {cls} :: {unknown_data}')
 
         return cleaned_data

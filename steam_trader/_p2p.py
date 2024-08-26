@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Sequence, Dict
+from typing import TYPE_CHECKING, Optional, Sequence
 
 from ._base import TraderClientObject
 from ._misc import ExchangeItem
@@ -83,6 +83,8 @@ class P2PSendObject(TraderClientObject):
             'trade_offer': data['tradeOffer']
         })
 
+        del data['tradeLink'], data['tradeOffer']
+
         data['trade_offer'] = P2PTradeOffer.de_json(data['trade_offer'])
 
         data = super(P2PSendObject, cls).de_json(data)
@@ -125,7 +127,10 @@ class P2PReceiveObject(TraderClientObject):
             'partner_steamid': data['partnerSteamId']
         })
 
-        data['items'] = ExchangeItem.de_json(data['items'])
+        del data['offerId'], data['partnerSteamId']
+
+        for i, item in enumerate(data['items']):
+            data['items'][i] = ExchangeItem.de_json(item)
 
         data = super(P2PReceiveObject, cls).de_json(data)
 
@@ -164,6 +169,8 @@ class P2PConfirmObject(TraderClientObject):
             'offerid': data['offerId'],
             'partner_steamid': data['partnerSteamId']
         })
+
+        del data['offerId'], data['partnerSteamId']
 
         data = super(P2PConfirmObject, cls).de_json(data)
 

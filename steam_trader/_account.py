@@ -48,7 +48,7 @@ class WSToken(TraderClientObject):
         except KeyError:
             pass
 
-        data = super(WSToken, cls).de_json(data, client)
+        data = super(WSToken, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -100,7 +100,7 @@ class Inventory(TraderClientObject):
         for i, offer in enumerate(data['items']):
             data['items'][i] = InventoryItem.de_json(offer)
 
-        data = super(Inventory, cls).de_json(data, client)
+        data = super(Inventory, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -145,7 +145,7 @@ class BuyOrders(TraderClientObject):
         for i, offer in enumerate(data['data']):
             data['data'][i] = BuyOrder.de_json(offer)
 
-        data = super(BuyOrders, cls).de_json(data, client)
+        data = super(BuyOrders, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -188,7 +188,7 @@ class Discounts(TraderClientObject):
         # Конвертируем ключ в число для совместимости с константами
         new_data = {int(appid): Discount.de_json(_dict) for appid, _dict in data['data'].items()}
         data['data'] = new_data
-        data = super(Discounts, cls).de_json(data, client)
+        data = super(Discounts, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -231,7 +231,7 @@ class OperationsHistory(TraderClientObject):
         for i, item in enumerate(data['data']):
             data['data'][i] = OperationsHistoryItem.de_json(item)
 
-        data = super(OperationsHistory, cls).de_json(data, client)
+        data = super(OperationsHistory, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -283,7 +283,7 @@ class InventoryState(TraderClientObject):
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
 
-        data = super(InventoryState, cls).de_json(data, client)
+        data = super(InventoryState, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -323,6 +323,6 @@ class AltWebSocket(TraderClientObject):
         for i, message in enumerate(data['messages']):
             data['messages'][i] = AltWebSocketMessage.de_json(message)
 
-        data = super(AltWebSocket, cls).de_json(data, client)
+        data = super(AltWebSocket, cls).de_json(data)
 
         return cls(client=client, **data)

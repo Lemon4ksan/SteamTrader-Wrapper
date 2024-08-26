@@ -57,7 +57,7 @@ class MinPrices(TraderClientObject):
                 case 2:
                     raise UnknownItem('Неизвестный предмет.')
 
-        data = super(MinPrices, cls).de_json(data, client)
+        data = super(MinPrices, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -145,7 +145,7 @@ class ItemInfo(TraderClientObject):
         for i, item in enumerate(data['sell_history']):
             data['sell_history'][i] = SellHistoryItem.de_json(item)
 
-        data = super(ItemInfo, cls).de_json(data, client)
+        data = super(ItemInfo, cls).de_json(data)
 
         return cls(client=client, **data)
 
@@ -194,6 +194,6 @@ class OrderBook(TraderClientObject):
                 case 1:
                     raise InternalError('При выполнении запроса произошла ошибка.')
 
-        data = super(OrderBook, cls).de_json(data, client)
+        data = super(OrderBook, cls).de_json(data)
 
         return cls(client=client, **data)

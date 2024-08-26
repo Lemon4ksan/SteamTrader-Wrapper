@@ -198,6 +198,8 @@ class Filters(TraderClientObject):
                 'used_by': data['class']
             })
 
+            del data['class']
+
             for i, _filter in enumerate(data['quality']):
                 data['quality'][i] = Filter.de_json(data['quality'][i])
 
@@ -536,6 +538,7 @@ class ExchangeItem(TraderClientObject):
         contextid (:obj:`int`): ContextID приложения в Steam.
         classid (:obj:`int`): ClassID предмета в Steam.
         instanceid (:obj:`int`): InstanceID предмета в Steam.
+        exchange_type (:obj:`int`): Значение 0 - предмет для передачи боту, значение 1 - предмет для приема от бота.
         itemid (:obj:`int`): ID предмета в нашей базе.
         gid (:obj:`int`): Идентификатор группы предметов в нашей базе.
         price (:obj:`int`): Цена, за которую предмет был куплен/продан с учетом скидки/комиссии.
@@ -549,6 +552,7 @@ class ExchangeItem(TraderClientObject):
     contextid: int
     classid: int
     instanceid: int
+    exchange_type: int
     itemid: int
     gid: int
     price: float
@@ -566,6 +570,12 @@ class ExchangeItem(TraderClientObject):
         Returns:
             :class:`steam_trader.ExchangeItem`, optional: Предмет, на который был отправлен обмен.
         """
+
+        data.update({  # затмевает type()
+            'exchange_type': data['type']
+        })
+
+        del data['type']
 
         if not cls.is_valid_model_data(data):
             return
