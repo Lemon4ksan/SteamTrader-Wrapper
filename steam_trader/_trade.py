@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Sequence, Dict
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Optional, Union
 
 from steam_trader import exceptions
 from ._base import TraderClientObject
@@ -17,18 +18,18 @@ class ItemsForExchange(TraderClientObject):
     Attributes:
         success (:obj:`bool`): Результат запроса.
         items (Sequence[`steam_trader.ItemForExchange`, optional]): Последовательность предметов для обмена с ботом.
-        descriptions (Dict[:obj:`int`, :class:`steam_trader.TradeDescription`, optional]): Описания предметов
+        descriptions (dict[:obj:`int`, :class:`steam_trader.TradeDescription`, optional]): Описания предметов
             для обмена с ботом.
         client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
     """
 
     success: bool
     items: Sequence[Optional['ItemForExchange']]
-    descriptions: Dict[int, Optional['TradeDescription']]
+    descriptions: dict[int, Optional['TradeDescription']]
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['ItemsForExchange']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['ItemsForExchange']:
         """Десериализация объекта.
 
         Args:
@@ -86,7 +87,7 @@ class ExchangeResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['ExchangeResult']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['ExchangeResult']:
         """Десериализация объекта.
 
         Args:
@@ -167,7 +168,7 @@ class ExchangeP2PResult(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['ExchangeP2PResult']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['ExchangeP2PResult']:
         """Десериализация объекта.
 
         Args:

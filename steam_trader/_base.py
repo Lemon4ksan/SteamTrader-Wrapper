@@ -2,7 +2,7 @@ import dataclasses
 import logging
 from abc import ABCMeta
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 try:
     import ujson as json
@@ -37,12 +37,12 @@ class TraderClientObject:
         return data and isinstance(data, dict)
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional[dict]:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional[dict]:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
 
         Returns:
             :obj:`dict`, optional: Словарь с валидными аттрибутами для создания датакласса.

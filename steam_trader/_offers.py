@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 from ._base import TraderClientObject
 
@@ -28,7 +28,7 @@ class SellOffer(TraderClientObject):
     currency: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['SellOffer']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['SellOffer']:
         """Десериализация объекта.
 
         Args:
@@ -61,7 +61,7 @@ class BuyOffer(TraderClientObject):
     currency: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['BuyOffer']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['BuyOffer']:
         """Десериализация объекта.
 
         Args:
