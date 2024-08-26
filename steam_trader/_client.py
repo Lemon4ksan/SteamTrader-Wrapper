@@ -470,18 +470,21 @@ class Client(TraderClientObject):
         if gameid not in SUPPORTED_APPIDS:
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
+        url = self.base_url + 'getinventory/'
+        params = {"gameid": gameid, "key": self.api_token}
+
         if status is not None:
-            for s in status:
+            for i, s in enumerate(status):
                 if s not in range(5):
                     raise ValueError(f'Неизвестный статус {s}')
+                params[f'status[{i}]'] = s
 
-        url = self.base_url + 'getinventory/'
         result = httpx.get(
             url,
-            params={"gameid": gameid, 'status': status, "key": self.api_token},
+            params=params,
             headers=self.headers
         ).json()
-        return Inventory.de_json(result, self)
+        return Inventory.de_json(result, status, self)
 
     @log
     def get_buy_orders(self, *, gameid: Optional[int] = None, gid: Optional[int] = None) -> Optional['BuyOrders']:

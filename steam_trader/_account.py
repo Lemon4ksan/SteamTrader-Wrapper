@@ -73,19 +73,20 @@ class Inventory(TraderClientObject):
     client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['Inventory']:
+    def de_json(cls: dataclass, data: dict, status: Optional[Sequence[int]] = None, client: Optional['Client'] | Optional['ClientAsync'] = None) -> Optional['Inventory']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
+            status (Sequence[:obj:`int`], optional): Указывается, чтобы получить список предметов с определенным статусом.
             client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.Inventory`, optional: Инвентарь клиента.
         """
 
-        if not cls.is_valid_model_data(data):
-            return
+        # if not cls.is_valid_model_data(data):
+        #     return
 
         if not data['success']:
             try:
@@ -97,8 +98,14 @@ class Inventory(TraderClientObject):
             except KeyError:
                 pass
 
+        new_data = []
+
         for i, offer in enumerate(data['items']):
-            data['items'][i] = InventoryItem.de_json(offer)
+            if status is not None and offer['status'] in status:
+                print(offer)
+                new_data.append(InventoryItem.de_json(offer))
+
+        data['items'] = new_data
 
         data = super(Inventory, cls).de_json(data)
 
