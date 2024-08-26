@@ -433,9 +433,12 @@ class Client(TraderClientObject):
 
     @log
     def get_web_socket_token(self) -> Optional['WSToken']:
-        """Возварщает токен для авторизации в WebSocket. Незадокументированно."""
+        """Возварщает токен для авторизации в WebSocket."""
         url = self.base_url + "getwstoken/"
-        result = httpx.get(url).json()
+        result = httpx.get(
+            url,
+            params={'key': self.api_token}
+        ).json()
         return WSToken.de_json(result, self)
 
     @log
