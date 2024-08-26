@@ -85,8 +85,8 @@ class Inventory(TraderClientObject):
             :class:`steam_trader.Inventory`, optional: Инвентарь клиента.
         """
 
-        # if not cls.is_valid_model_data(data):
-        #     return
+        if not cls.is_valid_model_data(data):
+            return
 
         if not data['success']:
             try:
@@ -102,7 +102,6 @@ class Inventory(TraderClientObject):
 
         for i, offer in enumerate(data['items']):
             if status is not None and offer['status'] in status:
-                print(offer)
                 new_data.append(InventoryItem.de_json(offer))
 
         data['items'] = new_data
