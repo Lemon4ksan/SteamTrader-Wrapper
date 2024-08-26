@@ -45,8 +45,7 @@ class TraderClientObject:
             client (:obj:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :obj:`steam_trader.TraderClientObject` | :obj:`None`:
-            :obj:`steam_trader.TraderClientObject` или :obj:`None`.
+            :obj:`dict`, optional: Словарь с валидными аттрибутами для создания датакласса.
         """
 
         data = data.copy()
@@ -63,6 +62,6 @@ class TraderClientObject:
                 unknown_data[k] = v
 
         if unknown_data:
-            logging.warning(f'Got an unexpected result from a server for class {cls} :: {unknown_data}')
+            logging.warning(f'Были получены неизвестные аттриубты для класса {cls} :: {unknown_data}')
 
         return cleaned_data

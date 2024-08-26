@@ -1,12 +1,17 @@
 import httpx
-from typing import Sequence
 import logging
 import functools
-from typing import Optional, TypeVar, Callable, Any
+from typing import Optional, Sequence, TypeVar, Callable, Any
 
-from steam_trader import *
-from steam_trader.constants import *
-from steam_trader.exceptions import *
+from steam_trader.constants import SUPPORTED_APPIDS
+from steam_trader.exceptions import UnsupportedAppID
+from steam_trader import (
+    Client,
+    Filters,
+    Inventory,
+    SellResult
+)
+
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
@@ -95,7 +100,8 @@ class ExtClient(Client):
         inventory = Inventory.de_json(result, self)
 
         if filters is not None:
-            logging.warning('Вы используете синхрорнный клиент. Запрос с фильрами может занять до 2 минут. Если хотите ускорить время, используйте асинхронную версию.')
+            logging.warning(
+                'Вы используете синхрорнный клиент. Запрос с фильтрами может занять до 2 минут. Если хотите ускорить время, используйте асинхронную версию.')
             new_items = []
 
             for item in inventory.items:
