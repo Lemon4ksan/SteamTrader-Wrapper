@@ -21,10 +21,10 @@ def log(method: F) -> F:
     logger = logging.getLogger(method.__module__)
 
     @functools.wraps(method)
-    def wrapper(*args, **kwargs) -> Any:
+    async def wrapper(*args, **kwargs) -> Any:
         logger.debug(f'Entering: {method.__name__}')
 
-        result = method(*args, **kwargs)
+        result = await method(*args, **kwargs)
         logger.info(result)
 
         logger.debug(f'Exiting: {method.__name__}')
