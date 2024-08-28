@@ -22,7 +22,8 @@ class SellResult(TraderClientObject):
             Указывается, если 'fast_execute' = True
          commission (:obj:`float`, optional): Размер комиссии в процентах, за которую был продан предмет.
             Указывается, если 'fast_execute' = True
-         client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
+         client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+            Клиент Steam Trader.
      """
 
     success: bool
@@ -30,17 +31,22 @@ class SellResult(TraderClientObject):
     position: int
     fast_execute: bool
     nc: str
+    client: Union['Client', 'ClientAsync', None]
     price: Optional[float] = None
     commission: Optional[float] = None
-    client: Optional['Client'] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['SellResult']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['SellResult']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.SellResult`, optional: Информация о выставлении предмета на продажу.

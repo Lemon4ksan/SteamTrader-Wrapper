@@ -7,7 +7,7 @@ import os
 import unittest
 import steam_trader
 from collections.abc import Sequence
-from steam_trader.constants import SUPPORTED_APPIDS, TEAM_FORTRESS_APPID
+from steam_trader.constants import SUPPORTED_APPIDS, TEAM_FORTRESS2_APPID
 from steam_trader.exceptions import WrongTradeLink, NoTradeItems, Unauthorized
 
 from dotenv import load_dotenv
@@ -41,7 +41,7 @@ class IndependentTests(unittest.TestCase):
 
     def test_get_web_socket_token(self):
         token = self.client.get_web_socket_token()
-        self.assertIsInstance(token, steam_trader.WSToken)
+        self.assertIsInstance(token, steam_trader.WebSocketToken)
 
     def test_get_inventory(self):
         for appid in self.test_appids:
@@ -101,7 +101,7 @@ class BuyTests(unittest.TestCase):
         self.multi_buy_gid = 1311  # Офицер запаса
         self.buy_order_gid = 1524  # Слонобой
         self.default_price = 0.5
-        self.default_appid = TEAM_FORTRESS_APPID
+        self.default_appid = TEAM_FORTRESS2_APPID
 
     def test_01_buy(self):
         """Вы купите предмет по gid (по умолчанию - Тренировочный ракетомёт).
@@ -163,7 +163,7 @@ class SellTests(unittest.TestCase):
         self.multi_buy_gid = 1311  # Офицер запаса
         self.buy_order_gid = 1524  # Слонобой
         self.default_price = 0.5
-        self.default_appid = TEAM_FORTRESS_APPID
+        self.default_appid = TEAM_FORTRESS2_APPID
 
     def test_01_sale(self):
         """Если self.SKIP_BUY_TEST = False вы создадите запрос на продажу первого предмета в вашем инвентаре TF2 по цене price (по умолчанию - 0.5).

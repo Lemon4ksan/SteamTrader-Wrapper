@@ -399,9 +399,9 @@ class IndependentTests(unittest.TestCase):
         test_response = {
             "steam_id": "76561191234567890",
             "time": 1504281966,
-            "hash": "tQ+XqXYXVb+hX9M25wzj\/nhOR5LQyJATY1499qGdK2o="
+            "hash": r"tQ+XqXYXVb+hX9M25wzj\/nhOR5LQyJATY1499qGdK2o="
         }
-        result = steam_trader.WSToken.de_json(test_response, client=self.client)
+        result = steam_trader.WebSocketToken.de_json(test_response, client=self.client)
         self.assertion(test_response, result)
 
     def test_inventory(self):

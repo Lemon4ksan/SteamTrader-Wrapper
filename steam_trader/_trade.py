@@ -20,21 +20,27 @@ class ItemsForExchange(TraderClientObject):
         items (Sequence[`steam_trader.ItemForExchange`, optional]): Последовательность предметов для обмена с ботом.
         descriptions (dict[:obj:`int`, :class:`steam_trader.TradeDescription`, optional]): Описания предметов
             для обмена с ботом.
-        client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
+        client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+            Клиент Steam Trader.
     """
 
     success: bool
     items: Sequence[Optional['ItemForExchange']]
     descriptions: dict[int, Optional['TradeDescription']]
-    client: Optional['Client'] = None
+    client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['ItemsForExchange']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['ItemsForExchange']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.ItemsForExchange`, optional: Предметы для обмена с ботом.
@@ -58,8 +64,9 @@ class ItemsForExchange(TraderClientObject):
             data['items'][i] = ItemForExchange.de_json(item)
 
         # Конвертируем ключ в число
-        new_data = {int(_id): TradeDescription.de_json(_dict) for _id, _dict in data['descriptions'].items()}
-        data['descriptions'] = new_data
+        data['descriptions'] = {
+            int(_id): TradeDescription.de_json(_dict) for _id, _dict in data['descriptions'].items()
+        }
         data = super(ItemsForExchange, cls).de_json(data)
 
         return cls(client=client, **data)
@@ -75,7 +82,8 @@ class ExchangeResult(TraderClientObject):
         bot_steamid (:obj:`int`): SteamID бота, который отправил обмен.
         bot_nick (:obj:`str`): Ник бота.
         items (Sequence[:class:`steam_trader.ExchangeItem`, optional]): Cписок предметов для обмена с ботом.
-        client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
+        client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+            Клиент Steam Trader.
     """
 
     success: bool
@@ -84,15 +92,20 @@ class ExchangeResult(TraderClientObject):
     bot_steamid: int
     bot_nick: str
     items: Sequence[Optional['ExchangeItem']]
-    client: Optional['Client'] = None
+    client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['ExchangeResult']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['ExchangeResult']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.ExchangeResult`, optional: Результат обмена с ботом.
@@ -126,7 +139,7 @@ class ExchangeResult(TraderClientObject):
                 case 9:
                     raise exceptions.HiddenInventory('Ваш инвентарь скрыт. Откройте его в своих настройках Steam.')
                 case 10:
-                    raise exceptions.TradeCreationFail('Бот не может отправить Вам предложение обмена, потому что ваш инвентарь переполнен или у вас есть VAC бан.')
+                    raise exceptions.TradeCreationFail('Бот не может отправить вам предложение обмена, потому что ваш инвентарь переполнен или у вас есть VAC бан.')
                 case 11:
                     raise exceptions.AuthenticatorError('У вас не подключён мобильный аутентификатор или с момента его подключения ещё не прошло 7 дней.')
 
@@ -135,7 +148,6 @@ class ExchangeResult(TraderClientObject):
             'bot_steamid': data['botSteamId'],
             'bot_nick': data['botNick']
         })
-
         del data['offerId'], data['botSteamId'], data['botNick']
 
         for i, item in enumerate(data['items']):
@@ -157,7 +169,8 @@ class ExchangeP2PResult(TraderClientObject):
         confirm (Sequence[:class:`steam_trader.ConfirmObject`, optional]): Массив с данными для подтверждения
             обмена в мобильном аутентификаторе.
         cancel (Sequence[:obj:`str`]): Массив из ID обменов, которые нужно отменить.
-        client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
+        client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+            Клиент Steam Trader.
     """
 
     success: bool
@@ -165,15 +178,20 @@ class ExchangeP2PResult(TraderClientObject):
     receive: Sequence[Optional['P2PReceiveObject']]
     confirm: Sequence[Optional['P2PConfirmObject']]
     cancel: Sequence[str]
-    client: Optional['Client'] = None
+    client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['ExchangeP2PResult']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['ExchangeP2PResult']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.ExchangeP2PResult`, optional: Результат p2p обмена.

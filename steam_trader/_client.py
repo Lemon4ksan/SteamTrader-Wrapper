@@ -7,7 +7,7 @@ from typing import Optional, LiteralString, Union, TypeVar, Any
 from .constants import SUPPORTED_APPIDS
 from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsupportedAppID, Unauthorized
 from ._base import TraderClientObject
-from ._account import WSToken, Inventory, BuyOrders, Discounts, OperationsHistory, InventoryState, AltWebSocket
+from ._account import WebSocketToken, Inventory, BuyOrders, Discounts, OperationsHistory, InventoryState, AltWebSocket
 from ._buy import BuyResult, BuyOrderResult, MultiBuyResult
 from ._sale import SellResult
 from ._edit_item import EditPriceResult, DeleteItemResult, GetDownOrdersResult
@@ -354,11 +354,11 @@ class Client(TraderClientObject):
         """Выполнить p2p обмен.
 
         Note:
-            Вы сами должны передать предмет боту из полученной информации, у вас будет 40 минут на это.
+            Вы сами должны передать предмет клиенту из полученной информации, у вас будет 40 минут на это.
             В противном случае, трейд будет отменён.
 
         Returns:
-            :class:`steam_trader.ExchangeP2PResult`, optional: Результат p2p обмена .
+            :class:`steam_trader.ExchangeP2PResult`, optional: Результат p2p обмена.
         """
 
         url = self.base_url + 'exchange/'
@@ -445,14 +445,14 @@ class Client(TraderClientObject):
         return OrderBook.de_json(result, self)
 
     @log
-    def get_web_socket_token(self) -> Optional['WSToken']:
+    def get_web_socket_token(self) -> Optional['WebSocketToken']:
         """Возварщает токен для авторизации в WebSocket."""
         url = self.base_url + "getwstoken/"
         result = (self._httpx_client or httpx).get(
             url,
             params={'key': self.api_token}
         ).json()
-        return WSToken.de_json(result, self)
+        return WebSocketToken.de_json(result, self)
 
     @log
     def get_inventory(self, gameid: int, *, status: Optional[Sequence[int]] = None) -> Optional['Inventory']:
@@ -460,12 +460,10 @@ class Client(TraderClientObject):
 
         По умолчанию (то есть всегда) возвращает список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
 
-        Note:
-            Аргумент status не работает.
-
         Args:
             gameid (:obj:`int`): AppID приложения в Steam.
-            status (Sequence[:obj:`int`], optional): Указывается, чтобы получить список предметов с определенным статусом.
+            status (Sequence[:obj:`int`], optional):
+                Указывается, чтобы получить список предметов с определенным статусом.
 
                 Возможные статусы:
                 0 - В продаже
