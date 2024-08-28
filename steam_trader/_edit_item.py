@@ -6,7 +6,7 @@ from steam_trader import exceptions
 from ._base import TraderClientObject
 
 if TYPE_CHECKING:
-    from steam_trader import Client
+    from ._client import Client
     from ._client_async import ClientAsync
 
 @dataclass
@@ -24,25 +24,31 @@ class EditPriceResult(TraderClientObject):
             Указывается, если 'fast_execute' = true.
         percent (:obj:`float`, optional): Размер комиссии/скидки в процентах, за которую был продан/куплен предмет.
             Указывается, если 'fast_execute' = true.
-        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+        client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+            Клиент Steam Trader.
     """
 
     success: bool
     type: int
     position: int
     fast_execute: bool
-    client: Optional['Client']
+    client: Union['Client', 'ClientAsync', None]
     new_id: Optional[int] = None
     price: Optional[float] = None
     percent: Optional[float] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['EditPriceResult']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['EditPriceResult']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.EditPriceResult`, optional: Результат запроса на изменение цены.
@@ -81,7 +87,8 @@ class DeleteItemResult(TraderClientObject):
         has_p2p_ex (:obj:`bool`): Есть ли доступный P2P обмен.
         total_fines (:obj:`int`): Общее количество штрафных баллов.
         fine_date (:obj:`int`, optional): Дата снятия штрафных баллов. Если None - штрафных баллов нет.
-        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+        client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+            Клиент Steam Trader.
     """
 
     success: bool
@@ -90,18 +97,24 @@ class DeleteItemResult(TraderClientObject):
     has_p2p_ex: bool
     total_fines: int
     fine_date: Optional[int]
-    client: Optional['Client']
+    client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['DeleteItemResult']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['DeleteItemResult']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.DeleteItemResult`, optional: Результат запроса снятия предмета с продажи/заявки на покупку.
+            :class:`steam_trader.DeleteItemResult`, optional:
+                Результат запроса снятия предмета с продажи/заявки на покупку.
         """
 
         if not cls.is_valid_model_data(data):
@@ -130,21 +143,27 @@ class GetDownOrdersResult(TraderClientObject):
         success (:obj:`bool`): Результат запроса.
         count (:obj:`int`): Количество удалённых предложений.
         ids (Sequence[:obj:`int`]): Список из ID удалённых предложений.
-        client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+        client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+            Клиент Steam Trader.
     """
 
     success: bool
     count: int
     ids: Sequence[int]
-    client: Optional['Client']
+    client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['GetDownOrdersResult']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['GetDownOrdersResult']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.EditPriceResult`, optional: Результат запроса на изменение цены.

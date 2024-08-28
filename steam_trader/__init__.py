@@ -42,7 +42,7 @@ from ._trade import ItemsForExchange
 from ._trade import ExchangeResult
 from ._trade import ExchangeP2PResult
 
-from ._account import WSToken
+from ._account import WebSocketToken
 from ._account import Inventory
 from ._account import BuyOrders
 from ._account import Discounts
@@ -67,7 +67,7 @@ __all__ = [
     '__copyright__',
     'TraderClientObject',
     'Client',
-    'WSToken',
+    'WebSocketToken',
     'Inventory',
     'BuyOrders',
     'Discounts',

@@ -32,12 +32,17 @@ class P2PTradeOffer(TraderClientObject):
     trade_offer_create_params: str
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['P2PTradeOffer']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['P2PTradeOffer']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.P2PTradeOffer`, optional: Данные для совершения p2p трейда.
@@ -52,7 +57,7 @@ class P2PTradeOffer(TraderClientObject):
 
 @dataclass
 class P2PSendObject(TraderClientObject):
-    """Класс, представляющий ссылку на p2p трейд и сам трейд.
+    """Класс, представляющий ссылку на p2p обмен и сам обмен.
 
     Attributes:
         trade_link (:obj:`str`): Ссылка для p2p обмена.
@@ -65,12 +70,17 @@ class P2PSendObject(TraderClientObject):
     trade_offer: Optional['P2PTradeOffer']
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['P2PSendObject']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['P2PSendObject']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.P2PSendObject`, optional: Ссылка на p2p трейд и сам трейд.
@@ -83,7 +93,6 @@ class P2PSendObject(TraderClientObject):
             'trade_link': data['tradeLink'],
             'trade_offer': data['tradeOffer']
         })
-
         del data['tradeLink'], data['tradeOffer']
 
         data['trade_offer'] = P2PTradeOffer.de_json(data['trade_offer'])
@@ -109,12 +118,17 @@ class P2PReceiveObject(TraderClientObject):
     partner_steamid: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['P2PReceiveObject']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['P2PReceiveObject']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.P2PSendObject`, optional: Массив с данными для принятия обмена.
@@ -127,7 +141,6 @@ class P2PReceiveObject(TraderClientObject):
             'offerid': data['offerId'],
             'partner_steamid': data['partnerSteamId']
         })
-
         del data['offerId'], data['partnerSteamId']
 
         for i, item in enumerate(data['items']):
@@ -157,7 +170,8 @@ class P2PConfirmObject(TraderClientObject):
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.P2PSendObject`, optional: Массив с данными для подтверждения обмена в мобильном аутентификаторе.
@@ -170,7 +184,6 @@ class P2PConfirmObject(TraderClientObject):
             'offerid': data['offerId'],
             'partner_steamid': data['partnerSteamId']
         })
-
         del data['offerId'], data['partnerSteamId']
 
         data = super(P2PConfirmObject, cls).de_json(data)

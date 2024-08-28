@@ -42,7 +42,8 @@ class TraderClientObject:
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :obj:`dict`, optional: Словарь с валидными аттрибутами для создания датакласса.

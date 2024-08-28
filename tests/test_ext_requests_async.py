@@ -26,12 +26,12 @@ class IndependentTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_get_inventory(self):
         async with self.client:
-            inventory = await self.client.get_inventory(TEAM_FORTRESS_APPID, status=[0, 1, 2, 3, 4])
+            inventory = await self.client.get_inventory(TEAM_FORTRESS2_APPID, status=[0, 1, 2, 3, 4])
             self.assertTrue(inventory.success)
 
     async def test_get_inventory_with_filters(self):
         async with self.client:
-            inventory = await self.client.get_inventory(TEAM_FORTRESS_APPID, filters=self.filters, status=[0, 1, 2, 3, 4])
+            inventory = await self.client.get_inventory(TEAM_FORTRESS2_APPID, filters=self.filters, status=[0, 1, 2, 3, 4])
             self.assertTrue(inventory.success)
 
     async def test_multi_sell(self):

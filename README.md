@@ -81,7 +81,7 @@ for operation in operations_history.data:
 
 ```python
 from steam_trader.exceptions import Unauthorized, UnknownItem, WrongTradeLink
-from steam_trader.constants import TEAM_FORTRESS_APPID, TF2_CRAFTABLE, DOTA2_RARITY_COMMON
+from steam_trader.constants import TEAM_FORTRESS2_APPID, TF2_CRAFTABLE, DOTA2_RARITY_COMMON
 ```
 
 ### Примеры
@@ -90,11 +90,11 @@ from steam_trader.constants import TEAM_FORTRESS_APPID, TF2_CRAFTABLE, DOTA2_RAR
 
 ```python
 from steam_trader import Client
-from steam_trader.constants import TEAM_FORTRESS_APPID
+from steam_trader.constants import TEAM_FORTRESS2_APPID
 
 client = Client('Ваш токен')
 
-inventory = client.get_inventory(TEAM_FORTRESS_APPID)
+inventory = client.get_inventory(TEAM_FORTRESS2_APPID)
 new_price = client.get_min_prices(1226).market_price - 0.01
 for item in inventory.items:
     if item.gid == 1226:

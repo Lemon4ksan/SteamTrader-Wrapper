@@ -25,11 +25,11 @@ class IndependentTests(unittest.TestCase):
         self.SKIP_SELL_TESTS = True
 
     def test_get_inventory(self):
-        inventory = self.client.get_inventory(TEAM_FORTRESS_APPID, status=[0, 1, 2, 3, 4])
+        inventory = self.client.get_inventory(TEAM_FORTRESS2_APPID, status=[0, 1, 2, 3, 4])
         self.assertTrue(inventory.success)
 
     def test_get_inventory_with_filters(self):
-        inventory = self.client.get_inventory(TEAM_FORTRESS_APPID, filters=self.filters, status=[0, 1, 2, 3, 4])
+        inventory = self.client.get_inventory(TEAM_FORTRESS2_APPID, filters=self.filters, status=[0, 1, 2, 3, 4])
         self.assertTrue(inventory.success)
 
     def test_multi_sell(self):

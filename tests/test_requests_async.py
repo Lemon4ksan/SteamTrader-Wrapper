@@ -8,7 +8,7 @@ import unittest
 import steam_trader
 import asyncio
 from collections.abc import Sequence
-from steam_trader.constants import SUPPORTED_APPIDS, TEAM_FORTRESS_APPID
+from steam_trader.constants import SUPPORTED_APPIDS, TEAM_FORTRESS2_APPID
 from steam_trader.exceptions import WrongTradeLink, NoTradeItems
 
 from dotenv import load_dotenv
@@ -50,7 +50,7 @@ class IndependentTests(unittest.IsolatedAsyncioTestCase):
     async def test_get_web_socket_token(self):
         async with self.client:
             token = await self.client.get_web_socket_token()
-            self.assertIsInstance(token, steam_trader.WSToken)
+            self.assertIsInstance(token, steam_trader.WebSocketToken)
 
     async def test_get_inventory(self):
         async with self.client:
@@ -121,7 +121,7 @@ class BuyTests(unittest.IsolatedAsyncioTestCase):
         self.multi_buy_gid = 1311  # Офицер запаса
         self.buy_order_gid = 1524  # Слонобой
         self.default_price = 0.5
-        self.default_appid = TEAM_FORTRESS_APPID
+        self.default_appid = TEAM_FORTRESS2_APPID
 
     async def test_01_buy(self):
         """Вы купите предмет по gid (по умолчанию - Тренировочный ракетомёт).
@@ -188,7 +188,7 @@ class SellTests(unittest.IsolatedAsyncioTestCase):
         self.multi_buy_gid = 1311  # Офицер запаса
         self.buy_order_gid = 1524  # Слонобой
         self.default_price = 0.5
-        self.default_appid = TEAM_FORTRESS_APPID
+        self.default_appid = TEAM_FORTRESS2_APPID
 
     async def test_01_sale(self):
         """Если self.SKIP_BUY_TEST = False вы создадите запрос на продажу первого предмета в вашем инвентаре TF2 по цене price (по умолчанию - 0.5).

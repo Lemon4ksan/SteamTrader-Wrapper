@@ -21,23 +21,26 @@ class SellHistoryItem(TraderClientObject):
     price: float
 
     @classmethod
-    def de_json(cls: dataclass, data: list, client: Union['Client', 'ClientAsync', None] = None) -> Optional['SellHistoryItem']:
+    def de_json(
+            cls: dataclass,
+            data: list,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['SellHistoryItem']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.ItemInfo`, optional: Информация о предмете.
+            :class:`steam_trader.SellHistoryItem`, optional: Информация о предмете в истории продаж.
         """
 
         if not isinstance(data, list):
             return
 
-        new_data = {'date': data[0], 'price': data[1]}
-
-        data = super(SellHistoryItem, cls).de_json(new_data)
+        data = super(SellHistoryItem, cls).de_json({'date': data[0], 'price': data[1]})
 
         return cls(**data)
 
@@ -61,7 +64,7 @@ class InventoryItem(TraderClientObject):
             0	Предмет выставлен на продажу или выставлена заявка на покупку. Для различия используется поле type.
             1	Предмет был куплен/продан и ожидает передачи боту или P2P способом. Для различия используется поле type.
             2	Предмет был передан боту или P2P способом и ожидает приёма покупателем.
-            6	Предмет находится в режиме резервного времени. На сайте отображается как "Проверяется"
+            6	Предмет находится в режиме резервного времени. На сайте отображается как "Проверяется".
                 после истечения времени на передачу боту или P2P способом.
         position (:obj:`int`, optional): Позиция предмета в списке заявок на покупку/продажу. Может быть пустым.
         nc (:obj:`int`, optional): ID заявки на продажу для бескомиссионной ссылки. Может быть пустым.
@@ -87,15 +90,20 @@ class InventoryItem(TraderClientObject):
     nm: bool
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['InventoryItem']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['InventoryItem']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.ItemInfo`, optional: Информация о предмете.
+            :class:`steam_trader.InventoryItem`, optional: Предмет в инвентаре.
         """
 
         if not cls.is_valid_model_data(data):
@@ -121,12 +129,17 @@ class Filter(TraderClientObject):
     color: Optional[str] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['Filter']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['Filter']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.Filter`, optional: Фильтр.
@@ -178,12 +191,17 @@ class Filters(TraderClientObject):
     hero: Optional[Sequence[Optional['Filter']]] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['Filters']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['Filters']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.Filters`, optional: Фильтры.
@@ -194,7 +212,6 @@ class Filters(TraderClientObject):
 
         try:
             # TF2
-
             data.update({  # Затмевает встроенное имя class
                 'used_by': data['class']
             })
@@ -216,7 +233,6 @@ class Filters(TraderClientObject):
         except KeyError:
             try:
                 # SteamGift
-
                 for i, _filter in enumerate(data['region']):
                     data['region'][i] = Filter.de_json(data['region'][i])
 
@@ -231,7 +247,6 @@ class Filters(TraderClientObject):
 
             except KeyError:
                 # DOTA2
-
                 for i, _filter in enumerate(data['rarity']):
                     data['rarity'][i] = Filter.de_json(data['rarity'][i])
 
@@ -273,12 +288,17 @@ class BuyOrder(TraderClientObject):
     position: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['BuyOrder']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['BuyOrder']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.BuyOrder`, optional: Информация о запрос на покупку.
@@ -308,7 +328,11 @@ class Discount(TraderClientObject):
     commission: float
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['Discount']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['Discount']:
         """Десериализация объекта.
 
         Args:
@@ -347,12 +371,17 @@ class OperationsHistoryItem(TraderClientObject):
     date: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['OperationsHistoryItem']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['OperationsHistoryItem']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.OperationsHistoryItem`, optional: Информацию о предмете в истории операций.
@@ -378,12 +407,17 @@ class AltWebSocketMessage(TraderClientObject):
     data: str
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['AltWebSocketMessage']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['AltWebSocketMessage']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.Discount`, optional: Комиссия/скидка.
@@ -398,12 +432,12 @@ class AltWebSocketMessage(TraderClientObject):
 
 @dataclass
 class MultiBuyOrder(TraderClientObject):
-    """Класс, представляющий запрос на покупку из steam_clieant.MultiBuyInfo.
+    """Класс, представляющий запрос на покупку из steam_trader.MultiBuyResult.
 
     Args:
         id (:obj:`int`): ID заявки.
         itemid (:obj:`int`): Уникальный ID предмета.
-        price (:obj:`float`): Цена, за которую был куплен предмет с уёетом скидки.
+        price (:obj:`float`): Цена, за которую был куплен предмет с учётом скидки.
     """
 
     id: int
@@ -411,12 +445,17 @@ class MultiBuyOrder(TraderClientObject):
     price: float
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['MultiBuyOrder']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['MultiBuyOrder']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.MultiBuyOrder`: Запрос на покупку из steam_clieant.MultiBuyInfo.
@@ -467,12 +506,17 @@ class ItemForExchange(TraderClientObject):
     steam_item: bool
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['ItemForExchange']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['ItemForExchange']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.ItemForExchange`, optional: Информация о предмете для передачи/получения.
@@ -510,12 +554,17 @@ class TradeDescription(TraderClientObject):
     gameid: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['TradeDescription']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['TradeDescription']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.TradeDescription`, optional: Описание предмета для передачи/получения боту.
@@ -561,7 +610,11 @@ class ExchangeItem(TraderClientObject):
     percent: float
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['ExchangeItem']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['ExchangeItem']:
         """Десериализация объекта.
 
         Args:

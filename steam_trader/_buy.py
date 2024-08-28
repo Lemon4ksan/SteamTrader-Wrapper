@@ -22,7 +22,8 @@ class BuyResult(TraderClientObject):
         new_price (:obj:`float`): Новая цена лучшего предложения о продаже для варианта покупки Commodity,
             если у группы предметов ещё имеются предложения о продаже. Для остальных вариантов покупки будет 0
         discount (:obj:`float`): Размер скидки в процентах, за которую был куплен предмет.
-        client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
+        client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+            Клиент Steam Trader.
     """
 
     success: bool
@@ -32,15 +33,20 @@ class BuyResult(TraderClientObject):
     price: float
     new_price: float
     discount: float
-    client: Optional['Client']
+    client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['BuyResult']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['BuyResult']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.BuyResult`, optional: Купленный предмет.
@@ -76,21 +82,27 @@ class BuyOrderResult(TraderClientObject):
         success (:obj:`bool`): Результат запроса.
         executed (:obj:`int`): Количество исполненных заявок.
         placed (:obj:`int`): Количество размещённых на маркет заявок.
-        client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
+        client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+            Клиент Steam Trader.
     """
 
     success: bool
     executed: int
     placed: int
-    client: Optional['Client']
+    client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['BuyOrderResult']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['BuyOrderResult']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.BuyResult`, optional: Результат запроса на покупку.
@@ -131,22 +143,28 @@ class MultiBuyResult(TraderClientObject):
         balance (:obj:`float`): Баланс после покупки предметов.
         spent (:obj:`float`): Сумма потраченных средств на покупку предметов.
         orders (Sequence[:class:`steam_trader.MultiBuyOrder`, optional]): Последовательность купленных предметов.
-        client (:class:`steam_trader.Client` optional): Клиент Steam Trader.
+        client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+            Клиент Steam Trader.
     """
 
     success: bool
     balance: float
     spent: float
     orders: Sequence[Optional['MultiBuyOrder']]
-    client: Optional['Client']
+    client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional['MultiBuyResult']:
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> Optional['MultiBuyResult']:
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
             :class:`steam_trader.BuyResult`: Результат мульти-покупки.
