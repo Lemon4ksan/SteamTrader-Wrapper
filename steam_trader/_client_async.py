@@ -52,6 +52,11 @@ class ClientAsync(TraderClientObject):
         base_url (:obj:`str`, optional): Ссылка на API Steam Trader.
         headers (:obj:`dict`, optional): Словарь, содержащий сведения об устройстве, с которого выполняются запросы.
             Используется при каждом запросе на сайт.
+
+    Raises:
+        BadRequestError: Неправильный запрос.
+        Unauthorized: Неправильный api-токен.
+        TooManyRequests: Слишком много запросов.
     """
 
     def __init__(
@@ -116,9 +121,16 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.SellResult, optional`: Результат создания предложения о продаже.
-        """
 
-        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
+        Raises:
+            OfferCreationFail: При создании заявки произошла неизвестная ошибка.
+            UnknownItem: Неизвестный предмет.
+            NoTradeLink: Отсутствует сслыка для обмена.
+            IncorrectPrice: Неправильная цена заявки.
+            ItemAlreadySold: Предмет уже продан или отстутствует.
+            AuthenticatorError: Мобильный аутентификатор не подключён
+                или с момента его подключения ещё не прошло 7 дней.
+        """
 
         url = self.base_url + 'sale/'
         result = await self._async_client.post(
@@ -149,9 +161,13 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.BuyResult`, optional: Результат создания запроса о покупке.
-        """
 
-        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
+        Raises:
+            OfferCreationFail: При создании заявки произошла неизвестная ошибка.
+            NoTradeLink: Отсутствует сслыка для обмена.
+            NoLongerExists: Предложение больше недействительно.
+            NotEnoughMoney: Недостаточно средств.
+        """
 
         url = self.base_url + 'buy/'
         result = await self._async_client.post(
@@ -178,9 +194,16 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.BuyOrderResult, optional`: Результат созданния заявки на покупку.
+
+        Raises:
+            OfferCreationFail: При создании заявки произошла неизвестная ошибка.
+            UnknownItem: Неизвестный предмет.
+            NoTradeLink: Отсутствует сслыка для обмена.
+            NoLongerExists: Предложение больше недействительно.
+            NotEnoughMoney: Недостаточно средств.
+            AssertionError: Указаны недопустимые параметры.
         """
 
-        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
         assert 1 <= count <= 500, f'Количество заявок должно быть от 1 до 500 (не {count})'
 
         url = self.base_url + 'createbuyorder/'
@@ -202,8 +225,8 @@ class ClientAsync(TraderClientObject):
         если при покупке указать максмальную цену 25 ₽, то сделки совершатся по цене 10 и 11 ₽,
         а общая сумма потраченных средств - 21 ₽.
 
-        Будет куплено указанное количество предметов. Если по указанной максимальной цене не окажется достаточно
-        предложений о продаже, покупка завершится ошибкой.
+       Если по указанной максимальной цене не окажется достаточно предложений о продаже,
+        success будет равен False и будет указано кол-во оставшихся предметов по данной цене.
 
         Args:
             gid (:obj:`int`): ID группы предметов.
@@ -212,10 +235,16 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.MultiBuyResult`, optional: Результат создания запроса на мульти-покупку.
-        """
 
-        assert max_price >= 0.5, f'Максимальная цена должна быть больше или равна 0.5 (не {max_price})'
-        assert count >= 1, f'Количество предметов для покупки должно быть больше 1 (не {count})'
+        Raises:
+            OfferCreationFail: При создании заявки произошла неизвестная ошибка.
+            NoTradeLink: Отсутствует сслыка для обмена.
+            NotEnoughMoney: Недостаточно средств.
+
+        Changes:
+            0.2.3: Теперь, если во время операции закончиться баланс, вместо ошибки,
+                в датаклассе будет указано кол-во оставшихся предметов по данной цене.
+        """
 
         url = self.base_url + 'multibuy/'
         result = await self._async_client.post(
@@ -230,7 +259,7 @@ class ClientAsync(TraderClientObject):
         """Редактировать цену предмета/заявки на покупку.
 
         При редактировании может произойти моментальная продажа/покупка по аналогии тому,
-        как это сделано в методах sale и create_buy_order.
+        как это сделано в методах sell и create_buy_order.
 
         Args:
             _id (:obj:`int`): ID предложения о продаже/заявки на покупку.
@@ -238,9 +267,13 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.EditPriceResult`, optional: Результат запроса на изменение цены.
-        """
 
-        assert price >= 0.5, f'Цена на продажу должна быть больше или равна 0.5 (не {price})'
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            NotFoundError: Предмет не был найден.
+            IncorrectPrice: Неправильная цена заявки.
+            NotEnoughMoney: Недостаточно средств.
+        """
 
         url = self.base_url + 'editprice/'
         result = await self._async_client.post(
@@ -260,6 +293,10 @@ class ClientAsync(TraderClientObject):
         Returns:
             :class:`steam_trader.DeleteItemResult`, optional: Результат запроса снятия предмета
                 с продажи/заявки на покупку.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            UnknownItem: Неизвестный предмет.
         """
 
         url = self.base_url + 'deleteitem/'
@@ -283,6 +320,12 @@ class ClientAsync(TraderClientObject):
         Returns:
             :class:`steam_trader.GetDownOrdersResult`, optional: Результат снятия всех заявок
                 на продажу/покупку предметов.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            NoTradeItems: Нет заявок на продажу/покупку.
+            UnsupportedAppID: Указан недействительный gameid.
+            ValueError: Указано недопустимое значение order_type.
         """
 
         if gameid not in SUPPORTED_APPIDS:
@@ -305,6 +348,10 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.ItemsForExchange`, optional: Cписок предметов для обмена с ботом.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            NoTradeItems: Нет предметов для обмена.
         """
 
         url = self.base_url + 'itemsforexchange/'
@@ -324,6 +371,19 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.ExchangeResult`, optional: Результат обмена с ботом.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            NoTradeLink: Отсутствует сслыка для обмена.
+            TradeCreationFail: Не удалось создать предложение обмена или бот не может отправить предложение обмена,
+                так как обмены в Steam временно не работают, или ваш инвентарь переполнен, или у вас есть VAC бан.
+            NoTradeItems: Нет предметов для обмена.
+            ExpiredTradeLink: Ссылка для обмена больше недействительна.
+            TradeBlockError: Steam Guard не подключён или стоит блокировка обменов.
+            MissingRequiredItems: В инвентаре Steam отсутствуют необходимые для передачи предметы.
+            HiddenInventory: Ваш инвентарь скрыт.
+            AuthenticatorError: Мобильный аутентификатор не подключён,
+                или с момента его подключения ещё не прошло 7 дней.
         """
 
         url = self.base_url + 'exchange/'
@@ -339,6 +399,10 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.ItemsForExchange`, optional: Cписок предметов для p2p обмена.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            NoTradeItems: Нет предметов для обмена.
         """
 
         url = self.base_url + 'itemsforexchangep2p/'
@@ -358,6 +422,17 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.ExchangeP2PResult`, optional: Результат p2p обмена.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            NoTradeLink: Отсутствует сслыка для обмена.
+            TradeCreationFail: Не удалось создать предложение обмена или бот не может отправить предложение обмена,
+                так как обмены в Steam временно не работают, или ваш инвентарь переполнен, или у вас есть VAC бан,
+                или покупатель не указал свою ссылку для обмена.
+            NoTradeItems: Нет предметов для обмена.
+            NoSteamAPIKey: Отсутсвтвует ключ Steam API.
+            AuthenticatorError: Мобильный аутентификатор не подключён,
+                или с момента его подключения ещё не прошло 7 дней.
         """
 
         url = self.base_url + 'exchange/'
@@ -380,6 +455,10 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.MinPrices`, optional: Минимальные/максимальные цены предмета.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            UnknownItem: Неизвестный предмет.
         """
 
         url = self.base_url + "getminprices/"
@@ -399,6 +478,10 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.ItemInfo`, optional: Информация о группе предметов.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            UnknownItem: Неизвестный предмет.
         """
 
         url = self.base_url + "iteminfo/"
@@ -429,6 +512,10 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.OrderBook`, optional: Заявки о покупке/продаже предмета.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            ValueError: Указано недопустимое значение mode.
         """
 
         if mode not in ['all', 'sell', 'buy']:
@@ -444,7 +531,7 @@ class ClientAsync(TraderClientObject):
 
     @log
     async def get_web_socket_token(self) -> Optional['WebSocketToken']:
-        """Возварщает токен для авторизации в WebSocket."""
+        """Получить токен для авторизации в WebSocket. Незадокументированно."""
         url = self.base_url + "getwstoken/"
         result = await self._async_client.get(
             url,
@@ -456,7 +543,7 @@ class ClientAsync(TraderClientObject):
     async def get_inventory(self, gameid: int, *, status: Optional[Sequence[int]] = None) -> Optional['Inventory']:
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
-        По умолчанию (то есть всегда) возвращает список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
+        По умолчанию возвращает список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
 
         Args:
             gameid (:obj:`int`): AppID приложения в Steam.
@@ -470,10 +557,12 @@ class ClientAsync(TraderClientObject):
                 3 - Ожидается
                 4 - Заявка на покупку
 
-                Если не указавать, вернётся список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
-
         Returns:
             :class:`steam_trader.Inventory`, optional: Инвентарь клиента, включая заявки на покупку и купленные предметы.
+
+        Raises:
+            UnsupportedAppID: Указан недействительный gameid.
+            ValueError: Указан недопустимый статус.
         """
 
         if gameid not in SUPPORTED_APPIDS:
@@ -512,6 +601,10 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.BuyOrders`, optional: Список заявок на покупку.
+
+        Raises:
+            UnsupportedAppID: Указан недействительный gameid.
+            NoBuyOrders: Нет запросов на покупку.
         """
 
         if gameid is not None and gameid not in SUPPORTED_APPIDS:
@@ -555,6 +648,10 @@ class ClientAsync(TraderClientObject):
         Args:
             trade_link (:obj:`str`): Ссылка для обмена,
                 Например, https://steamcommunity.com/tradeoffer/new/?partner=453486961&token=ZhXMbDS9
+
+        Raises:
+            SaveFail: Не удалось сохранить ссылку обмена.
+            WrongTradeLink: Указана ссылка для обмена от другого Steam аккаунта.
         """
 
         url = self.base_url + 'settradelink/'
@@ -575,11 +672,15 @@ class ClientAsync(TraderClientObject):
                     case 1:
                         raise SaveFail('Не удалось сохранить ссылку обмена')
             except KeyError:
-                raise WrongTradeLink('Вы указали ссылку для обмена от другого Steam аккаунта')
+                raise WrongTradeLink('Указана ссылка для обмена от другого Steam аккаунта.')
 
     @log
     async def remove_trade_link(self) -> None:
-        """Удалить ссылку для обмена."""
+        """Удалить ссылку для обмена.
+
+        Raises:
+            SaveFail: Не удалось удалить ссылку обмена.
+        """
 
         url = self.base_url + 'removetradelink/'
         result = await self._async_client.post(
@@ -615,6 +716,9 @@ class ClientAsync(TraderClientObject):
 
         Returns:
               :class:`steam_trader.OperationsHistory`, optional: История операций.
+
+        Raises:
+            ValueError: Указано недопустимое значение operation_type.
         """
 
         if operation_type not in range(1, 11) and operation_type is not None:
@@ -634,6 +738,9 @@ class ClientAsync(TraderClientObject):
 
         Args:
             gameid (:obj:`int`): AppID приложения в Steam.
+
+        Raises:
+            UnsupportedAppID: Указан недействительный gameid.
         """
 
         if gameid not in SUPPORTED_APPIDS:
@@ -661,6 +768,9 @@ class ClientAsync(TraderClientObject):
 
         Returns:
             :class:`steam_trader.InventoryState`, optional: Текущий статус обновления инвентаря.
+
+        Raises:
+            UnsupportedAppID: Указан недействительный gameid.
         """
 
         if gameid not in SUPPORTED_APPIDS:

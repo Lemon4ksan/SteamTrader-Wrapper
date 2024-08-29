@@ -64,9 +64,9 @@ class EditPriceResult(TraderClientObject):
                 case 401:
                     raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.InternalError('Ошибка редактирования предмета.')
+                    raise exceptions.InternalError('При выполнении запроса произошла неизвестная ошибка.')
                 case 2:
-                    raise exceptions.NotFoundError('У вас нет данного предмета или он уже продан.')
+                    raise exceptions.NotFoundError('Предмет не был найден.')
                 case 4:
                     raise exceptions.IncorrectPrice(data['error'])
                 case 5:
@@ -127,7 +127,7 @@ class DeleteItemResult(TraderClientObject):
                 case 401:
                     raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.InternalError('Ошибка редактирования предмета.')
+                    raise exceptions.InternalError('При выполнении запроса произошла неизвестная ошибка.')
                 case 2:
                     raise exceptions.UnknownItem('Неизвестный предмет.')
 
@@ -179,7 +179,7 @@ class GetDownOrdersResult(TraderClientObject):
                 case 401:
                     raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.InternalError('Ошибка редактирования предмета.')
+                    raise exceptions.InternalError('При выполнении запроса произошла неизвестная ошибка.')
                 case 2:
                     raise exceptions.NoTradeItems('Нет заявок на продажу/покупку.')
 
