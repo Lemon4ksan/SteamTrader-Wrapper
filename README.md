@@ -1,4 +1,7 @@
 # SteamTrader-Wrapper
+![PyPI - Downloads](https://img.shields.io/pypi/dm/steam-trader)
+![PyPI - License](https://img.shields.io/pypi/l/steam-trader)
+![PyPI - Status](https://img.shields.io/pypi/status/steam-trader)
 
 <p align="left">
 	<a href="https://discord.gg/DGRHEnUW">
