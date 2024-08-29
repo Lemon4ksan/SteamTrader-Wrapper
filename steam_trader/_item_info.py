@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Optional, Union
 
-from .exceptions import BadRequestError, Unauthorized, InternalError, UnknownItem
+from .exceptions import BadRequestError, Unauthorized, InternalError, UnknownItem, TooManyRequests
 from ._base import TraderClientObject
 from ._offers import SellOffer, BuyOffer
 from ._misc import SellHistoryItem, Filters
@@ -60,6 +60,8 @@ class MinPrices(TraderClientObject):
                     raise BadRequestError('Неправильный запрос.')
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
+                case 429:
+                    raise TooManyRequests('Вы отправили слишком много запросов.')
                 case 1:
                     raise InternalError('При выполнении запроса произошла неизвестная ошибка.')
                 case 2:
@@ -143,6 +145,8 @@ class ItemInfo(TraderClientObject):
                     raise BadRequestError('Неправильный запрос.')
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
+                case 429:
+                    raise TooManyRequests('Вы отправили слишком много запросов.')
                 case 1:
                     raise InternalError('При выполнении запроса произошла неизвестная ошибка.')
                 case 2:
@@ -212,6 +216,8 @@ class OrderBook(TraderClientObject):
                     raise BadRequestError('Неправильный запрос.')
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
+                case 429:
+                    raise TooManyRequests('Вы отправили слишком много запросов.')
                 case 1:
                     raise InternalError('При выполнении запроса произошла ошибка.')
 

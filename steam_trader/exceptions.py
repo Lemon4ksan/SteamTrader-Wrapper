@@ -76,6 +76,9 @@ class InternalError(OperationFail):
 class BadRequestError(NetworkError):
     """Класс исключения, вызываемый в случае отправки неправильного запроса."""
 
+class TooManyRequests(NetworkError):
+    """Класс исключения, вызываемый в случае отправки чрезмерно большого количества запросов на сервер."""
+
 class NotFoundError(NetworkError):
     """Класс исключения, вызываемый в случае ответа от сервера со статус кодом 404."""
 

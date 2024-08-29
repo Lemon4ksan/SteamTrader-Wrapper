@@ -5,7 +5,7 @@ from collections.abc import Sequence, Callable
 from typing import Optional, LiteralString, Union, TypeVar, Any
 
 from .constants import SUPPORTED_APPIDS
-from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsupportedAppID, Unauthorized
+from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsupportedAppID, Unauthorized, TooManyRequests
 from ._base import TraderClientObject
 from ._account import WebSocketToken, Inventory, BuyOrders, Discounts, OperationsHistory, InventoryState, AltWebSocket
 from ._buy import BuyResult, BuyOrderResult, MultiBuyResult
@@ -101,7 +101,11 @@ class Client(TraderClientObject):
             headers=self.headers
         ).json()
         if not result['success']:
-            raise Unauthorized('Неправильный api-токен.')
+            match result['code']:
+                case 401:
+                    raise Unauthorized('Неправильный api-токен.')
+                case 429:
+                    raise TooManyRequests('Вы отправили слишком много запросов.')
         return result['balance']
 
     @log
@@ -666,6 +670,8 @@ class Client(TraderClientObject):
                         raise BadRequestError('Неправильный запрос.')
                     case 401:
                         raise Unauthorized('Неправильный api-токен.')
+                    case 429:
+                        raise TooManyRequests('Вы отправили слишком много запросов.')
                     case 1:
                         raise SaveFail('Не удалось сохранить ссылку обмена.')
             except KeyError:
@@ -690,6 +696,8 @@ class Client(TraderClientObject):
             match result['code']:
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
+                case 429:
+                    raise TooManyRequests('Вы отправили слишком много запросов.')
                 case 1:
                     raise SaveFail('Не удалось удалить ссылку обмена.')
 
@@ -749,8 +757,12 @@ class Client(TraderClientObject):
 
         if not result['success']:
             match result['code']:
+                case 400:
+                    raise BadRequestError('Неправильный запрос.')
                 case 401:
                     raise Unauthorized('Неправильный api-токен')
+                case 429:
+                    raise TooManyRequests('Вы отправили слишком много запросов.')
 
     @log
     def get_inventory_state(self, gameid: int) -> Optional['InventoryState']:

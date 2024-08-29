@@ -61,6 +61,8 @@ class SellResult(TraderClientObject):
                     raise exceptions.BadRequestError('Неправильный запрос.')
                 case 401:
                     raise exceptions.Unauthorized('Неправильный api-токен.')
+                case 429:
+                    raise exceptions.TooManyRequests('Вы отправили слишком много запросов.')
                 case 1:
                     raise exceptions.InternalError('При создании запроса произошла неизвестная ошибка.')
                 case 2:
