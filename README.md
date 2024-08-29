@@ -1,5 +1,11 @@
 # SteamTrader-Wrapper
 
+<p align="left">
+	<a href="https://discord.gg/DGRHEnUW">
+      <img height="35.48" alt="Сервер" src="https://github.com/user-attachments/assets/b7c8a272-b48c-411f-aca3-6512086a9a18">
+   </a>
+</p>
+
 ⚠️ Это неофициальная библиотека.
 
 ### Содержание
