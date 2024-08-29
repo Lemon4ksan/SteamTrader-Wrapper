@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Optional, Union
 
-from .exceptions import BadRequestError, Unauthorized, NoBuyOrders
+from .exceptions import BadRequestError, Unauthorized, NoBuyOrders, TooManyRequests
 from ._base import TraderClientObject
 from ._misc import InventoryItem, BuyOrder, Discount, OperationsHistoryItem, AltWebSocketMessage
 
@@ -53,7 +53,9 @@ class WebSocketToken(TraderClientObject):
             if not data['success']:
                 match data['code']:
                     case 401:
-                        raise Unauthorized('Вы не зарегистрированны')
+                        raise Unauthorized('Вы не зарегистрированны.')
+                    case 429:
+                        raise TooManyRequests('Вы отправили слишком много запросов.')
         except KeyError:
             pass
 
@@ -112,6 +114,8 @@ class Inventory(TraderClientObject):
                         raise BadRequestError('Неправильный запрос.')
                     case 401:
                         raise Unauthorized('Неправильный api-токен.')
+                    case 429:
+                        raise TooManyRequests('Вы отправили слишком много запросов.')
             except KeyError:
                 pass
 
@@ -177,6 +181,8 @@ class BuyOrders(TraderClientObject):
                     raise BadRequestError('Неправильный запрос.')
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
+                case 429:
+                    raise TooManyRequests('Вы отправили слишком много запросов.')
                 case 1:
                     raise NoBuyOrders('Нет запросов на покупку.')
 
@@ -229,6 +235,8 @@ class Discounts(TraderClientObject):
                     raise BadRequestError('Неправильный запрос.')
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
+                case 429:
+                    raise TooManyRequests('Вы отправили слишком много запросов.')
 
         # Конвертируем ключ в число для совместимости с константами
         data['data'] = {int(appid): Discount.de_json(_dict) for appid, _dict in data['data'].items()}
@@ -278,6 +286,8 @@ class OperationsHistory(TraderClientObject):
                     raise BadRequestError('Неправильный запрос.')
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
+                case 429:
+                    raise TooManyRequests('Вы отправили слишком много запросов.')
 
         for i, item in enumerate(data['data']):
             data['data'][i] = OperationsHistoryItem.de_json(item)
@@ -339,6 +349,8 @@ class InventoryState(TraderClientObject):
                     raise BadRequestError('Неправильный запрос.')
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
+                case 429:
+                    raise TooManyRequests('Вы отправили слишком много запросов.')
 
         data = super(InventoryState, cls).de_json(data)
 

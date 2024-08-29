@@ -41,6 +41,11 @@ class ExtClientAsync(ClientAsync):
 
     Новые методы:
         multi_sell - Аналог multi_buy. В отличие от него, возвращает последовательность из результатов продаж, а не один объект.
+
+    Raises:
+        BadRequestError: Неправильный запрос.
+        Unauthorized: Неправильный api-токен.
+        TooManyRequests: Слишком много запросов.
     """
 
     def __init__(
@@ -84,6 +89,10 @@ class ExtClientAsync(ClientAsync):
 
         Returns:
             :class:`steam_trader.Inventory`, optional: Инвентарь клиента, включая заявки на покупку и купленные предметы.
+
+        Raises:
+            UnsupportedAppID: Указан недействительный gameid.
+            ValueError: Указан недопустимый статус.
         """
 
         if gameid not in SUPPORTED_APPIDS:
@@ -183,9 +192,16 @@ class ExtClientAsync(ClientAsync):
 
         Returns:
             Sequence[:class:`steam_trader.SellResult, optional`]: Последовательноасть с результатами продаж.
-        """
 
-        assert price >= 0.5, f'Цена должна быть больше или равна 0.5 (не {price})'
+        Raises:
+            OfferCreationFail: При создании заявки произошла неизвестная ошибка.
+            UnknownItem: Неизвестный предмет.
+            NoTradeLink: Отсутствует сслыка для обмена.
+            IncorrectPrice: Неправильная цена заявки.
+            ItemAlreadySold: Предмет уже продан или отстутствует.
+            AuthenticatorError: Мобильный аутентификатор не подключён
+                или с момента его подключения ещё не прошло 7 дней.
+        """
 
         inventory = await self.get_inventory(gameid)
         tasks = []
