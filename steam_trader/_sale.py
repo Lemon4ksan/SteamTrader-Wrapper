@@ -62,17 +62,17 @@ class SellResult(TraderClientObject):
                 case 401:
                     raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.OfferCreationFail('Ошибка создания заявки.')
+                    raise exceptions.InternalError('При создании запроса произошла неизвестная ошибка.')
                 case 2:
                     raise exceptions.UnknownItem('Неизвестный предмет.')
                 case 3:
-                    raise exceptions.NoTradeLink('У вас нет ссылки для обмена.')
+                    raise exceptions.NoTradeLink('Отсутствует сслыка для обмена.')
                 case 4:
                     raise exceptions.IncorrectPrice(data['error'])
                 case 5:
-                    raise exceptions.ItemAlreadySold('У вас нет данного предмета или он уже продан.')
+                    raise exceptions.ItemAlreadySold('Предмет уже продан или отстутствует.')
                 case 6:
-                    raise exceptions.AuthenticatorError('У вас не подключён мобильный аутентификатор или с момента его подключения ещё не прошло 7 дней.')
+                    raise exceptions.AuthenticatorError('Мобильный аутентификатор не подключён или с момента его подключения ещё не прошло 7 дней.')
 
         data = super(SellResult, cls).de_json(data)
 

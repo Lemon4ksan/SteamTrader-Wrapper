@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Optional, Union
@@ -62,13 +63,13 @@ class BuyResult(TraderClientObject):
                 case 401:
                     raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.OfferCreationFail('Ошибка создания заявки.')
+                    raise exceptions.InternalError('При создании запроса произошла неизвестная ошибка.')
                 case 3:
-                    raise exceptions.NoTradeLink('У Вас нет ссылки для обмена.')
+                    raise exceptions.NoTradeLink('Отсутствует сслыка для обмена.')
                 case 4:
-                    raise exceptions.NoLongerExists('Извините, данное предложение больше недействительно.')
+                    raise exceptions.NoLongerExists('Предложение больше недействительно.')
                 case 5:
-                    raise exceptions.NotEnoughMoney('Для покупки недостаточно средств.')
+                    raise exceptions.NotEnoughMoney('Недостаточно средств.')
 
         data = super(BuyResult, cls).de_json(data)
 
@@ -120,15 +121,15 @@ class BuyOrderResult(TraderClientObject):
                 case 401:
                     raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.OfferCreationFail('Ошибка создания заявки.')
+                    raise exceptions.InternalError('При создании запроса произошла неизвестная ошибка.')
                 case 2:
                     raise exceptions.UnknownItem('Неизвестный предмет.')
                 case 3:
-                    raise exceptions.NoTradeLink('У Вас нет ссылки для обмена.')
+                    raise exceptions.NoTradeLink('Отсутствует сслыка для обмена.')
                 case 4:
-                    raise exceptions.NoLongerExists('Данное предложение больше недействительно.')
+                    raise exceptions.NoLongerExists('Предложение больше недействительно.')
                 case 5:
-                    raise exceptions.NotEnoughMoney('Для покупки недостаточно средств.')
+                    raise exceptions.NotEnoughMoney('Недостаточно средств.')
 
         data = super(BuyOrderResult, cls).de_json(data)
 
@@ -140,18 +141,25 @@ class MultiBuyResult(TraderClientObject):
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
-        balance (:obj:`float`): Баланс после покупки предметов.
-        spent (:obj:`float`): Сумма потраченных средств на покупку предметов.
-        orders (Sequence[:class:`steam_trader.MultiBuyOrder`, optional]): Последовательность купленных предметов.
+        balance (:obj:`float`, optional): Баланс после покупки предметов. Указывается если success = True
+        spent (:obj:`float`, optional): Сумма потраченных средств на покупку предметов. Указывается если success = True
+        orders (Sequence[:class:`steam_trader.MultiBuyOrder`, optional], optional):
+            Последовательность купленных предметов. Указывается если success = True
+        left (:obj:`int`): Сколько предметов по этой цене осталось. Если операция прошла успешно, всегда равен 0.
         client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
             Клиент Steam Trader.
+
+    Changes:
+        0.2.3: Теперь, если во время операции закончиться баланс, вместо ошибки,
+            в датаклассе будет указано кол-во оставшихся предметов по данной цене.
     """
 
     success: bool
-    balance: float
-    spent: float
-    orders: Sequence[Optional['MultiBuyOrder']]
     client: Union['Client', 'ClientAsync', None]
+    balance: Optional[float] = None
+    spent: Optional[float] = None
+    orders: Optional[Sequence[Optional['MultiBuyOrder']]] = None
+    left: int = 0
 
     @classmethod
     def de_json(
@@ -180,13 +188,13 @@ class MultiBuyResult(TraderClientObject):
                 case 401:
                     raise exceptions.Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise exceptions.OfferCreationFail('Ошибка создания заявки.')
+                    raise exceptions.InternalError('При создании запроса произошла неизвестная ошибка.')
                 case 2:
-                    raise exceptions.NotEnoughMoney(data['error'])
+                    logging.warning(data['error'])
                 case 3:
-                    raise exceptions.NoTradeLink('У Вас нет ссылки для обмена.')
+                    raise exceptions.NoTradeLink('Отсутствует сслыка для обмена.')
                 case 5:
-                    raise exceptions.NotEnoughMoney('Для покупки не достаточно средств.')
+                    raise exceptions.NotEnoughMoney('Недостаточно средств.')
 
         for i, offer in enumerate(data['orders']):
             data['orders'][i] = MultiBuyOrder.de_json(offer)

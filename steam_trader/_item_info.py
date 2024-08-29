@@ -61,7 +61,7 @@ class MinPrices(TraderClientObject):
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise InternalError('При выполнении запроса произошла ошибка.')
+                    raise InternalError('При выполнении запроса произошла неизвестная ошибка.')
                 case 2:
                     raise UnknownItem('Неизвестный предмет.')
 
@@ -71,7 +71,7 @@ class MinPrices(TraderClientObject):
 
 @dataclass
 class ItemInfo(TraderClientObject):
-    """Класс, представляющий группу предметов на сайте.
+    """Класс, представляющий информацию о группе предметов на сайте.
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
@@ -132,7 +132,7 @@ class ItemInfo(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.ItemInfo`, optional: Группа предметов на сайте.
+            :class:`steam_trader.ItemInfo`, optional: Информация о группе предметов.
         """
         if not cls.is_valid_model_data(data):
             return
@@ -144,7 +144,7 @@ class ItemInfo(TraderClientObject):
                 case 401:
                     raise Unauthorized('Неправильный api-токен.')
                 case 1:
-                    raise InternalError('При выполнении запроса произошла ошибка.')
+                    raise InternalError('При выполнении запроса произошла неизвестная ошибка.')
                 case 2:
                     raise UnknownItem('Неизвестный предмет.')
 
