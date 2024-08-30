@@ -3,6 +3,8 @@ import logging
 import functools
 from typing import Optional, Sequence, TypeVar, Callable, Any
 
+from ._misc import TradeMode
+
 from steam_trader.constants import SUPPORTED_APPIDS
 from steam_trader.exceptions import UnsupportedAppID
 from steam_trader import (
@@ -44,6 +46,7 @@ class ExtClient(Client):
 
     Новые методы:
         multi_sell - Аналог multi_buy. В отличие от него, возвращает последовательноасть из результатов продаж, а не один объект.
+        set_trade_mode - Позволяет задать режим торговли. Данного метода нет в документации.
 
     Raises:
         BadRequestError: Неправильный запрос.
@@ -102,7 +105,7 @@ class ExtClient(Client):
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'getinventory/'
-        params = {"gameid": gameid, "key": self.api_token}
+        params = {"gameid": gameid}
 
         if status is not None:
             for i, s in enumerate(status):
@@ -215,3 +218,30 @@ class ExtClient(Client):
                 count -= 1
 
         return results
+
+    @log
+    def set_trade_mode(self, state: int) -> Optional['TradeMode']:
+        """Задать режим торговли. Данного метода нет в документации.
+
+        Args:
+            state (:obj:`int`): Режим торговли.
+                0 - Торговля отключена.
+                1 - Торговля включена.
+
+        Returns:
+            :class:`steam_trader.ext.TradeMode`: Режим торговли.
+
+        Raises:
+            ValueError: Недопустимое значение state.
+        """
+
+        if state not in range(2):
+            raise ValueError(f'Недопустимое значение state :: {state}')
+
+        url = self.base_url + 'startstoptrading/'
+        result = (self._httpx_client or httpx).get(
+            url,
+            params={"state": state},
+            headers=self.headers
+        ).json()
+        return TradeMode.de_json(result, self)
