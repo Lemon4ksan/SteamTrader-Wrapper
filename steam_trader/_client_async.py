@@ -655,7 +655,7 @@ class ClientAsync(TraderClientObject):
 
         Raises:
             SaveFail: Не удалось сохранить ссылку обмена.
-            WrongTradeLink: Указана ссылка для обмена от другого Steam аккаунта.
+            WrongTradeLink: Указана ссылка для обмена от другого Steam аккаунта ИЛИ ссылка для обмена уже указана.
         """
 
         url = self.base_url + 'settradelink/'
@@ -678,7 +678,7 @@ class ClientAsync(TraderClientObject):
                     case 1:
                         raise SaveFail('Не удалось сохранить ссылку обмена')
             except KeyError:
-                raise WrongTradeLink('Указана ссылка для обмена от другого Steam аккаунта.')
+                raise WrongTradeLink('Указана ссылка для обмена от другого Steam аккаунта ИЛИ ссылка для обмена уже указана.')
 
     @log
     async def remove_trade_link(self) -> None:
