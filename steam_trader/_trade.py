@@ -19,7 +19,7 @@ class ItemsForExchange(TraderClientObject):
         success (:obj:`bool`): Результат запроса.
         items (Sequence[`steam_trader.ItemForExchange`, optional]): Последовательность предметов для обмена с ботом.
         descriptions (dict[:obj:`int`, :class:`steam_trader.TradeDescription`, optional]): Описания предметов
-            для обмена с ботом.
+            для обмена с ботом. Ключ - itemid предмета.
         client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
             Клиент Steam Trader.
     """
@@ -80,7 +80,7 @@ class ExchangeResult(TraderClientObject):
     Attributes:
         success: (:obj:`bool`): Результат запроса.
         offer_id (:obj:`int`): ID обмена в Steam.
-        code (:obj:`str`): 	Код проверки обмена.
+        code (:obj:`str`): Код проверки обмена.
         bot_steamid (:obj:`int`): SteamID бота, который отправил обмен.
         bot_nick (:obj:`str`): Ник бота.
         items (Sequence[:class:`steam_trader.ExchangeItem`, optional]): Cписок предметов для обмена с ботом.

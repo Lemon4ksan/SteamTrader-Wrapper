@@ -91,7 +91,7 @@ class ItemInfo(TraderClientObject):
         market_price (:obj:`float`, optional): Минимальная цена продажи. Может быть пустым.
         buy_price (:obj:`float`, optional): Максимальная цена покупки. Может быть пустым.
         steam_price (:obj:`float`, optional): Минимальная цена в Steam. Может быть пустым.
-        filters (:class:`steam_trader.Filters`, optional): Фильтры, используемые для поиска на сайте (нет в документации).
+        filters (:class:`steam_trader.Filters`, optional): Фильтры, используемые для поиска на сайте.
         sell_offers (Sequnce[`steam_trader.SellOffer`, optional]): Последовательность с предложениями о продаже.
         buy_offers (Sequnce[`steam_trader.BuyOffer`, optional]): Последовательность с предложениями о покупке.
         sell_history (Sequence[`steam_trader.SellHistoryItem`, optional]): Последовательность истории продаж.
