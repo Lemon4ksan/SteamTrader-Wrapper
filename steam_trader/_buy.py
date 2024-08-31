@@ -18,6 +18,7 @@ class BuyResult(TraderClientObject):
     Attributes:
         success (:obj:`bool`): Результат запроса.
         id (:obj:`int`): ID покупки.
+        gid (:obj:`int`): ID группы предметов.
         itemid (:obj:`int`): Униклаьный ID купленного предмета.
         price (:obj:`float`): Цена, за которую был куплен предмет с учётом скидки.
         new_price (:obj:`float`): Новая цена лучшего предложения о продаже для варианта покупки Commodity,

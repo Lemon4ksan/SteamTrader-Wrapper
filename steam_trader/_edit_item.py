@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Optional, Union
 
-from steam_trader import exceptions
+from . import exceptions
 from ._base import TraderClientObject
 
 if TYPE_CHECKING:
