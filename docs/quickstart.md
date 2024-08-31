@@ -1,10 +1,12 @@
 # Начало работы
 
 ## Получение ключа
-Перед началом работы необходимо получить токен для авторизации. Его можно получить [тут](https://steam-trader.com/api/).
+Перед началом работы необходимо получить токен для авторизации.
+
+Его можно получить [тут](https://steam-trader.com/api/).
 
 ## Инициализация клиента
-Начнём с импортирования библиотеки
+Начнём с импортирования библиотеки.
 ```python
 import steam_trader
 ```
@@ -31,6 +33,7 @@ with client:
 ### Что такое AppID, AssetID, ClassID, InstanceID и ContextID?
 
 AppID - это идентификатор игры с которой вы хотите взаимодействовать, или относится предмет.
+В библиотеке и документации встречается как gameid.
 
 AppID можно встретить в большинстве операций с предметами. Рекомендуется использовать константы для большего понимания.
 ```python
@@ -42,30 +45,50 @@ AssetID - это уникальный идентификатор для акти
 Объекты активов также могут иметь свойства количества, чтобы указать, сколько этого точного экземпляра пользователь имеет в случае однотипных предметов.
 Идентификаторы активов также могут меняться при торговле предметом, хотя classid и instanceid должны оставаться прежними, ЕСЛИ свойства предмета не изменились во время торговли.
 
-AssetID можно встретить в get_items_for_exchange(), get_items_for_exchange_p2p(), exchange(), exchange_p2p() и get_inventory().
+AssetID можно встретить в 
+[get_items_for_exchange](client.md#get_items_for_exchangeself), 
+[get_items_for_exchange_p2p](client.md#get_items_for_exchange_p2pself), 
+[exchange](client.md#exchangeself), 
+[exchange_p2p](client.md#exchange_p2pself) и 
+[get_inventory](client.md#get_inventoryself-gameid--statusnone).
 
 ---
 ClassID - это идентификатор, который определяет класс элемента, свойства которого одинаковы для всех элементов с этим идентификатором класса.
 
-ClassID можно встретить в get_items_for_exchange(), get_items_for_exchange_p2p(), exchange(), exchange_p2p() и get_item_info().
+ClassID можно встретить в 
+[get_items_for_exchange](client.md#get_items_for_exchangeself), 
+[get_items_for_exchange_p2p](client.md#get_items_for_exchange_p2pself), 
+[exchange](client.md#exchangeself), 
+[exchange_p2p](client.md#exchange_p2pself) и 
+[get_item_info](client.md#get_item_infoself-gid).
 
 ---
 InstanceID - Это идентификатор, описывающий экземпляр элемента, который наследует свойства от класса, причём идентификатор класса указан в экземпляре.
 
-InstanceID можно встретить в get_items_for_exchange(), get_items_for_exchange_p2p(), exchange(), exchange_p2p() и get_item_info().
+InstanceID можно встретить в 
+[get_items_for_exchange](client.md#get_items_for_exchangeself), 
+[get_items_for_exchange_p2p](client.md#get_items_for_exchange_p2pself), 
+[exchange](client.md#exchangeself), 
+[exchange_p2p](client.md#exchange_p2pself) и 
+[get_item_info](client.md#get_item_infoself-gid).
 
 ---
 ContextID - это способ организации/категоризирования предметов/активов/валюты. 
 Это просто целое число, но в документации Steam описывается способ сделать его в некоторой степени основанным на папках,
 разделив целое число на диапазоны битов и используя каждый диапазон битов для обозначения чего-то другого.
 
-ContextID можно встретить в get_items_for_exchange(), get_items_for_exchange_p2p(), exchange(), exchange_p2p() и get_item_info().
+ContextID можно встретить в 
+[get_items_for_exchange](client.md#get_items_for_exchangeself), 
+[get_items_for_exchange_p2p](client.md#get_items_for_exchange_p2pself), 
+[exchange](client.md#exchangeself), 
+[exchange_p2p](client.md#exchange_p2pself) и 
+[get_item_info](client.md#get_item_infoself-gid).
 
 ### Что такое GID и ItemID?
 
 GID - Это идентификатор группы предметов. Под ним подразумеваются все предложения о продаже предмета и общая информация о нём.
 
-GID можно найти в ссылке при просмотре на сайте или в предметах, получаемых через get_inventory() или напрямую через сайт.
+GID можно найти в ссылке при просмотре на сайте или в предметах, получаемых через [get_inventory](client.md#get_inventoryself-gameid--statusnone). или напрямую через сайт.
 ```
 https://steam-trader.com/tf2/1226-Refined-Metal
                    |---------^^^^----------|
@@ -75,7 +98,7 @@ https://steam-trader.com/tf2/1226-Refined-Metal
 
 ---
 ItemID - Это идентификатор конкретного предмета. Он позволяет отличить его от других предметов в одной категории.
-ItemID можно получить при покупке предмета или через get_inventory().
+ItemID можно получить при покупке предмета или через [get_inventory](client.md#get_inventoryself-gameid--statusnone).
 
 
 ## Создание запросов
@@ -102,7 +125,7 @@ orders = client.get_order_book(1556)
 sell_orders = orders.sell
 buy_orders = orders.buy
 
-inventory_items = client.get_inventory(440, status=[0]).items  # Предметы на продаже
+inventory_items = client.get_inventory(440, status=[0]).items
 for inventory_item in inventory_items:
     print(inventory_item.name, inventory_item.price)
 ```
@@ -151,7 +174,7 @@ logging.basicConfig(level=logging.INFO)
 ```
 
 !!! Подсказка
-    Если вы не хотите получать логи от модуля httpx то добавите это в свой код: ```logging.getLogger('httpx').setLevel(logging.WARNING)```.
+    Если вы хотите получать меньше логов от модуля httpx то добавите это в свой код: ```logging.getLogger('httpx').setLevel(logging.WARNING)```.
     Так вы будете получать только логи предупреждения и выше.
 
 ## Заключение

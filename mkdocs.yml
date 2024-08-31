@@ -1,0 +1,39 @@
+site_name: SteamTrader-Wrapper
+site_description: Неофициальная Python библиотека для работы с API сервиса Steam-Trader
+site_url: https://lemon4ksan.github.io/steam-trader/
+
+theme:
+    name: 'material'
+    palette:
+      - scheme: 'default'
+        media: '(prefers-color-scheme: light)'
+        toggle:
+          icon: 'material/lightbulb'
+          name: "Switch to dark mode"
+      - scheme: 'slate'
+        media: '(prefers-color-scheme: dark)'
+        primary: 'blue'
+        toggle:
+          icon: 'material/lightbulb-outline'
+          name: 'Switch to light mode'
+
+repo_name: SteamTrader-Wrapper
+repo_url: https://github.com/Lemon4ksan/SteamTrader-Wrapper
+edit_uri: ""
+
+nav:
+    - Введение: 'index.md'
+    - Начало работы: 'quickstart.md'
+    - Асинхронный клиент: 'async.md'
+    - Расширенный функционал: 'ext_guide.md'
+    - Справочник по API:
+      - Основной клиент: 'client.md'
+      - Датаклассы: 'dataclasses.md'
+      - Ext клиент: 'ext.md'
+      - Исключения: 'exceptions.md'
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      css_class: highlight
+  - mkautodoc
