@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='UTF-8') as f:
 
 setup(
     name='steam-trader',
-    version='0.2.3',
+    version='0.2.4',
     author='Lemon4ksan (Bananchiki)',
     author_email='senya20151718@gmail.com',
     license='BSD License',
@@ -36,4 +36,8 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
     python_requires='>=3.12',
+    project_urls={
+        'Документация': 'https://lemon4ksan.github.io/steam-trader/',
+        'Discord': 'https://discord.gg/DGRHEnUW'
+    }
 )

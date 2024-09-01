@@ -75,7 +75,7 @@ class ItemsForExchange(TraderClientObject):
 
 @dataclass
 class ExchangeResult(TraderClientObject):
-    """Класс, представляющий результат обмена с ботом.
+    """Класс, представляющий результат инициализации обмена с ботом.
 
     Attributes:
         success: (:obj:`bool`): Результат запроса.
@@ -163,7 +163,7 @@ class ExchangeResult(TraderClientObject):
 
 @dataclass
 class ExchangeP2PResult(TraderClientObject):
-    """Класс, представляющий результат p2p обмена.
+    """Класс, представляющий результат инициализации p2p обмена.
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
