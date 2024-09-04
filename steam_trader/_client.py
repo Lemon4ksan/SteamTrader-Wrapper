@@ -274,7 +274,7 @@ class Client(TraderClientObject):
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
-            NotFoundError: Предмет не был найден.
+            UnknownItem: Предмет не был найден.
             IncorrectPrice: Неправильная цена заявки.
             NotEnoughMoney: Недостаточно средств.
         """

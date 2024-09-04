@@ -49,7 +49,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ## Покупка
 
@@ -97,7 +97,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `BuyOrderResult`
 
@@ -122,7 +122,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `MultiBuyResult`
 
@@ -147,7 +147,7 @@
 `orders`
 > Последовательность купленных предметов. Указывается если 'success' = True
 > 
-> **Тип**: Sequence[ *class* MultiBuyOrder, optional ], optional
+> **Тип**: Sequence[ *class* [`MultiBuyOrder`](#multibuyitem), optional ], optional
 
 `left`
 > Сколько предметов по этой цене осталось. Если операция прошла успешно, всегда равен 0.
@@ -157,7 +157,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ## Редактирование
 
@@ -207,7 +207,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `DeleteItemResult`
 
@@ -247,7 +247,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `GetDownOrdersResult`
 
@@ -272,7 +272,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ## Обмен
 
@@ -289,7 +289,7 @@
 `items`
 > Последовательность предметов для обмена с ботом.
 > 
-> **Тип**: Sequence[ *class* `ItemForExchange`, optional ]
+> **Тип**: Sequence[ *class* [`ItemForExchange`](#itemforexchange), optional ]
 
 `description`
 > Описания предметов для обмена с ботом. Ключ - itemid предмета.
@@ -299,7 +299,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `ExchangeResult`
 
@@ -334,12 +334,12 @@
 `items`
 > Cписок предметов для обмена с ботом.
 > 
-> **Тип**: Sequence[ *class* `ExchangeItem`, optional ]
+> **Тип**: Sequence[ *class* [`ExchangeItem`](#exchangeitem), optional ]
 
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `ExchangeP2PResult`
 > Класс, представляющий результат инициализации p2p обмена.
@@ -352,17 +352,17 @@
 `send`
 > Массив с данными для создания нового обмена в Steam.
 > 
-> **Тип**: Sequence[ *class* `P2PSendObject`, optional ]
+> **Тип**: Sequence[ *class* [`P2PSendObject`](#p2psendobject), optional ]
 
 `recieve`
 > Массив с данными для принятия обмена.
 > 
-> **Тип**: Sequence[ *class* `RecieveObject`, optional ]
+> **Тип**: Sequence[ *class* [`P2PRecieveObject`](#p2preceiveobject), optional ]
 
 `confirm`
 > Массив с данными для подтверждения обмена в мобильном аутентификаторе.
 > 
-> **Тип**: Sequence[ *class* `ConfirmObject`, optional ]
+> **Тип**: Sequence[ *class* [`P2PConfirmObject`](#p2pconfirmobject), optional ]
 
 `cancel`
 > Массив из ID обменов, которые нужно отменить.
@@ -372,7 +372,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ## Информация
 
@@ -414,7 +414,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `ItemInfo`
 
@@ -504,22 +504,22 @@
 `sell_offers`
 > Последовательность с предложениями о продаже.
 > 
-> **Тип**: Sequence[ *class* `SellOffer`, optional ]
+> **Тип**: Sequence[ *class* [`SellOffer`](#selloffer), optional ]
 
 `buy_offers`
 > Последовательность с предложениями о покупке.
 > 
-> **Тип**: Sequence[ *class* `BuyOffer`, optional ]
+> **Тип**: Sequence[ *class* [`BuyOffer`](#buyoffer), optional ]
 
 `sell_history`
 > Последовательность истории продаж.
 > 
-> **Тип**: Sequence[ *class* `SellHistoryItem`, optional ]
+> **Тип**: Sequence[ *class* [`SellHistoryItem`](#sellhistoryitem), optional ]
 
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `OrderBook`
 
@@ -556,7 +556,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ## Аккаунт
 
@@ -591,12 +591,12 @@
 `items`
 > Последовательность с предметами в инвентаре.
 > 
-> **Тип**: Sequence[ *class* `InventoryItem`, optional ]
+> **Тип**: Sequence[ *class* [`InventoryItem`](#inventoryitem), optional ]
 
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `BuyOrders`
 
@@ -611,12 +611,12 @@
 `data`
 > Последовательность запросов на покупку.
 > 
-> **Тип**: Sequence[ *class* `BuyOrder`, optional ]
+> **Тип**: Sequence[ *class* [`BuyOrder`](#buyorder), optional ]
 
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `Discounts`
 
@@ -631,12 +631,12 @@
 `data`
 > Словарь, содержащий комисии/скидки.
 > 
-> **Тип**: dict[ `int`, *class* `BuyOrder`, optional ]
+> **Тип**: dict[ `int`, *class* [`Discount`](#discount), optional ]
 
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `OperationsHistory`
 
@@ -651,12 +651,12 @@
 `data`
 > Последовательность историй операций.
 > 
-> **Тип**: Sequence[ *class* `OperationsHistoryItem`, optional ]
+> **Тип**: Sequence[ *class* [`OperationsHistoryItem`](#operationshistoryitem), optional ]
 
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `InventoryState`
 
@@ -686,7 +686,7 @@
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
 ### `AltWebSocket`
 
@@ -701,10 +701,584 @@
 `messages`
 > Последовательность с WebSocket сообщениями.
 > 
-> **Тип**: Sequence[ *class* AltWebSocketMessage, optional ]
+> **Тип**: Sequence[ *class* [`AltWebSocketMessage`](#altwebsocketmessage), optional ]
 
 `client`
 > Клиент Steam Trader.
 > 
-> **Тип**: Union[ *class* `Client`, *class* `ClientAsync`, `None` ]
+> **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
 
+## Фильтры
+
+### `Filters`
+
+::: steam_trader.Filters
+> Класс, представляющий фильтры, используемые для поиска на сайте.
+
+`quality`
+> Качество предмета (TF2, DOTA2).
+> 
+> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+
+`type`
+> Тип предмета (TF2, DOTA2).
+> 
+> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+
+`used_by`
+> Класс, который использует предмет (TF2).
+> 
+> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+
+`craft`
+> Информация о карфте (TF2).
+> 
+> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+
+`region`
+> Регион игры (SteamGift).
+> 
+> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+
+`genre`
+> Жанр игры (SteamGift).
+> 
+> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+
+`mode`
+> Тип игры, взаимодействие с Steam (SteamGift).
+> 
+> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+
+`trade`
+> Информация об обмене (SteamGift).
+> 
+> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+
+`rarity`
+> Редкость предмета (DOTA2).
+> 
+> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+
+`hero`
+> Герой, который использует предмет (DOTA2).
+> 
+> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+
+### `Filter`
+
+::: steam_trader.Filter
+> Класс, представляющий фильтр.
+
+`id`
+> ID данного фильтра, может быть пустым. Если вы создаёте класс вручную, то обязательно укажите этот параметр.
+> 
+> **Тип**: `int`, optional
+
+`title`
+> Тайтл данного фильтра, может быть пустым.
+> 
+> **Тип**: `str`, optional
+
+`color`
+> Цвет данного фильтра, может быть пустым.
+> 
+> **Тип**: `str`, optional
+
+## Подклассы
+
+### `MultiBuyOrder`
+
+::: steam_trader.MultiBuyOrder
+> Класс, представляющий предмет из запроса на мульти-покупку
+
+`id`
+> ID заявки.
+> 
+> **Тип**: `int`
+
+`itemid`
+> Уникальный ID предмета.
+> 
+> **Тип**: `int`
+
+`price`
+> Цена, за которую был куплен предмет с учётом скидки.
+> 
+> **Тип**: `float`
+
+### `ItemForExchange`
+
+::: steam_trader.ItemForExchange
+> Класс, представляющий информацию о предмете для передачи/получения боту.
+
+`id`
+> ID покупки/продажи.
+> 
+> **Тип**: `int`
+
+`assetid`
+> AssetID предмета в Steam.
+> 
+> **Тип**: `int`
+
+`gameid`
+> AppID приложения в Steam.
+> 
+> **Тип**: `int`
+
+`contextid`
+> ContextID приложения в Steam.
+> 
+> **Тип**: `int`
+
+`classid`
+> Параметр ClassID в Steam.
+> 
+> **Тип**: `int`
+
+`instanceid`
+> Параметр InstanceID в Steam.
+> 
+> **Тип**: `int`
+
+`gid`
+> ID группы предметов.
+> 
+> **Тип**: `int`
+
+`itemid`
+> Уникальный ID предмета.
+> 
+> **Тип**: `int`
+
+`price`
+> Цена предмета, за которую купили/продали, без учета комиссии/скидки.
+> 
+> **Тип**: `float`
+
+`currency`
+> Валюта покупки/продажи.
+> 
+> **Тип**: `int`
+
+`timer`
+> Cколько времени осталось до передачи боту/окончания гарантии.
+> 
+> **Тип**: `int`
+
+`asset_type`
+> Значение 0 - этот предмет для передачи боту. Значение 1 - для приёма предмета от бота.
+> 
+> **Тип**: `int`
+
+`percent`
+> Размер комиссии/скидки в процентах, за которую был продан/куплен предмет.
+> 
+> **Тип**: `float`
+
+`steam_item`
+> Присутствует ли предмет в вашем инвентаре Steam.
+> 
+> **Тип**: `bool`
+
+### `ExchangeItem`
+
+::: steam_trader.ExchangeItem
+> Класс, представляющий предмет, на который был отправлен обмен.
+
+`id`
+> ID покупки/продажи.
+> 
+> **Тип**: `int`
+
+`assetid`
+> AssetID предмета в Steam.
+> 
+> **Тип**: `int`
+
+`gameid`
+> AppID приложения в Steam.
+> 
+> **Тип**: `int`
+
+`contextid`
+> ContextID приложения в Steam.
+> 
+> **Тип**: `int`
+
+`classid`
+> Параметр ClassID в Steam.
+> 
+> **Тип**: `int`
+
+`instanceid`
+> Параметр InstanceID в Steam.
+> 
+> **Тип**: `int`
+
+`type`
+> Значение 0 - этот предмет для передачи боту. Значение 1 - для приёма предмета от бота.
+> 
+> **Тип**: `int`
+
+`itemid`
+> Уникальный ID предмета.
+>
+> **Тип**: `int`
+
+`gid`
+> ID группы предметов.
+>
+> **Тип**: `int`
+
+`price`
+> Цена, за которую предмет был куплен/продан с учётом скидки/комиссии.
+> 
+> **Тип**: `float`
+
+`currency`
+> Валюта покупки/продажи.
+> 
+> **Тип**: `int`
+
+`percent`
+> Размер комиссии/скидки в процентах, за которую был продан/куплен предмет.
+> 
+> **Тип**: `float`
+
+### `P2PTradeOffer`
+
+[//]: # (::: steam_trader.P2PTradeOffer)
+> Класс, представляющий данные для совершения p2p трейда. Незадокументированно.
+
+### `P2PSendObject`
+
+::: steam_trader.P2PSendObject
+> Класс, представляющий ссылку на p2p обмен и сам обмен.
+
+`trade_link`
+> Ссылка для p2p обмена.
+> 
+> **Тип**: `str`
+
+`trade_offer`
+> Параметры для POST запроса (https://steamcommunity.com/tradeoffer/new/send) при создании обмена в Steam. 
+> Вместо {sessionid} нужно указывать ID своей сессии в Steam.
+> 
+> **Тип**: *class* [`P2PTradeOffer`](#p2ptradeoffer), optional
+
+### `P2PReceiveObject`
+
+::: steam_trader.P2PReceiveObject
+> Класс, представляющий массив с данными для принятия обмена.
+
+`offerid`
+> ID обмена в Steam.
+> 
+> **Тип**: `int`
+
+`code`
+> Код проверки обмена.
+> 
+> **Тип**: `str`
+
+`items`
+> Ссылка для p2p обмена.
+> 
+> **Тип**: Sequence[ *class* [`ExchangeItem`](#exchangeitem), optional]
+
+`partner_steamid`
+> SteamID покупателя.
+> 
+> **Тип**: `int`
+
+### `P2PConfirmObject`
+
+::: steam_trader.P2PConfirmObject
+> Класс, представляющий массив с данными для подтверждения обмена в мобильном аутентификаторе.
+
+`offerid`
+> ID обмена в Steam.
+> 
+> **Тип**: `int`
+
+`code`
+> Код проверки обмена.
+> 
+> **Тип**: `str`
+
+`partner_steamid`
+> SteamID покупателя.
+> 
+> **Тип**: `int`
+
+
+### `SellOffer`
+
+::: steam_trader.SellOffer
+> Класс, представляющий информацию о предложении продажи.
+
+`id`
+> ID заявки.
+> 
+> **Тип**: `int`
+
+`classid`
+> ClassID предмета в Steam.
+> 
+> **Тип**: `int`
+
+`instanceid`
+> InstanceID предмета в Steam.
+> 
+> **Тип**: `int`
+
+`itemid`
+> Уникальный ID предмета.
+> 
+> **Тип**: `int`
+
+`price`
+> Цена предложения о покупке/продаже.
+> 
+> **Тип**: `float`
+
+`currency`
+> Валюта покупки/продажи.
+> 
+> **Тип**: `int`
+
+### `BuyOffer`
+
+::: steam_trader.BuyOffer
+> Класс, представляющий информацию о предложении продажи.
+
+`id`
+> ID заявки.
+> 
+> **Тип**: `int`
+
+`price`
+> Цена предложения о покупке/продаже.
+> 
+> **Тип**: `float`
+
+`currency`
+> Валюта покупки/продажи.
+> 
+> **Тип**: `int`
+
+### `SellHistoryItem`
+
+::: steam_trader.SellHistoryItem
+> Класс, представляющий информацию о предмете в истории продаж.
+
+`date`
+> Timestamp времени продажи.
+> 
+> **Тип**: `int`
+
+`price`
+> Цена предложения о покупке/продаже.
+> 
+> **Тип**: `float`
+
+### `BuyOrder`
+
+::: steam_trader.BuyOrder
+> Класс, представляющий информацию о запросе на покупку.
+
+`id`
+> ID заявки на покупку.
+> 
+> **Тип**: `int`
+
+`gid`
+> ID группы предметов.
+> 
+> **Тип**: `int`
+
+`gameid`
+> AppID приложения в Steam.
+> 
+> **Тип**: `int`
+
+`hash_name`
+> Параметр market_hash_name в Steam.
+> 
+> **Тип**: `str`
+
+`date`
+> Timestamp подачи заявки.
+> 
+> **Тип**: `int`
+
+`price`
+> Предлагаемая цена покупки без учёта скидки.
+> 
+> **Тип**: `float`
+
+`currency`
+> Валюта, значение 1 - рубль.
+> 
+> **Тип**: `int`
+
+`position`
+> Позиция заявки в очереди.
+> 
+> **Тип**: `int`
+
+### `InventoryItem`
+
+::: steam_trader.InventoryItem
+> Класс, представляющий предмет в инвентаре.
+
+`id`
+> ID заявки на покупку/продажу. Может быть пустым.
+> 
+> **Тип**: `int`, optional
+
+`assetid`
+> AssetID предмета в Steam. Может быть пустым.
+> 
+> **Тип**: `int`, optional
+
+`gid`
+> ID группы предметов.
+> 
+> **Тип**: `int`
+
+`itemid`
+> Уникальный ID предмета.
+> 
+> **Тип**: `int`
+
+`price`
+> Цена, за которую предмет был выставлен/куплен/продан предмет без учёта скидки/комиссии. Может быть пустым.
+> 
+> **Тип**: `float`, optional
+
+`price`
+> Валюта, за которую предмет был выставлен/куплен/продан. Значение 1 - рубль. Может быть пустым.
+> 
+> **Тип**: `int`, optional
+
+`timer`
+> Время, которое доступно для приема/передачи этого предмета. Может быть пустым.
+> 
+> **Тип**: `int`, optional
+
+`type`
+> Тип предмета. 0 - продажа, 1 - покупка. Может быть пустым.
+> 
+> **Тип**: `int`, optional
+
+`status`
+> Статус предмета.
+>
+* 2 - Предмет в инвентаре Steam не выставлен на продажу.
+* 0 - Предмет выставлен на продажу или выставлена заявка на покупку. Для различия используется поле type.
+* 1 - Предмет был куплен/продан и ожидает передачи боту или P2P способом. Для различия используется поле type.
+* 2 - Предмет был передан боту или P2P способом и ожидает приёма покупателем.
+* 6 - Предмет находится в режиме резервного времени. На сайте отображается как "Проверяется" после истечения времени на передачу боту или P2P способом.
+
+> **Тип**: `int`
+
+`position`
+> Позиция предмета в списке заявок на покупку/продажу. Может быть пустым.
+> 
+> **Тип**: `int`, optional
+
+`nc`
+> ID заявки на продажу для бескомиссионной ссылки. Может быть пустым.
+> 
+> **Тип**: `int`, optional
+
+`percent`
+> Размер скидки/комиссии в процентах, с которой был куплен/продан предмет. Может быть пустым.
+> 
+> **Тип**: `float`, optional
+
+`steam_item`
+> Присутствует ли предмет в вашем инвентаре Steam.
+> 
+> **Тип**: `bool`
+
+`nm`
+> Незадокументированно.
+> 
+> **Тип**: `bool`
+
+### `Discount`
+
+::: steam_trader.Discount
+> Класс, представляющий информацию о комиссии/скидке в определённой игре.
+
+`total_buy`
+> Cколько денег потрачено на покупки.
+> 
+> **Тип**: `float`
+
+`total_sell`
+> Cколько денег получено с продажи предметов.
+> 
+> **Тип**: `float`
+
+`discount`
+> Cкидка на покупку. Величина в %.
+> 
+> **Тип**: `float`
+
+`percent`
+> Комиссия на продажу. Величина в %.
+> 
+> **Тип**: `float`
+
+### `OperationsHistoryItem`
+
+::: steam_trader.OperationsHistoryItem
+> Класс, представляющий информацию о предмете в истории операций.
+
+`id`
+> ID Операции.
+> 
+> **Тип**: `int`
+
+`name`
+> Название операции.
+> 
+> **Тип**: `str`
+
+`type`
+> Тип операции. 0 - продажа, 1 - покупка.
+> 
+> **Тип**: `int`
+
+`amount`
+> Сумма операции.
+> 
+> **Тип**: `float`
+
+`currency`
+> Валюта, значение 1 - рубль.
+> 
+> **Тип**: `int`
+
+`date`
+> Timestamp операции.
+> 
+> **Тип**: `int`
+
+### `AltWebSocketMessage`
+
+::: steam_trader.AltWebSocketMessage
+> Класс, представляющий AltWebSsocket сообщение.
+
+`type`
+> 
+> **Тип**: `int`
+
+`data`
+>
+> **Тип**: `str`

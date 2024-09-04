@@ -78,7 +78,7 @@ async def main():
 > * **assetid** `int`: AssetID предмета в Steam.
 > * **price** `int`: Цена, за которую хотите продать предмет без учёта комиссии/скидки.
 >
-> **Возвращает**: *class* `SellResult`, optional
+> **Возвращает**: *class* [`SellResult`](dataclasses.md#sellresult), optional
 
 #### `buy`(*self, id, type, price, currency=1*)
 > Создать предложение о покупке предмета по строго указанной цене.
@@ -86,7 +86,7 @@ async def main():
 > 
 > **Аргументы**
 > 
-> * **id** `int`: В качества ID может выступать:
+> * **id** Union[ `str`, `int` ]: В качества ID может выступать:
     - GID для варианта покупки Commodity.
     - Часть ссылки после nc/ (nc/L8RJI7XR96Mmo3Bu) для варианта покупки NoCommission.
     - ID предложения о продаже для варианта покупки Offer (найти их можно в ItemInfo).
@@ -97,7 +97,7 @@ async def main():
 > !!! Заметка
     Сайт пока работает только с рублями. Не меняйте значение currency.
 > 
-> **Возвращает**: *class* `BuyResult`, optional
+> **Возвращает**: *class* [`BuyResult`](dataclasses.md#buyresult), optional
 
 #### `create_buy_order`(*self, gid, price, \*, count=1*)
 > Создать заявку на покупку предмета с определённым GID.
@@ -111,7 +111,7 @@ async def main():
 > * **price** `float`: Цена предмета, за которую будете его покупать без учёта комиссии/скидки.
 > * **count** `int`: Количество заявок для размещения (не более 500). По умолчанию - 1.
 > 
-> **Возвращает**: *class* `BuyOrderResult`, optional
+> **Возвращает**: *class* [`BuyOrderResult`](dataclasses.md#buyorderresult), optional
 
 #### `multi_buy`(*self, gid, max_price, count*)
 > Создать запрос о покупке нескольких предметов с определённым GID.
@@ -128,7 +128,7 @@ async def main():
 > * **max_price** `float`: Максимальная цена одного предмета без учёта комиссии/скидки.
 > * **count** `int`: Количество предметов для покупки.
 > 
-> **Возвращает**: *class* `MultiBuyResult`, optional
+> **Возвращает**: *class* [`MultiBuyResult`](dataclasses.md#multibuyresult), optional
 
 #### `edit_price`(*self, id, price*)
 > Редактировать цену предмета/заявки на покупку.
@@ -140,7 +140,7 @@ async def main():
 > * **id** `int`: ID предложения о продаже/заявки на покупку.
 > * **price** `float`: Новая цена, за которую хотите продать/купить предмет без учёта комиссии/скидки.
 > 
-> **Возвращает**: *class* `EditPriceResult`, optional
+> **Возвращает**: *class* [`EditPriceResult`](dataclasses.md#editpriceresult), optional
  
 #### `delete_item`(*self, id*)
 > Снять предмет с продажи/заявку на покупку.
@@ -149,7 +149,7 @@ async def main():
 > 
 > * **id** `int`: ID продажи/заявки на покупку.
 >
-> **Возвращает**: *class* `DeleteitemResult`, optional
+> **Возвращает**: *class* [`DeleteitemResult`](dataclasses.md#deleteitemresult), optional
 
 #### `get_down_orders`(*self, gameid, \*, order_type='sell'*)
 > Снять все заявки на продажу/покупку предметов.
@@ -161,12 +161,12 @@ async def main():
     - "sell" - предложения о ПРОДАЖЕ. Значение по умолчанию.
     - "buy" - предложения о ПОКУПКЕ.
 > 
-> **Возвращает**: *class* `GetDownOrdersResult`, optional
+> **Возвращает**: *class* [`GetDownOrdersResult`](dataclasses.md#getdownordersresult), optional
 
 #### `get_items_for_exchange`(*self*)
 > Получить список предметов для p2p обмена.
 > 
-> **Возвращает**: *class* `ItemsForExchange`, optional
+> **Возвращает**: *class* [`ItemsForExchange`](dataclasses.md#itemsforexchange), optional
 
 #### `exchange`(*self*)
 > Выполнить обмен с ботом.
@@ -175,12 +175,12 @@ async def main():
     Вы сами должны принять трейд в приложении Steam, у вас будет 3 часа на это.
     В противном случае трейд будет отменён.
 > 
-> **Возвращает**: *class* `ExchangeResult`, optional
+> **Возвращает**: *class* [`ExchangeResult`](dataclasses.md#exchangeresult), optional
 
 #### `get_items_for_exchange_p2p`(*self*)
 > Получить список предметов для p2p обмена.
 > 
-> **Возвращает**: *class* `ItemsForExchange`, optional
+> **Возвращает**: *class* [`ItemsForExchange`](dataclasses.md#itemsforexchange), optional
 
 #### `exchange_p2p`(*self*)
 > Выполнить p2p обмен.
@@ -188,7 +188,7 @@ async def main():
 > !!! Заметка
     Вы сами должны передать предмет клиенту из полученной информации.
 > 
-> **Возвращает**: *class* `ExchangeP2PResult`, optional
+> **Возвращает**: *class* [`ExchangeP2PResult`](dataclasses.md#exchangep2presult), optional
 
 #### `get_min_prices`(*self, gid, currency=1*)
 > Получить минимальные/максимальные цены предмета.
@@ -200,7 +200,7 @@ async def main():
 > !!! Заметка
     Сайт пока работает только с рублями. Не меняйте значение currency.
 >
-> **Возвращает**: *class* `MinPrices`, optional
+> **Возвращает**: *class* [`MinPrices`](dataclasses.md#minprices), optional
 
 #### `get_item_info`(*self, gid*)
 > Получить информацию о группе предметов.
@@ -209,7 +209,7 @@ async def main():
 >
 > * **gid** `int`: ID группы предметов.
 > 
-> **Возвращает**: *class* `ItemInfo`, optional
+> **Возвращает**: *class* [`ItemInfo`](dataclasses.md#iteminfo), optional
 
 #### `get_order_book`(*self, gid, \*, mode='all', limit=None*)
 > Получить заявки о покупке/продаже предмета.
@@ -223,12 +223,12 @@ async def main():
     - "buy" - отображать только заявки на ПОКУПКУ.
 > * **limit** `int`, optional: Максимальное количество строк в списке. По умолчанию - неограниченно.
 > 
-> **Возвращает**: *class* `OrderBook`, optional
+> **Возвращает**: *class* [`OrderBook`](dataclasses.md#orderbook), optional
 
 #### `get_web_socket_token`(*self*)
 > Получить токен для авторизации в WebSocket.
 > 
-> **Возвращает**: *class* `WebSocketToken`, optional
+> **Возвращает**: *class* [`WebSocketToken`](dataclasses.md#websockettoken), optional
 
 #### `get_inventory`(*self, gameid, \*, status=None*)
 > Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
@@ -237,35 +237,37 @@ async def main():
 > **Аргументы**
 > 
 > * **gameid** `int`: AppID приложения в Steam.
-> * **status** `Sequnce[int]`, optional: Указывается, чтобы получить список предметов с определенным статусом.
+> * **status** Sequence[ `int` ], optional: Указывается, чтобы получить список предметов с определенным статусом.
     - 0 - В продаже
     - 1 - Принять
     - 2 - Передать
     - 3 - Ожидается
     - 4 - Заявка на покупку
 > 
-> **Возвращает**: *class* `Inventory`, optional
+> **Возвращает**: *class* [`Inventory`](dataclasses.md#inventory), optional
 
 #### `get_buy_orders`(*self, \*, gameid=None, gid=None*)
 > Получить последовательность заявок на покупку. По умолчанию возвращаются заявки для всех предметов из всех разделов.
 > При указании соответствующих параметров можно получить заявки из определённого раздела и/или предмета.
 > 
 > **Аргументы**
+> 
 > * **gameid** `int`: AppID приложения в Steam.
 > * **gid** `int`: ID группы предметов.
 > 
-> **Возвращает**: *class* `BuyOrders`, optional
+> **Возвращает**: *class* [`BuyOrders`](dataclasses.md#buyorders), optional
 
 #### `get_discounts`(*self*)
 > Получить комиссии/скидки и оборот на сайте.
 > Данные хранятся в словаре data, где ключ - это AppID игры в Steam.
 >
-> **Возвращает**: *class* `Discounts`, optional
+> **Возвращает**: *class* [`Discounts`](dataclasses.md#discounts), optional
 
 #### `set_trade_link`(*self, trade_link*)
 > Установить ссылку для обмена.
 > 
 > **Аргументы**
+> 
 > * **trade_link** `str`: Ссылка для обмена. Например, https://steamcommunity.com/tradeoffer/new/?partner=453486961&token=ZhXMbDS9
 
 #### `remove_trade_link`(*self*)
@@ -275,6 +277,7 @@ async def main():
 > Получить историю операций. По умолчанию все типы.
 > 
 > **Аргументы**
+> 
 > * **operation_type** `int`, optional: Тип операции. Может быть пустым.
     - 1 - Покупка предмета
     - 2 - Продажа предмета
@@ -284,24 +287,26 @@ async def main():
     - 9 - Ожидание покупки
     - 10 - Штрафной балл
 > 
-> **Возвращает**: *class* `OperationsHistory`, optional
+> **Возвращает**: *class* [`OperationsHistory`](dataclasses.md#operationshistory), optional
 
 #### `update_inventory`(*self, gameid*)
 > Обновить инвентарь игры на сайте.
 > 
 > **Аргументы**
+> 
 > * **gameid** `int`: AppID приложения в Steam.
 
 #### `get_inventory_state`(*self, gameid*)
 > Получить текущий статус обновления инвентаря.
 > 
 > **Аргументы**
+> 
 > * **gameid** `int`: AppID приложения в Steam.
 >
-> **Возвращает**: *class* `InventoryState`, optional
+> **Возвращает**: *class* [`InventoryState`](dataclasses.md#inventorystate), optional
 
 #### `trigger_alt_web_socket`(*self*)
 > Создать запрос альтернативным WebSocket.
 > Для поддержания активного соединения нужно делать этот запрос каждые 2 минуты.
 > 
-> **Возвращает**: *class* `AltWebSocket`, optional
+> **Возвращает**: *class* [`AltWebSocket`](dataclasses.md#altwebsocket), optional

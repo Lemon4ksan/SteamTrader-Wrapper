@@ -25,6 +25,7 @@ from ._misc import ItemForExchange
 from ._misc import TradeDescription
 from ._misc import ExchangeItem
 
+from ._p2p import P2PTradeOffer
 from ._p2p import P2PSendObject
 from ._p2p import P2PReceiveObject
 from ._p2p import P2PConfirmObject
@@ -91,6 +92,7 @@ __all__ = [
     'ExchangeP2PResult',
     'EditPriceResult',
     'P2PReceiveObject',
+    'P2PTradeOffer',
     'ClientAsync',
     'SellResult',
     'TradeDescription',

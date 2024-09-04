@@ -68,7 +68,7 @@ class EditPriceResult(TraderClientObject):
                 case 1:
                     raise exceptions.InternalError('При выполнении запроса произошла неизвестная ошибка.')
                 case 2:
-                    raise exceptions.NotFoundError('Предмет не был найден.')
+                    raise exceptions.UnknownItem('Предмет не был найден.')
                 case 4:
                     raise exceptions.IncorrectPrice(data['error'])
                 case 5:
