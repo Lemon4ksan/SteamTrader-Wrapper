@@ -4,7 +4,7 @@
 ![PyPI - Status](https://img.shields.io/pypi/status/steam-trader)
 
 <p align="left">
-	<a href="https://discord.gg/DGRHEnUW">
+	<a href="https://discord.gg/hD7Dscsr33">
       <img height="35.48" alt="Сервер" src="https://github.com/user-attachments/assets/b7c8a272-b48c-411f-aca3-6512086a9a18">
    </a>
 </p>
