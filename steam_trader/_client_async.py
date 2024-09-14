@@ -109,7 +109,7 @@ class ClientAsync(TraderClientObject):
         return result['balance']
 
     @log
-    async def sell(self, itemid: int, assetid: int, price: float) -> Optional['SellResult']:
+    async def sell(self, itemid: int, assetid: int, price: float) -> 'SellResult':
         """Создать предложение о продаже определённого предмета.
 
         Note:
@@ -124,7 +124,7 @@ class ClientAsync(TraderClientObject):
             price (:obj:`float`): Цена, за которую хотите продать предмет без учёта комиссии/скидки.
 
         Returns:
-            :class:`steam_trader.SellResult, optional`: Результат создания предложения о продаже.
+            :class:`steam_trader.SellResult`: Результат создания предложения о продаже.
 
         Raises:
             OfferCreationFail: При создании заявки произошла неизвестная ошибка.
@@ -145,7 +145,7 @@ class ClientAsync(TraderClientObject):
         return SellResult.de_json(result.json(), self)
 
     @log
-    async def buy(self, _id: Union[int, str], _type: int, price: float, currency: int = 1) -> Optional['BuyResult']:
+    async def buy(self, _id: Union[int, str], _type: int, price: float, currency: int = 1) -> 'BuyResult':
         """Создать предложение о покупке предмета по строго указанной цене.
 
         Если в момент покупки цена предложения о продаже изменится, покупка не совершится.
@@ -164,7 +164,7 @@ class ClientAsync(TraderClientObject):
             currency (:obj:`int`): Валюта покупки. Значение 1 - рубль.
 
         Returns:
-            :class:`steam_trader.BuyResult`, optional: Результат создания запроса о покупке.
+            :class:`steam_trader.BuyResult`: Результат создания запроса о покупке.
 
         Raises:
             OfferCreationFail: При создании заявки произошла неизвестная ошибка.
@@ -182,7 +182,7 @@ class ClientAsync(TraderClientObject):
         return BuyResult.de_json(result.json(), self)
 
     @log
-    async def create_buy_order(self, gid: int, price: float, *, count: int = 1) -> Optional['BuyOrderResult']:
+    async def create_buy_order(self, gid: int, price: float, *, count: int = 1) -> 'BuyOrderResult':
         """Создать заявку на покупку предмета с определённым GID.
 
         Note:
@@ -197,7 +197,7 @@ class ClientAsync(TraderClientObject):
             count (:obj:`int`): Количество заявок для размещения (не более 500). По умолчанию - 1.
 
         Returns:
-            :class:`steam_trader.BuyOrderResult, optional`: Результат созданния заявки на покупку.
+            :class:`steam_trader.BuyOrderResult`: Результат созданния заявки на покупку.
 
         Raises:
             OfferCreationFail: При создании заявки произошла неизвестная ошибка.
@@ -219,7 +219,7 @@ class ClientAsync(TraderClientObject):
         return BuyOrderResult.de_json(result.json(), self)
 
     @log
-    async def multi_buy(self, gid: int, max_price: float, count: int) -> Optional['MultiBuyResult']:
+    async def multi_buy(self, gid: int, max_price: float, count: int) -> 'MultiBuyResult':
         """Создать запрос о покупке нескольких предметов с определённым GID.
 
         Будут куплены самые лучшие (дешёвые) предложения о продаже.
@@ -238,7 +238,7 @@ class ClientAsync(TraderClientObject):
             count (:obj:`int`): Количество предметов для покупки.
 
         Returns:
-            :class:`steam_trader.MultiBuyResult`, optional: Результат создания запроса на мульти-покупку.
+            :class:`steam_trader.MultiBuyResult`: Результат создания запроса на мульти-покупку.
 
         Raises:
             OfferCreationFail: При создании заявки произошла неизвестная ошибка.
@@ -259,7 +259,7 @@ class ClientAsync(TraderClientObject):
         return MultiBuyResult.de_json(result.json(), self)
 
     @log
-    async def edit_price(self, _id: int, price: float) -> Optional['EditPriceResult']:
+    async def edit_price(self, _id: int, price: float) -> 'EditPriceResult':
         """Редактировать цену предмета/заявки на покупку.
 
         При редактировании может произойти моментальная продажа/покупка по аналогии тому,
@@ -270,7 +270,7 @@ class ClientAsync(TraderClientObject):
             price (:obj:`float`): Новая цена, за которую хотите продать/купить предмет без учёта комиссии/скидки.
 
         Returns:
-            :class:`steam_trader.EditPriceResult`, optional: Результат запроса на изменение цены.
+            :class:`steam_trader.EditPriceResult`: Результат запроса на изменение цены.
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
@@ -288,14 +288,14 @@ class ClientAsync(TraderClientObject):
         return EditPriceResult.de_json(result.json(), self)
 
     @log
-    async def delete_item(self, _id: int) -> Optional['DeleteItemResult']:
+    async def delete_item(self, _id: int) -> 'DeleteItemResult':
         """Снять предмет с продажи/заявку на покупку.
 
         Args:
             _id (:obj:`int`): ID продажи/заявки на покупку.
 
         Returns:
-            :class:`steam_trader.DeleteItemResult`, optional: Результат запроса снятия предмета
+            :class:`steam_trader.DeleteItemResult`: Результат запроса снятия предмета
                 с продажи/заявки на покупку.
 
         Raises:
@@ -312,7 +312,7 @@ class ClientAsync(TraderClientObject):
         return DeleteItemResult.de_json(result.json(), self)
 
     @log
-    async def get_down_orders(self, gameid: int, *, order_type: LiteralString = 'sell') -> Optional['GetDownOrdersResult']:
+    async def get_down_orders(self, gameid: int, *, order_type: LiteralString = 'sell') -> 'GetDownOrdersResult':
         """Снять все заявки на продажу/покупку предметов.
 
         Args:
@@ -322,7 +322,7 @@ class ClientAsync(TraderClientObject):
                 "buy" - предложения о ПОКУПКЕ.
 
         Returns:
-            :class:`steam_trader.GetDownOrdersResult`, optional: Результат снятия всех заявок
+            :class:`steam_trader.GetDownOrdersResult`: Результат снятия всех заявок
                 на продажу/покупку предметов.
 
         Raises:
@@ -347,11 +347,11 @@ class ClientAsync(TraderClientObject):
         return GetDownOrdersResult.de_json(result.json(), self)
 
     @log
-    async def get_items_for_exchange(self) -> Optional['ItemsForExchange']:
+    async def get_items_for_exchange(self) -> 'ItemsForExchange':
         """Получить список предметов для обмена с ботом.
 
         Returns:
-            :class:`steam_trader.ItemsForExchange`, optional: Cписок предметов для обмена с ботом.
+            :class:`steam_trader.ItemsForExchange`: Cписок предметов для обмена с ботом.
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
@@ -366,7 +366,7 @@ class ClientAsync(TraderClientObject):
         return ItemsForExchange.de_json(result.json(), self)
 
     @log
-    async def exchange(self) -> Optional['ExchangeResult']:
+    async def exchange(self) -> 'ExchangeResult':
         """Выполнить обмен с ботом.
 
         Note:
@@ -374,7 +374,7 @@ class ClientAsync(TraderClientObject):
             В противном случае трейд будет отменён.
 
         Returns:
-            :class:`steam_trader.ExchangeResult`, optional: Результат обмена с ботом.
+            :class:`steam_trader.ExchangeResult`: Результат обмена с ботом.
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
@@ -398,11 +398,11 @@ class ClientAsync(TraderClientObject):
         return ExchangeResult.de_json(result.json(), self)
 
     @log
-    async def get_items_for_exchange_p2p(self) -> Optional['ItemsForExchange']:
+    async def get_items_for_exchange_p2p(self) -> 'ItemsForExchange':
         """Получить список предметов для p2p обмена.
 
         Returns:
-            :class:`steam_trader.ItemsForExchange`, optional: Cписок предметов для p2p обмена.
+            :class:`steam_trader.ItemsForExchange`: Cписок предметов для p2p обмена.
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
@@ -417,7 +417,7 @@ class ClientAsync(TraderClientObject):
         return ItemsForExchange.de_json(result.json(), self)
 
     @log
-    async def exchange_p2p(self) -> Optional['ExchangeP2PResult']:
+    async def exchange_p2p(self) -> 'ExchangeP2PResult':
         """Выполнить p2p обмен.
 
         Note:
@@ -425,7 +425,7 @@ class ClientAsync(TraderClientObject):
             В противном случае, трейд будет отменён.
 
         Returns:
-            :class:`steam_trader.ExchangeP2PResult`, optional: Результат p2p обмена.
+            :class:`steam_trader.ExchangeP2PResult`: Результат p2p обмена.
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
@@ -447,7 +447,7 @@ class ClientAsync(TraderClientObject):
         return ExchangeP2PResult.de_json(result.json(), self)
 
     @log
-    async def get_min_prices(self, gid: int, currency: int = 1) -> Optional['MinPrices']:
+    async def get_min_prices(self, gid: int, currency: int = 1) -> 'MinPrices':
         """Получить минимальные/максимальные цены предмета.
 
         Note:
@@ -458,7 +458,7 @@ class ClientAsync(TraderClientObject):
             currency (:obj:`int`): Валюта, значение 1 - рубль.
 
         Returns:
-            :class:`steam_trader.MinPrices`, optional: Минимальные/максимальные цены предмета.
+            :class:`steam_trader.MinPrices`: Минимальные/максимальные цены предмета.
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
@@ -474,14 +474,14 @@ class ClientAsync(TraderClientObject):
         return MinPrices.de_json(result.json(), self)
 
     @log
-    async def get_item_info(self, gid: int) -> Optional['ItemInfo']:
+    async def get_item_info(self, gid: int) -> 'ItemInfo':
         """Получить информацию о группе предметов.
 
         Args:
             gid (:obj:`int`): ID группы предметов.
 
         Returns:
-            :class:`steam_trader.ItemInfo`, optional: Информация о группе предметов.
+            :class:`steam_trader.ItemInfo`: Информация о группе предметов.
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
@@ -497,13 +497,7 @@ class ClientAsync(TraderClientObject):
         return ItemInfo.de_json(result.json(), self)
 
     @log
-    async def get_order_book(
-            self,
-            gid: int,
-            *,
-            mode: LiteralString = 'all',
-            limit: Optional[int] = None
-    ) -> Optional['OrderBook']:
+    async def get_order_book(self, gid: int, *, mode: LiteralString = 'all', limit: Optional[int] = None) -> 'OrderBook':
         """Получить заявки о покупке/продаже предмета.
 
         Args:
@@ -515,7 +509,7 @@ class ClientAsync(TraderClientObject):
             limit (:obj:`int`, optional): Максимальное количество строк в списке. По умолчанию - неограниченно
 
         Returns:
-            :class:`steam_trader.OrderBook`, optional: Заявки о покупке/продаже предмета.
+            :class:`steam_trader.OrderBook`: Заявки о покупке/продаже предмета.
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
@@ -534,7 +528,7 @@ class ClientAsync(TraderClientObject):
         return OrderBook.de_json(result.json(), self)
 
     @log
-    async def get_web_socket_token(self) -> Optional['WebSocketToken']:
+    async def get_web_socket_token(self) -> 'WebSocketToken':
         """Получить токен для авторизации в WebSocket. Незадокументированно."""
         url = self.base_url + "getwstoken/"
         result = await self._async_client.get(
@@ -544,7 +538,7 @@ class ClientAsync(TraderClientObject):
         return WebSocketToken.de_json(result.json(), self)
 
     @log
-    async def get_inventory(self, gameid: int, *, status: Optional[Sequence[int]] = None) -> Optional['Inventory']:
+    async def get_inventory(self, gameid: int, *, status: Optional[Sequence[int]] = None) -> 'Inventory':
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         По умолчанию возвращает список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
@@ -562,7 +556,7 @@ class ClientAsync(TraderClientObject):
                 4 - Заявка на покупку
 
         Returns:
-            :class:`steam_trader.Inventory`, optional: Инвентарь клиента, включая заявки на покупку и купленные предметы.
+            :class:`steam_trader.Inventory`: Инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         Raises:
             UnsupportedAppID: Указан недействительный gameid.
@@ -589,7 +583,7 @@ class ClientAsync(TraderClientObject):
         return Inventory.de_json(result.json(), status, self)
 
     @log
-    async def get_buy_orders(self, *, gameid: Optional[int] = None, gid: Optional[int] = None) -> Optional['BuyOrders']:
+    async def get_buy_orders(self, *, gameid: Optional[int] = None, gid: Optional[int] = None) -> 'BuyOrders':
         """Получить последовательность заявок на покупку. По умолчанию возвращаются заявки для всех
         предметов из всех разделов.
 
@@ -604,7 +598,7 @@ class ClientAsync(TraderClientObject):
             gid (:obj:`int`, optional): ID группы предметов.
 
         Returns:
-            :class:`steam_trader.BuyOrders`, optional: Список заявок на покупку.
+            :class:`steam_trader.BuyOrders`: Список заявок на покупку.
 
         Raises:
             UnsupportedAppID: Указан недействительный gameid.
@@ -629,13 +623,13 @@ class ClientAsync(TraderClientObject):
         return BuyOrders.de_json(result.json(), self)
 
     @log
-    async def get_discounts(self) -> Optional['Discounts']:
+    async def get_discounts(self) -> 'Discounts':
         """Получить комиссии/скидки и оборот на сайте.
 
         Данные хранятся в словаре data, где ключ - это AppID игры в Steam (См. steam_trader.constants).
 
         Returns:
-            :class:`steam_trader.Discounts`, optional: Комиссии/скидки и оборот на сайте.
+            :class:`steam_trader.Discounts`: Комиссии/скидки и оборот на сайте.
         """
 
         url = self.base_url + 'getdiscounts/'
@@ -708,7 +702,7 @@ class ClientAsync(TraderClientObject):
                     raise SaveFail('Не удалось удалить ссылку обмена')
 
     @log
-    async def get_operations_history(self, *, operation_type: Optional[int] = None) -> Optional['OperationsHistory']:
+    async def get_operations_history(self, *, operation_type: Optional[int] = None, page: int = 0) -> 'OperationsHistory':
         """Получить историю операций (По умолчанию все типы).
 
         Args:
@@ -721,12 +715,16 @@ class ClientAsync(TraderClientObject):
                 5 - Вывести средства
                 9 - Ожидание покупки
                 10 - Штрафной балл
+            page (:obj:`int`): Страница операций. Отсчёт начинается с 0.
 
         Returns:
-              :class:`steam_trader.OperationsHistory`, optional: История операций.
+              :class:`steam_trader.OperationsHistory`: История операций.
 
         Raises:
             ValueError: Указано недопустимое значение operation_type.
+
+        Changes:
+            0.3.0: Добавлен аргумент page.
         """
 
         if operation_type not in range(1, 11) and operation_type is not None:
@@ -735,7 +733,7 @@ class ClientAsync(TraderClientObject):
         url = self.base_url + 'operationshistory/'
         result = await self._async_client.get(
             url,
-            params={"type": operation_type},
+            params={"type": operation_type, "page": page},
             headers=self.headers
         )
         return OperationsHistory.de_json(result.json(), self)
@@ -772,14 +770,14 @@ class ClientAsync(TraderClientObject):
                     raise TooManyRequests('Вы отправили слишком много запросов.')
 
     @log
-    async def get_inventory_state(self, gameid: int) -> Optional['InventoryState']:
+    async def get_inventory_state(self, gameid: int) -> 'InventoryState':
         """Получить текущий статус обновления инвентаря.
 
         Args:
             gameid (:obj:`int`): AppID приложения в Steam.
 
         Returns:
-            :class:`steam_trader.InventoryState`, optional: Текущий статус обновления инвентаря.
+            :class:`steam_trader.InventoryState`: Текущий статус обновления инвентаря.
 
         Raises:
             UnsupportedAppID: Указан недействительный gameid.
@@ -800,6 +798,8 @@ class ClientAsync(TraderClientObject):
     async def trigger_alt_web_socket(self) -> Optional['AltWebSocket']:
         """Создать запрос альтернативным WebSocket.
         Для поддержания активного соединения нужно делать этот запрос каждые 2 минуты.
+
+        Возвращает None если новых сообщений нет. При этом соединение будет поддрежано.
 
         Returns:
             :class:`steam_trader.AltWebSocket`, optional: Запрос альтернативным WebSocket.

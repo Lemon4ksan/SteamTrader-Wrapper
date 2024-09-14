@@ -27,11 +27,7 @@ class TradeMode(TraderClientObject):
     client: Union['ExtClient', 'ExtClientAsync', None]
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['ExtClient', 'ExtClientAsync', None] = None
-    ) -> Optional['TradeMode']:
+    def de_json(cls: dataclass, data: dict, client: Union['ExtClient', 'ExtClientAsync', None] = None) -> 'TradeMode':
         """Десериализация объекта.
 
         Args:
@@ -40,11 +36,8 @@ class TradeMode(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.TradeMode`, optional: Режим торговли.
+            :class:`steam_trader.TradeMode`: Режим торговли.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         if not data['success']:
             match data['code']:

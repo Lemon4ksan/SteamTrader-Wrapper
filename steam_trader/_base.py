@@ -16,28 +16,16 @@ if TYPE_CHECKING:
     from ._client_async import ClientAsync
 
 class TraderClientObject:
-    """Базовый класс для всех объектов библиотеки."""
+    """Базовый класс для всех объектов библиотеки.
+
+    Changes:
+        0.3.0: Удалён метод is_valid_data из-за ненадобности.
+    """
 
     __metaclass__ = ABCMeta
 
-    @staticmethod
-    def is_valid_model_data(data: Any, *, array: bool = False) -> bool:
-        """Проверка на валидность данных.
-
-        Args:
-            data (:obj:`Any`): Данные для проверки.
-            array (:obj:`bool`, optional): Является ли объект массивом.
-
-        Returns:
-            :obj:`bool`: Валидны ли данные.
-        """
-        if array:
-            return data and isinstance(data, list) and all(isinstance(item, dict) for item in data)
-
-        return data and isinstance(data, dict)
-
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> Optional[dict]:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> dict:
         """Десериализация объекта.
 
         Args:

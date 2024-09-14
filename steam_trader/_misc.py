@@ -21,11 +21,7 @@ class SellHistoryItem(TraderClientObject):
     price: float
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: list,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['SellHistoryItem']:
+    def de_json(cls: dataclass, data: list, client: Union['Client', 'ClientAsync', None] = None) -> 'SellHistoryItem':
         """Десериализация объекта.
 
         Args:
@@ -34,13 +30,10 @@ class SellHistoryItem(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.SellHistoryItem`, optional: Информация о предмете в истории продаж.
+            :class:`steam_trader.SellHistoryItem`: Информация о предмете в истории продаж.
         """
 
-        if not isinstance(data, list):
-            return
-
-        data = super(SellHistoryItem, cls).de_json({'date': data[0], 'price': data[1]})
+        data = super(SellHistoryItem, cls).de_json(data)
 
         return cls(**data)
 
@@ -90,11 +83,7 @@ class InventoryItem(TraderClientObject):
     nm: bool
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['InventoryItem']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'InventoryItem':
         """Десериализация объекта.
 
         Args:
@@ -103,11 +92,8 @@ class InventoryItem(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.InventoryItem`, optional: Предмет в инвентаре.
+            :class:`steam_trader.InventoryItem`: Предмет в инвентаре.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(InventoryItem, cls).de_json(data)
 
@@ -118,10 +104,10 @@ class Filter(TraderClientObject):
     """Класс, представляющий фильтр.
 
     Attributes:
-        id (:obj:`int`, optional): ID данного фильтра, может быть пустым. Если вы создаёте класс вручную,
+        id (:obj:`int`, optional): ID фильтра, может быть пустым. Если вы создаёте класс вручную,
             то обязательно укажите этот параметр.
-        title (:obj:`str`, optional): Тайтл данного фильтра, может быть пустым.
-        color (:obj:`str`, optionl): Цвет данного фильтра, может быть пустым.
+        title (:obj:`str`, optional): Тайтл фильтра, может быть пустым.
+        color (:obj:`str`, optionl): Hex цвет фильтра, может быть пустым.
     """
 
     id: Optional[int]
@@ -133,7 +119,7 @@ class Filter(TraderClientObject):
             cls: dataclass,
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['Filter']:
+    ) -> 'Filter':
         """Десериализация объекта.
 
         Args:
@@ -145,9 +131,6 @@ class Filter(TraderClientObject):
             :class:`steam_trader.Filter`, optional: Фильтр.
         """
 
-        if not cls.is_valid_model_data(data):
-            return
-
         data = super(Filter, cls).de_json(data)
 
         return cls(**data)
@@ -157,45 +140,45 @@ class Filters(TraderClientObject):
     """Класс, представляющий фильтры, используемые для поиска на сайте.
 
     Attributes:
-        quality (Sequence[:class:`steam_trader.Filter, optional`], optional):
+        quality (Sequence[:class:`steam_trader.Filter`], optional):
             Качество предмета (TF2, DOTA2).
-        type (Sequence[:class:`steam_trader.Filter, optional`], optional):
+        type (Sequence[:class:`steam_trader.Filter`], optional):
             Тип предмета (TF2, DOTA2).
-        used_by (Sequence[:class:`steam_trader.Filter, optional`], optional):
+        used_by (Sequence[:class:`steam_trader.Filter`], optional):
             Класс, который использует предмет (TF2).
-        craft (Sequence[:class:`steam_trader.Filter, optional`], optional):
+        craft (Sequence[:class:`steam_trader.Filter`], optional):
             Информация о карфте (TF2).
-        region (Sequence[:class:`steam_trader.Filter, optional`], optional):
+        region (Sequence[:class:`steam_trader.Filter`], optional):
             Регион игры (SteamGift).
-        genre (Sequence[:class:`steam_trader.Filter, optional`], optional):
+        genre (Sequence[:class:`steam_trader.Filter`], optional):
             Жанр игры (SteamGift).
-        mode (Sequence[:class:`steam_trader.Filter, optional`], optional):
+        mode (Sequence[:class:`steam_trader.Filter`], optional):
             Тип игры, взаимодействие с Steam (SteamGift).
-        trade (Sequence[:class:`steam_trader.Filter, optional`], optional):
+        trade (Sequence[:class:`steam_trader.Filter`], optional):
             Информация об обмене (SteamGift).
-        rarity (Sequence[:class:`steam_trader.Filter, optional`], optional):
+        rarity (Sequence[:class:`steam_trader.Filter`], optional):
             Редкость предмета (DOTA2).
-        hero (Sequence[:class:`steam_trader.Filter, optional`], optional):
+        hero (Sequence[:class:`steam_trader.Filter`], optional):
             Герой, который использует предмет (DOTA2).
     """
 
-    quality: Optional[Sequence[Optional['Filter']]] = None
-    type: Optional[Sequence[Optional['Filter']]] = None
-    used_by: Optional[Sequence[Optional['Filter']]] = None
-    craft: Optional[Sequence[Optional['Filter']]] = None
-    region: Optional[Sequence[Optional['Filter']]] = None
-    genre: Optional[Sequence[Optional['Filter']]] = None
-    mode: Optional[Sequence[Optional['Filter']]] = None
-    trade: Optional[Sequence[Optional['Filter']]] = None
-    rarity: Optional[Sequence[Optional['Filter']]] = None
-    hero: Optional[Sequence[Optional['Filter']]] = None
+    quality: Optional[Sequence['Filter']] = None
+    type: Optional[Sequence['Filter']] = None
+    used_by: Optional[Sequence['Filter']] = None
+    craft: Optional[Sequence['Filter']] = None
+    region: Optional[Sequence['Filter']] = None
+    genre: Optional[Sequence['Filter']] = None
+    mode: Optional[Sequence['Filter']] = None
+    trade: Optional[Sequence['Filter']] = None
+    rarity: Optional[Sequence['Filter']] = None
+    hero: Optional[Sequence['Filter']] = None
 
     @classmethod
     def de_json(
             cls: dataclass,
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['Filters']:
+    ) -> 'Filters':
         """Десериализация объекта.
 
         Args:
@@ -204,11 +187,8 @@ class Filters(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.Filters`, optional: Фильтры.
+            :class:`steam_trader.Filters`: Фильтры.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         try:
             # TF2
@@ -292,7 +272,7 @@ class BuyOrder(TraderClientObject):
             cls: dataclass,
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['BuyOrder']:
+    ) -> 'BuyOrder':
         """Десериализация объекта.
 
         Args:
@@ -301,11 +281,8 @@ class BuyOrder(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.BuyOrder`, optional: Информация о запрос на покупку.
+            :class:`steam_trader.BuyOrder`: Информация о запрос на покупку.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(BuyOrder, cls).de_json(data)
 
@@ -328,23 +305,17 @@ class Discount(TraderClientObject):
     commission: float
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['Discount']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'Discount':
         """Десериализация объекта.
 
         Args:
             data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]): Клиент Steam Trader.
+            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
+                Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.Discount`, optional: Информацию о комиссии/скидке в определённой игре.
+            :class:`steam_trader.Discount`: Информацию о комиссии/скидке в определённой игре.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(Discount, cls).de_json(data)
 
@@ -371,11 +342,7 @@ class OperationsHistoryItem(TraderClientObject):
     date: int
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['OperationsHistoryItem']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'OperationsHistoryItem':
         """Десериализация объекта.
 
         Args:
@@ -384,11 +351,8 @@ class OperationsHistoryItem(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.OperationsHistoryItem`, optional: Информацию о предмете в истории операций.
+            :class:`steam_trader.OperationsHistoryItem`: Информацию о предмете в истории операций.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(OperationsHistoryItem, cls).de_json(data)
 
@@ -407,11 +371,7 @@ class AltWebSocketMessage(TraderClientObject):
     data: str
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['AltWebSocketMessage']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'AltWebSocketMessage':
         """Десериализация объекта.
 
         Args:
@@ -420,11 +380,8 @@ class AltWebSocketMessage(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.Discount`, optional: Комиссия/скидка.
+            :class:`steam_trader.Discount`: Комиссия/скидка.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(AltWebSocketMessage, cls).de_json(data)
 
@@ -445,11 +402,7 @@ class MultiBuyOrder(TraderClientObject):
     price: float
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['MultiBuyOrder']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'MultiBuyOrder':
         """Десериализация объекта.
 
         Args:
@@ -460,9 +413,6 @@ class MultiBuyOrder(TraderClientObject):
         Returns:
             :class:`steam_trader.MultiBuyOrder`: Запрос на покупку из steam_clieant.MultiBuyInfo.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(MultiBuyOrder, cls).de_json(data)
 
@@ -509,7 +459,7 @@ class ItemForExchange(TraderClientObject):
             cls: dataclass,
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['ItemForExchange']:
+    ) -> 'ItemForExchange':
         """Десериализация объекта.
 
         Args:
@@ -518,11 +468,8 @@ class ItemForExchange(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.ItemForExchange`, optional: Информация о предмете для передачи/получения.
+            :class:`steam_trader.ItemForExchange`: Информация о предмете для передачи/получения.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(ItemForExchange, cls).de_json(data)
 
@@ -557,7 +504,7 @@ class TradeDescription(TraderClientObject):
             cls: dataclass,
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['TradeDescription']:
+    ) -> 'TradeDescription':
         """Десериализация объекта.
 
         Args:
@@ -566,11 +513,8 @@ class TradeDescription(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.TradeDescription`, optional: Описание предмета для передачи/получения боту.
+            :class:`steam_trader.TradeDescription`: Описание предмета для передачи/получения боту.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(TradeDescription, cls).de_json(data)
 
@@ -609,11 +553,7 @@ class ExchangeItem(TraderClientObject):
     percent: float
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['ExchangeItem']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'ExchangeItem':
         """Десериализация объекта.
 
         Args:
@@ -621,11 +561,8 @@ class ExchangeItem(TraderClientObject):
             client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.ExchangeItem`, optional: Предмет, на который был отправлен обмен.
+            :class:`steam_trader.ExchangeItem`: Предмет, на который был отправлен обмен.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(ExchangeItem, cls).de_json(data)
 

@@ -36,11 +36,7 @@ class SellResult(TraderClientObject):
     commission: Optional[float] = None
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['SellResult']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'SellResult':
         """Десериализация объекта.
 
         Args:
@@ -49,11 +45,8 @@ class SellResult(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.SellResult`, optional: Информация о выставлении предмета на продажу.
+            :class:`steam_trader.SellResult`: Информация о выставлении предмета на продажу.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         if not data['success']:
             match data['code']:
