@@ -17,24 +17,20 @@ class ItemsForExchange(TraderClientObject):
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
-        items (Sequence[`steam_trader.ItemForExchange`, optional]): Последовательность предметов для обмена с ботом.
-        descriptions (dict[:obj:`int`, :class:`steam_trader.TradeDescription`, optional]): Описания предметов
+        items (Sequence[`steam_trader.ItemForExchange`]): Последовательность предметов для обмена с ботом.
+        descriptions (dict[:obj:`int`, :class:`steam_trader.TradeDescription`]): Описания предметов
             для обмена с ботом. Ключ - itemid предмета.
         client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
             Клиент Steam Trader.
     """
 
     success: bool
-    items: Sequence[Optional['ItemForExchange']]
-    descriptions: dict[int, Optional['TradeDescription']]
+    items: Sequence['ItemForExchange']
+    descriptions: dict[int, 'TradeDescription']
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['ItemsForExchange']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'ItemsForExchange':
         """Десериализация объекта.
 
         Args:
@@ -43,11 +39,8 @@ class ItemsForExchange(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.ItemsForExchange`, optional: Предметы для обмена с ботом.
+            :class:`steam_trader.ItemsForExchange`: Предметы для обмена с ботом.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         if not data['success']:
             match data['code']:
@@ -83,7 +76,7 @@ class ExchangeResult(TraderClientObject):
         code (:obj:`str`): Код проверки обмена.
         bot_steamid (:obj:`int`): SteamID бота, который отправил обмен.
         bot_nick (:obj:`str`): Ник бота.
-        items (Sequence[:class:`steam_trader.ExchangeItem`, optional]): Cписок предметов для обмена с ботом.
+        items (Sequence[:class:`steam_trader.ExchangeItem`]): Cписок предметов для обмена с ботом.
         client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
             Клиент Steam Trader.
     """
@@ -93,15 +86,11 @@ class ExchangeResult(TraderClientObject):
     code: str
     bot_steamid: int
     bot_nick: str
-    items: Sequence[Optional['ExchangeItem']]
+    items: Sequence['ExchangeItem']
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['ExchangeResult']:
+    def de_json(cls: dataclass, data: dict,  client: Union['Client', 'ClientAsync', None] = None) -> 'ExchangeResult':
         """Десериализация объекта.
 
         Args:
@@ -110,11 +99,8 @@ class ExchangeResult(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.ExchangeResult`, optional: Результат обмена с ботом.
+            :class:`steam_trader.ExchangeResult`: Результат обмена с ботом.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         if not data['success']:
             match data['code']:
@@ -167,10 +153,10 @@ class ExchangeP2PResult(TraderClientObject):
 
     Attributes:
         success (:obj:`bool`): Результат запроса.
-        send (Sequence[:class:`steam_trader.P2PSendObject`, optional]): Массив с данными для создания
+        send (Sequence[:class:`steam_trader.P2PSendObject`]): Массив с данными для создания
             нового обмена в Steam.
-        receive (Sequence[:class:`steam_trader.RecieveObject`, optional]): Массив с данными для принятия обмена.
-        confirm (Sequence[:class:`steam_trader.ConfirmObject`, optional]): Массив с данными для подтверждения
+        receive (Sequence[:class:`steam_trader.RecieveObject`]): Массив с данными для принятия обмена.
+        confirm (Sequence[:class:`steam_trader.ConfirmObject`]): Массив с данными для подтверждения
             обмена в мобильном аутентификаторе.
         cancel (Sequence[:obj:`str`]): Массив из ID обменов, которые нужно отменить.
         client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
@@ -178,18 +164,14 @@ class ExchangeP2PResult(TraderClientObject):
     """
 
     success: bool
-    send: Sequence[Optional['P2PSendObject']]
-    receive: Sequence[Optional['P2PReceiveObject']]
-    confirm: Sequence[Optional['P2PConfirmObject']]
+    send: Sequence['P2PSendObject']
+    receive: Sequence['P2PReceiveObject']
+    confirm: Sequence['P2PConfirmObject']
     cancel: Sequence[str]
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['ExchangeP2PResult']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'ExchangeP2PResult':
         """Десериализация объекта.
 
         Args:
@@ -198,11 +180,8 @@ class ExchangeP2PResult(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.ExchangeP2PResult`, optional: Результат p2p обмена.
+            :class:`steam_trader.ExchangeP2PResult`: Результат p2p обмена.
         """
-
-        if not cls.is_valid_model_data(data):
-            return None
 
         if not data['success']:
             match data['code']:

@@ -32,7 +32,7 @@ class SellOffer(TraderClientObject):
             cls: dataclass,
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['SellOffer']:
+    ) -> 'SellOffer':
         """Десериализация объекта.
 
         Args:
@@ -41,11 +41,8 @@ class SellOffer(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.SellOffer`, optional: Информация о предложении продажи.
+            :class:`steam_trader.SellOffer`: Информация о предложении продажи.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(SellOffer, cls).de_json(data)
 
@@ -70,7 +67,7 @@ class BuyOffer(TraderClientObject):
             cls: dataclass,
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['BuyOffer']:
+    ) -> 'BuyOffer':
         """Десериализация объекта.
 
         Args:
@@ -79,11 +76,8 @@ class BuyOffer(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.BuyOffer`, optional: Информация о запросе на покупку.
+            :class:`steam_trader.BuyOffer`: Информация о запросе на покупку.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         data = super(BuyOffer, cls).de_json(data)
 

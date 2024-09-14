@@ -38,11 +38,7 @@ class BuyResult(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['BuyResult']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'BuyResult':
         """Десериализация объекта.
 
         Args:
@@ -51,11 +47,8 @@ class BuyResult(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.BuyResult`, optional: Купленный предмет.
+            :class:`steam_trader.BuyResult`: Купленный предмет.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         if not data['success']:
             match data['code']:
@@ -96,11 +89,7 @@ class BuyOrderResult(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['BuyOrderResult']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'BuyOrderResult':
         """Десериализация объекта.
 
         Args:
@@ -109,11 +98,8 @@ class BuyOrderResult(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.BuyResult`, optional: Результат запроса на покупку.
+            :class:`steam_trader.BuyResult`: Результат запроса на покупку.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         del data['orders']  # Конфликт с steam_trader.BuyOrder
 
@@ -148,7 +134,7 @@ class MultiBuyResult(TraderClientObject):
         success (:obj:`bool`): Результат запроса.
         balance (:obj:`float`, optional): Баланс после покупки предметов. Указывается если success = True
         spent (:obj:`float`, optional): Сумма потраченных средств на покупку предметов. Указывается если success = True
-        orders (Sequence[:class:`steam_trader.MultiBuyOrder`, optional], optional):
+        orders (Sequence[:class:`steam_trader.MultiBuyOrder`], optional):
             Последовательность купленных предметов. Указывается если success = True
         left (:obj:`int`): Сколько предметов по этой цене осталось. Если операция прошла успешно, всегда равен 0.
         client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
@@ -163,15 +149,11 @@ class MultiBuyResult(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
     balance: Optional[float] = None
     spent: Optional[float] = None
-    orders: Optional[Sequence[Optional['MultiBuyOrder']]] = None
+    orders: Optional[Sequence['MultiBuyOrder']] = None
     left: int = 0
 
     @classmethod
-    def de_json(
-            cls: dataclass,
-            data: dict,
-            client: Union['Client', 'ClientAsync', None] = None
-    ) -> Optional['MultiBuyResult']:
+    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'MultiBuyResult':
         """Десериализация объекта.
 
         Args:
@@ -182,9 +164,6 @@ class MultiBuyResult(TraderClientObject):
         Returns:
             :class:`steam_trader.BuyResult`: Результат мульти-покупки.
         """
-
-        if not cls.is_valid_model_data(data):
-            return
 
         if not data['success']:
             match data['code']:

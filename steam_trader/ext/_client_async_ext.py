@@ -67,7 +67,7 @@ class ExtClientAsync(ClientAsync):
             *,
             filters: Optional['Filters'] = None,
             status: Optional[Sequence[int]] = None
-    ) -> Optional['Inventory']:
+    ) -> 'Inventory':
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         EXT:
@@ -91,7 +91,7 @@ class ExtClientAsync(ClientAsync):
                 Если не указавать, вернётся список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
 
         Returns:
-            :class:`steam_trader.Inventory`, optional: Инвентарь клиента, включая заявки на покупку и купленные предметы.
+            :class:`steam_trader.Inventory`: Инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         Raises:
             UnsupportedAppID: Указан недействительный gameid.
@@ -183,7 +183,7 @@ class ExtClientAsync(ClientAsync):
         return inventory
 
     @log
-    async def multi_sell(self, gameid: int, gid: int, price: float, count: int) -> Sequence[Optional['SellResult']]:
+    async def multi_sell(self, gameid: int, gid: int, price: float, count: int) -> Sequence['SellResult']:
         """Продать множество вещей из инвенторя с одним gid.
 
         Args:
@@ -194,7 +194,7 @@ class ExtClientAsync(ClientAsync):
                 будут проданы те, что имеются.
 
         Returns:
-            Sequence[:class:`steam_trader.SellResult, optional`]: Последовательноасть с результатами продаж.
+            Sequence[:class:`steam_trader.SellResult`]: Последовательноасть с результатами продаж.
 
         Raises:
             OfferCreationFail: При создании заявки произошла неизвестная ошибка.
@@ -221,8 +221,8 @@ class ExtClientAsync(ClientAsync):
         return results
 
     @log
-    async def set_trade_mode(self, state: int) -> Optional['TradeMode']:
-        """Задать режим торговли. Данного метода нет в документации.
+    async def set_trade_mode(self, state: int) -> 'TradeMode':
+        """Задать режим торговли.
 
         Args:
             state (:obj:`int`): Режим торговли.
