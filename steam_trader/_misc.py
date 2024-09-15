@@ -33,7 +33,7 @@ class SellHistoryItem(TraderClientObject):
             :class:`steam_trader.SellHistoryItem`: Информация о предмете в истории продаж.
         """
 
-        data = super(SellHistoryItem, cls).de_json(data)
+        data = {'date': data[0], 'price': float(data[1])}  # Принудительно конвертируем для совместимости.
 
         return cls(**data)
 
