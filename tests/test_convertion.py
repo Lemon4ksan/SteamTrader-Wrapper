@@ -281,7 +281,7 @@ class IndependentTests(unittest.TestCase):
         result = steam_trader.MinPrices.de_json(test_response, client=self.client)
         self.assertion(test_response, result)
 
-    def test_item_info(self):
+    def test_get_item_info(self):
         test_response = {
             "success": True,
             "name": "Арбалет крестоносца",
@@ -363,14 +363,8 @@ class IndependentTests(unittest.TestCase):
                 }
             ],
             "sell_history": [
-                {
-                    "date": 1506137845,
-                    "price": 20.00
-                },
-                {
-                    "date": 1506137857,
-                    "price": 401.00
-                }
+                [1506137845, 20.00],
+                [506137857, 401.00]
             ]
         }
         result = steam_trader.ItemInfo.de_json(test_response, client=self.client)
