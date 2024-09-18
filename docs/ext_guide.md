@@ -68,3 +68,20 @@ client = ExtClient('Ваш токен')
 
 trade_mode = client.set_trade_mode(1)
 ```
+
+### get_price_range()
+Получить размах цен.
+
+Режим получения:
+'sell' - Цены запросов на продажу. Значение по умолчанию. 
+'buy' - Цены запросов на покупку. 
+'history' - Цены из истории продаж. Максимум 100 пунктов.
+
+```python
+from steam_trader.ext import ExtClient
+
+client = ExtClient('Ваш токен')
+
+price_range = client.get_price_range(1220, mode='sell')
+#  PriceRange(lowest=1.04, highest=10)
+```

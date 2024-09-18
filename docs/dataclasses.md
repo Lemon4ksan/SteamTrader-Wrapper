@@ -147,7 +147,7 @@
 `orders`
 > Последовательность купленных предметов. Указывается если 'success' = True
 > 
-> **Тип**: Sequence[ *class* [`MultiBuyOrder`](#multibuyitem), optional ], optional
+> **Тип**: Sequence[ *class* [`MultiBuyOrder`](#multibuyitem) ], optional
 
 `left`
 > Сколько предметов по этой цене осталось. Если операция прошла успешно, всегда равен 0.
@@ -289,7 +289,7 @@
 `items`
 > Последовательность предметов для обмена с ботом.
 > 
-> **Тип**: Sequence[ *class* [`ItemForExchange`](#itemforexchange), optional ]
+> **Тип**: Sequence[ *class* [`ItemForExchange`](#itemforexchange) ]
 
 `description`
 > Описания предметов для обмена с ботом. Ключ - itemid предмета.
@@ -334,7 +334,7 @@
 `items`
 > Cписок предметов для обмена с ботом.
 > 
-> **Тип**: Sequence[ *class* [`ExchangeItem`](#exchangeitem), optional ]
+> **Тип**: Sequence[ *class* [`ExchangeItem`](#exchangeitem) ]
 
 `client`
 > Клиент Steam Trader.
@@ -352,17 +352,17 @@
 `send`
 > Массив с данными для создания нового обмена в Steam.
 > 
-> **Тип**: Sequence[ *class* [`P2PSendObject`](#p2psendobject), optional ]
+> **Тип**: Sequence[ *class* [`P2PSendObject`](#p2psendobject) ]
 
 `recieve`
 > Массив с данными для принятия обмена.
 > 
-> **Тип**: Sequence[ *class* [`P2PRecieveObject`](#p2preceiveobject), optional ]
+> **Тип**: Sequence[ *class* [`P2PRecieveObject`](#p2preceiveobject) ]
 
 `confirm`
 > Массив с данными для подтверждения обмена в мобильном аутентификаторе.
 > 
-> **Тип**: Sequence[ *class* [`P2PConfirmObject`](#p2pconfirmobject), optional ]
+> **Тип**: Sequence[ *class* [`P2PConfirmObject`](#p2pconfirmobject) ]
 
 `cancel`
 > Массив из ID обменов, которые нужно отменить.
@@ -504,17 +504,17 @@
 `sell_offers`
 > Последовательность с предложениями о продаже.
 > 
-> **Тип**: Sequence[ *class* [`SellOffer`](#selloffer), optional ]
+> **Тип**: Sequence[ *class* [`SellOffer`](#selloffer) ]
 
 `buy_offers`
 > Последовательность с предложениями о покупке.
 > 
-> **Тип**: Sequence[ *class* [`BuyOffer`](#buyoffer), optional ]
+> **Тип**: Sequence[ *class* [`BuyOffer`](#buyoffer) ]
 
 `sell_history`
 > Последовательность истории продаж.
 > 
-> **Тип**: Sequence[ *class* [`SellHistoryItem`](#sellhistoryitem), optional ]
+> **Тип**: Sequence[ *class* [`SellHistoryItem`](#sellhistoryitem) ]
 
 `client`
 > Клиент Steam Trader.
@@ -591,7 +591,7 @@
 `items`
 > Последовательность с предметами в инвентаре.
 > 
-> **Тип**: Sequence[ *class* [`InventoryItem`](#inventoryitem), optional ]
+> **Тип**: Sequence[ *class* [`InventoryItem`](#inventoryitem) ]
 
 `client`
 > Клиент Steam Trader.
@@ -611,7 +611,7 @@
 `data`
 > Последовательность запросов на покупку.
 > 
-> **Тип**: Sequence[ *class* [`BuyOrder`](#buyorder), optional ]
+> **Тип**: Sequence[ *class* [`BuyOrder`](#buyorder) ]
 
 `client`
 > Клиент Steam Trader.
@@ -631,7 +631,7 @@
 `data`
 > Словарь, содержащий комисии/скидки.
 > 
-> **Тип**: dict[ `int`, *class* [`Discount`](#discount), optional ]
+> **Тип**: dict[ `int`, *class* [`Discount`](#discount) ]
 
 `client`
 > Клиент Steam Trader.
@@ -651,7 +651,7 @@
 `data`
 > Последовательность историй операций.
 > 
-> **Тип**: Sequence[ *class* [`OperationsHistoryItem`](#operationshistoryitem), optional ]
+> **Тип**: Sequence[ *class* [`OperationsHistoryItem`](#operationshistoryitem) ]
 
 `client`
 > Клиент Steam Trader.
@@ -701,7 +701,7 @@
 `messages`
 > Последовательность с WebSocket сообщениями.
 > 
-> **Тип**: Sequence[ *class* [`AltWebSocketMessage`](#altwebsocketmessage), optional ]
+> **Тип**: Sequence[ *class* [`AltWebSocketMessage`](#altwebsocketmessage) ]
 
 `client`
 > Клиент Steam Trader.
@@ -718,52 +718,52 @@
 `quality`
 > Качество предмета (TF2, DOTA2).
 > 
-> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+> **Тип**: Sequence[ *class* [`Filter`](#filter) ], optional
 
 `type`
 > Тип предмета (TF2, DOTA2).
 > 
-> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+> **Тип**: Sequence[ *class* [`Filter`](#filter) ], optional
 
 `used_by`
 > Класс, который использует предмет (TF2).
 > 
-> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+> **Тип**: Sequence[ *class* [`Filter`](#filter) ], optional
 
 `craft`
 > Информация о карфте (TF2).
 > 
-> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+> **Тип**: Sequence[ *class* [`Filter`](#filter) ], optional
 
 `region`
 > Регион игры (SteamGift).
 > 
-> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+> **Тип**: Sequence[ *class* [`Filter`](#filter) ], optional
 
 `genre`
 > Жанр игры (SteamGift).
 > 
-> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+> **Тип**: Sequence[ *class* [`Filter`](#filter) ], optional
 
 `mode`
 > Тип игры, взаимодействие с Steam (SteamGift).
 > 
-> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+> **Тип**: Sequence[ *class* [`Filter`](#filter) ], optional
 
 `trade`
 > Информация об обмене (SteamGift).
 > 
-> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+> **Тип**: Sequence[ *class* [`Filter`](#filter) ], optional
 
 `rarity`
 > Редкость предмета (DOTA2).
 > 
-> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+> **Тип**: Sequence[ *class* [`Filter`](#filter) ], optional
 
 `hero`
 > Герой, который использует предмет (DOTA2).
 > 
-> **Тип**: Sequence[ *class* [`Filter`](#filter), optional ]
+> **Тип**: Sequence[ *class* [`Filter`](#filter) ], optional
 
 ### `Filter`
 
@@ -966,7 +966,7 @@
 > Параметры для POST запроса (https://steamcommunity.com/tradeoffer/new/send) при создании обмена в Steam. 
 > Вместо {sessionid} нужно указывать ID своей сессии в Steam.
 > 
-> **Тип**: *class* [`P2PTradeOffer`](#p2ptradeoffer), optional
+> **Тип**: *class* [`P2PTradeOffer`](#p2ptradeoffer)
 
 ### `P2PReceiveObject`
 
@@ -986,7 +986,7 @@
 `items`
 > Ссылка для p2p обмена.
 > 
-> **Тип**: Sequence[ *class* [`ExchangeItem`](#exchangeitem), optional]
+> **Тип**: Sequence[ *class* [`ExchangeItem`](#exchangeitem)]
 
 `partner_steamid`
 > SteamID покупателя.

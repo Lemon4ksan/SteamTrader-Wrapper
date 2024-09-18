@@ -4,7 +4,7 @@
 
 Одинаково для синхронного и асинхронного клиента.
 
-Имеет все методы основного клиента.
+Наследует все методы основного клиента.
 
 ::: steam_trader.ext.ExtClient
 
@@ -99,6 +99,19 @@ async def main():
 >
 > *Возвращает*: *class* [`TradeMode`](#trademode)
 
+#### `get_price_range`(*self, gid, mode='sell'*)
+> Получить размах цен.
+> 
+> **Аргументы**
+> 
+> * **gid** `int`: ID группы предметов.
+> * **mode** `str`: Режим получения
+    - 'sell' - Цены запросов на продажу. Значение по умолчанию.
+    - 'buy' - Цены запросов на покупку.
+    - 'history' - Цены из истории продаж. Максимум 100 пунктов.
+> 
+> *Возвращает*: *NamedTupple* [`PriceRange`](#pricerange)
+
 ## Датаклассы
 
 ### `TradeMode`
@@ -125,3 +138,16 @@ async def main():
 > Клиент Steam Trader.
 > 
 > **Тип**: Union[ *class* [`Client`](client.md#client), *class* [`ClientAsync`](client.md#client), `None` ]
+
+### `PriceRange`
+> NamedTuple, представляющий размах цен.
+ 
+`lowest`
+> Минимальная цена.
+> 
+> **Тип**: `float`
+
+`highest`
+> Максимальная цена.
+> 
+> **Тип**: `float`
