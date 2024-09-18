@@ -3,10 +3,10 @@ import logging
 import functools
 from typing import Optional, Sequence, TypeVar, Callable, Any, LiteralString
 
-from ._misc import TradeMode
+from ._misc import TradeMode, PriceRange
 
 from steam_trader.constants import SUPPORTED_APPIDS
-from steam_trader.exceptions import UnsupportedAppID, Unauthorized
+from steam_trader.exceptions import UnsupportedAppID
 from steam_trader import (
     Client,
     Filters,
