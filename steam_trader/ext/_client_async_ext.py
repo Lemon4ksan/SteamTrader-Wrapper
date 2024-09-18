@@ -3,7 +3,7 @@ import logging
 import functools
 from typing import Optional, Sequence, TypeVar, Callable, Any
 
-from ._misc import TradeMode
+from ._misc import TradeMode, PriceRange
 
 from steam_trader.constants import SUPPORTED_APPIDS
 from steam_trader.exceptions import UnsupportedAppID
@@ -35,6 +35,7 @@ def log(method: F) -> F:
 
     return wrapper
 
+
 class ExtClientAsync(ClientAsync):
     """Данный класс представляет расширенную версию обычного клиента.
 
@@ -44,6 +45,7 @@ class ExtClientAsync(ClientAsync):
     Новые методы:
         multi_sell - Аналог multi_buy. В отличие от него, возвращает последовательность из результатов продаж, а не один объект.
         set_trade_mode - Позволяет задать режим торговли. Данного метода нет в документации.
+        get_price_range - Получить размах цен в истории покупок. Проверяет только последние 100 покупок.
 
     Raises:
         BadRequestError: Неправильный запрос.
@@ -126,54 +128,54 @@ class ExtClientAsync(ClientAsync):
             for i, item in enumerate(inventory.items):
                 item_filters = responses[i].filters
                 if filters.quality is not None:
-                    requred_filters_list = [_filter.id for _filter in filters.quality]
+                    required_filters_list = [_filter.id for _filter in filters.quality]
                     item_filters_list = [_filter.id for _filter in item_filters.quality]
-                    if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
+                    if not any([required_filter in item_filters_list for required_filter in required_filters_list]):
                         continue
                 if filters.type is not None:
-                    requred_filters_list = [_filter.id for _filter in filters.type]
+                    required_filters_list = [_filter.id for _filter in filters.type]
                     item_filters_list = [_filter.id for _filter in item_filters.type]
-                    if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
+                    if not any([required_filter in item_filters_list for required_filter in required_filters_list]):
                         continue
                 if filters.used_by is not None:
-                    requred_filters_list = [_filter.id for _filter in filters.used_by]
+                    required_filters_list = [_filter.id for _filter in filters.used_by]
                     item_filters_list = [_filter.id for _filter in item_filters.used_by]
-                    if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
+                    if not any([required_filter in item_filters_list for required_filter in required_filters_list]):
                         continue
                 if filters.craft is not None:
-                    requred_filters_list = [_filter.id for _filter in filters.craft]
+                    required_filters_list = [_filter.id for _filter in filters.craft]
                     item_filters_list = [_filter.id for _filter in item_filters.craft]
-                    if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
+                    if not any([required_filter in item_filters_list for required_filter in required_filters_list]):
                         continue
                 if filters.region is not None:
-                    requred_filters_list = [_filter.id for _filter in filters.region]
+                    required_filters_list = [_filter.id for _filter in filters.region]
                     item_filters_list = [_filter.id for _filter in item_filters.region]
-                    if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
+                    if not any([required_filter in item_filters_list for required_filter in required_filters_list]):
                         continue
                 if filters.genre is not None:
-                    requred_filters_list = [_filter.id for _filter in filters.genre]
+                    required_filters_list = [_filter.id for _filter in filters.genre]
                     item_filters_list = [_filter.id for _filter in item_filters.genre]
-                    if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
+                    if not any([required_filter in item_filters_list for required_filter in required_filters_list]):
                         continue
                 if filters.mode is not None:
-                    requred_filters_list = [_filter.id for _filter in filters.mode]
+                    required_filters_list = [_filter.id for _filter in filters.mode]
                     item_filters_list = [_filter.id for _filter in item_filters.mode]
-                    if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
+                    if not any([required_filter in item_filters_list for required_filter in required_filters_list]):
                         continue
                 if filters.trade is not None:
-                    requred_filters_list = [_filter.id for _filter in filters.trade]
+                    required_filters_list = [_filter.id for _filter in filters.trade]
                     item_filters_list = [_filter.id for _filter in item_filters.trade]
-                    if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
+                    if not any([required_filter in item_filters_list for required_filter in required_filters_list]):
                         continue
                 if filters.rarity is not None:
-                    requred_filters_list = [_filter.id for _filter in filters.rarity]
+                    required_filters_list = [_filter.id for _filter in filters.rarity]
                     item_filters_list = [_filter.id for _filter in item_filters.rarity]
-                    if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
+                    if not any([required_filter in item_filters_list for required_filter in required_filters_list]):
                         continue
                 if filters.hero is not None:
-                    requred_filters_list = [_filter.id for _filter in filters.hero]
+                    required_filters_list = [_filter.id for _filter in filters.hero]
                     item_filters_list = [_filter.id for _filter in item_filters.hero]
-                    if not any([required_filter in item_filters_list for required_filter in requred_filters_list]):
+                    if not any([required_filter in item_filters_list for required_filter in required_filters_list]):
                         continue
 
                 new_items.append(item)
@@ -246,3 +248,28 @@ class ExtClientAsync(ClientAsync):
             headers=self.headers
         ).json()
         return TradeMode.de_json(result, self)
+
+    @log
+    async def get_price_range(self, gid: int) -> 'PriceRange':
+        """Получить размах цен в истории покупок. Проверяет только последние 100 покупок.
+
+        Args:
+            gid (:obj:`int`): ID группы предметов.
+
+        Returns:
+            :NamedTuple:`PriceRange(lowest: float, highest: float)`: Размах цен в истории покупок.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            UnknownItem: Неизвестный предмет.
+        """
+
+        lowest = highest = None
+        sell_history = (await self.get_item_info(gid)).sell_history
+        for item in sell_history:
+            if lowest is None or item.price < lowest:
+                lowest = item.price
+            if highest is None or item.price > highest:
+                highest = item.price
+
+        return PriceRange(lowest, highest)
