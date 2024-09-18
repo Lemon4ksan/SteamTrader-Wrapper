@@ -36,22 +36,25 @@ class IndependentTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(inventory.success)
 
     async def test_multi_sell(self):
-        if self.SKIP_SELL_TESTS:
-            self.skipTest('Тест на мульти-продажу пропущен.')
+        async with self.client:
+            if self.SKIP_SELL_TESTS:
+                self.skipTest('Тест на мульти-продажу пропущен.')
 
-        multi_sell_result = await self.client.multi_sell(440, 1226, 2.92, 1)
-        self.assertTrue(multi_sell_result[0].success)
+            multi_sell_result = await self.client.multi_sell(440, 1226, 2.92, 1)
+            self.assertTrue(multi_sell_result[0].success)
 
     async def test_set_trade_mode(self):
-        result = await self.client.set_trade_mode(0)
-        self.assertTrue(result.success)
-        result = await self.client.set_trade_mode(1)
-        self.assertTrue(result.success)
+        async with self.client:
+            result = await self.client.set_trade_mode(0)
+            self.assertTrue(result.success)
+            result = await self.client.set_trade_mode(1)
+            self.assertTrue(result.success)
 
     async def test_get_price_range(self):
-        price_range = await self.client.get_price_range(self.TEST_GID)
-        self.assertIsInstance(price_range.lowest, float)
-        self.assertIsInstance(price_range.highest, float)
+        async with self.client:
+            price_range = await self.client.get_price_range(self.TEST_GID)
+            self.assertIsInstance(price_range.lowest, float)
+            self.assertIsInstance(price_range.highest, float)
 
 if __name__ == '__main__':
     unittest.main()

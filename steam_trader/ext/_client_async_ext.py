@@ -246,8 +246,8 @@ class ExtClientAsync(ClientAsync):
             url,
             params={"state": state},
             headers=self.headers
-        ).json()
-        return TradeMode.de_json(result, self)
+        )
+        return TradeMode.de_json(result.json(), self)
 
     @log
     async def get_price_range(self, gid: int) -> 'PriceRange':
@@ -272,4 +272,4 @@ class ExtClientAsync(ClientAsync):
             if highest is None or item.price > highest:
                 highest = item.price
 
-        return PriceRange(lowest, highest)
+        return PriceRange(float(lowest), float(highest))

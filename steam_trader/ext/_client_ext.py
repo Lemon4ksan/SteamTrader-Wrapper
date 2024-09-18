@@ -304,4 +304,4 @@ class ExtClient(Client):
                     if highest is None or item.price > highest:
                         highest = item.price
 
-        return PriceRange(lowest, highest)
+        return PriceRange(float(lowest), float(highest))
