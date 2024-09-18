@@ -9,6 +9,10 @@ if TYPE_CHECKING:
     from ._client_ext import ExtClient
     from ._client_async_ext import ExtClientAsync
 
+from collections import namedtuple
+PriceRange = namedtuple('PriceRange', ['lowest', 'highest'])
+
+
 @dataclass
 class TradeMode(TraderClientObject):
     """Класс, представляющий режим торговли.

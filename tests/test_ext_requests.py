@@ -23,6 +23,7 @@ class IndependentTests(unittest.TestCase):
             used_by=[Filter(id=TF2_CLASS_ENGINEER), Filter(id=TF2_CLASS_SCOUT)]
         )
         self.SKIP_SELL_TESTS = True
+        self.TEST_GID = 1828
 
     def test_get_inventory(self):
         inventory = self.client.get_inventory(TEAM_FORTRESS2_APPID, status=[0, 1, 2, 3, 4])
@@ -38,6 +39,17 @@ class IndependentTests(unittest.TestCase):
 
         multi_sell_result = self.client.multi_sell(440, 1226, 2.92, 1)
         self.assertTrue(multi_sell_result[0].success)
+
+    def test_set_trade_mode(self):
+        result = self.client.set_trade_mode(0)
+        self.assertTrue(result.success)
+        result = self.client.set_trade_mode(1)
+        self.assertTrue(result.success)
+
+    def test_get_price_range(self):
+        price_range = self.client.get_price_range(self.TEST_GID)
+        self.assertIsInstance(price_range.lowest, float)
+        self.assertIsInstance(price_range.highest, float)
 
 if __name__ == '__main__':
     unittest.main()
