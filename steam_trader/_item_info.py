@@ -90,7 +90,9 @@ class ItemInfo(TraderClientObject):
         steam_price (:obj:`float`, optional): Минимальная цена в Steam. Может быть пустым.
         filters (:class:`steam_trader.Filters`): Фильтры, используемые для поиска на сайте.
         sell_offers (Sequnce[`steam_trader.SellOffer`]): Последовательность с предложениями о продаже.
+            От большего к меньшему.
         buy_offers (Sequnce[`steam_trader.BuyOffer`]): Последовательность с предложениями о покупке.
+            От большего к меньшему.
         sell_history (Sequence[`steam_trader.SellHistoryItem`]): Последовательность истории продаж.
         client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
             Клиент Steam Trader.

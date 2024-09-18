@@ -3,22 +3,12 @@
 ![PyPI - License](https://img.shields.io/pypi/l/steam-trader)
 ![PyPI - Status](https://img.shields.io/pypi/status/steam-trader)
 
-<p align="left">
-	<a href="https://discord.gg/DGRHEnUW">
-      <img height="35.48" width="200" alt="Сервер" src="https://github.com/user-attachments/assets/b7c8a272-b48c-411f-aca3-6512086a9a18">
-   </a>
-</p>
-
----
-
 Эта библиотека представляет Python обёртку для API [Steam-Trader](https://steam-trader.com/).
 
 Она совместима с версиями Python 3.12+ и поддерживает работу как с синхронным, так и с асинхронным (asyncio) кодом.
 
 В дополнение к реализации чистого API данная библиотека имеет ряд объектов высокого уровня и логирование, 
 дабы сделать разработку клиентов и скриптов простой и понятной. Документация была написана исходя из API документации сайта.
-
----
 
 ## Возможности библиотеки
 
