@@ -1,12 +1,12 @@
 import asyncio
 import logging
 import functools
-from typing import Optional, Sequence, TypeVar, Callable, Any
+from typing import Optional, Sequence, TypeVar, Callable, Any, LiteralString
 
 from ._misc import TradeMode, PriceRange
 
 from steam_trader.constants import SUPPORTED_APPIDS
-from steam_trader.exceptions import UnsupportedAppID
+from steam_trader.exceptions import UnsupportedAppID, UnknownItem
 from steam_trader import (
     ClientAsync,
     Filters,
@@ -250,26 +250,48 @@ class ExtClientAsync(ClientAsync):
         return TradeMode.de_json(result.json(), self)
 
     @log
-    async def get_price_range(self, gid: int) -> 'PriceRange':
+    async def get_price_range(self, gid: int, *, mode: LiteralString = 'sell') -> 'PriceRange':
         """Получить размах цен в истории покупок. Проверяет только последние 100 покупок.
 
         Args:
             gid (:obj:`int`): ID группы предметов.
+            mode (:obj:`LiteralString`): Режим получения:
+                'sell' - Цены запросов на продажу. Значение по умолчанию.
+                'buy' - Цены запросов на покупку.
+                'history' - Цены из истории продаж. Максимум 100 пунктов.
 
         Returns:
             :NamedTuple:`PriceRange(lowest: float, highest: float)`: Размах цен в истории покупок.
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
-            UnknownItem: Неизвестный предмет.
+            ValueError: Указано недопустимое значение mode.
+            UnknownItem: Отсутствуют предложения о продаже/покупке или отсутствует история продаж.
         """
 
         lowest = highest = None
-        sell_history = (await self.get_item_info(gid)).sell_history
-        for item in sell_history:
-            if lowest is None or item.price < lowest:
-                lowest = item.price
-            if highest is None or item.price > highest:
-                highest = item.price
-
+        match mode:
+            case 'sell':
+                sell_offers = (await self.get_order_book(gid)).sell
+                for item in sell_offers:
+                    if lowest is None or item[0] < lowest:
+                        lowest = item[0]
+                    if highest is None or item[0] > highest:
+                        highest = item[0]
+            case 'buy':
+                buy_offers = (await self.get_order_book(gid)).buy
+                for item in buy_offers:
+                    if lowest is None or item[0] < lowest:
+                        lowest = item[0]
+                    if highest is None or item[0] > highest:
+                        highest = item[0]
+            case 'history':
+                sell_history = (await self.get_item_info(gid)).sell_history
+                for item in sell_history:
+                    if lowest is None or item.price < lowest:
+                        lowest = item.price
+                    if highest is None or item.price > highest:
+                        highest = item.price
+        if lowest is None or highest is None:
+            raise UnknownItem('Отсутствуют предложения о продаже/покупке или отсутствует история продаж.')
         return PriceRange(float(lowest), float(highest))

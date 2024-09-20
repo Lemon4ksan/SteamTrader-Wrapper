@@ -85,8 +85,9 @@ class Client(TraderClientObject):
         self._httpx_client = None
         self.proxy = proxy
 
-    def __enter__(self):
+    def __enter__(self) -> 'Client':
         self._httpx_client = httpx.Client(proxy=self.proxy)
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._httpx_client.close()
