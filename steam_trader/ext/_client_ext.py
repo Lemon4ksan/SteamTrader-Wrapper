@@ -6,7 +6,7 @@ from typing import Optional, Sequence, TypeVar, Callable, Any, LiteralString
 from ._misc import TradeMode, PriceRange
 
 from steam_trader.constants import SUPPORTED_APPIDS
-from steam_trader.exceptions import UnsupportedAppID
+from steam_trader.exceptions import UnsupportedAppID, UnknownItem
 from steam_trader import (
     Client,
     Filters,
@@ -277,6 +277,11 @@ class ExtClient(Client):
 
         Returns:
             :NamedTuple:`PriceRange(lowest: float, highest: float)`: Размах цен в истории покупок.
+
+        Raises:
+            InternalError: При выполнении запроса произошла неизвестная ошибка.
+            ValueError: Указано недопустимое значение mode.
+            UnknownItem: Отсутствуют предложения о продаже/покупке или отсутствует история продаж.
         """
 
         lowest = highest = None
@@ -303,5 +308,6 @@ class ExtClient(Client):
                         lowest = item.price
                     if highest is None or item.price > highest:
                         highest = item.price
-
+        if lowest is None or highest is None:
+            raise UnknownItem('Отсутствуют предложения о продаже/покупке или отсутствует история продаж.')
         return PriceRange(float(lowest), float(highest))

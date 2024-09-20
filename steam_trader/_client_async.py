@@ -84,8 +84,9 @@ class ClientAsync(TraderClientObject):
 
         self.proxy = proxy
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> 'ClientAsync':
         self._async_client = httpx.AsyncClient(proxy=self.proxy)
+        return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self._async_client.aclose()
