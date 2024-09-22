@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Optional, Union
 
-from . import exceptions
+from steam_trader import exceptions
 from ._base import TraderClientObject
 
 if TYPE_CHECKING:
@@ -38,17 +38,11 @@ class EditPriceResult(TraderClientObject):
     percent: Optional[float] = None
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'EditPriceResult':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.EditPriceResult`: Результат запроса на изменение цены.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'EditPriceResult':
 
         if not data['success']:
             match data['code']:
@@ -95,17 +89,11 @@ class DeleteItemResult(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'DeleteItemResult':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.DeleteItemResult`: Результат запроса снятия предмета с продажи/заявки на покупку.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'DeleteItemResult':
 
         if not data['success']:
             match data['code']:
@@ -142,17 +130,11 @@ class GetDownOrdersResult(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'GetDownOrdersResult':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.EditPriceResult`: Результат запроса на изменение цены.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'GetDownOrdersResult':
 
         if not data['success']:
             match data['code']:

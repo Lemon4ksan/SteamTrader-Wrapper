@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Union
 
 from ._base import TraderClientObject
 
@@ -12,10 +12,10 @@ class SellOffer(TraderClientObject):
     """Класс, представляющий информацию о предложении продажи.
 
     Attributes:
-        id (:obj:`int`): ID заявки.
+        id (:obj:`int`): Уникальный ID заявки.
         classid (:obj:`int`): ClassID предмета в Steam.
         instanceid (:obj:`int`): InstanceID предмета в Steam.
-        itemid (:obj:`int`): Уникальный ID предмета.
+        itemid (:obj:`int`): ID предмета.
         price (:obj:`float`): Цена предложения о покупке/продаже.
         currency (:obj:`int`): Валюта покупки/продажи.
     """
@@ -33,16 +33,6 @@ class SellOffer(TraderClientObject):
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
     ) -> 'SellOffer':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.SellOffer`: Информация о предложении продажи.
-        """
 
         data = super(SellOffer, cls).de_json(data)
 
@@ -68,16 +58,6 @@ class BuyOffer(TraderClientObject):
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
     ) -> 'BuyOffer':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.BuyOffer`: Информация о запросе на покупку.
-        """
 
         data = super(BuyOffer, cls).de_json(data)
 

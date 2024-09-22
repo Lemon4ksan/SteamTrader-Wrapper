@@ -1,6 +1,6 @@
 import os
 import unittest
-import steam_trader
+import steam_trader.api as steam_trader
 
 
 class IndependentTests(unittest.TestCase):

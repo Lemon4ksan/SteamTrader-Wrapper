@@ -6,8 +6,8 @@
 import os
 import unittest
 
-from steam_trader import Filters, Filter
-from steam_trader.ext import ExtClientAsync
+from steam_trader.api import Filters, Filter
+from steam_trader.api.ext import ExtClientAsync
 from steam_trader.constants import *
 
 from dotenv import load_dotenv

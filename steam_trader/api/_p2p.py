@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Union
 
 from ._base import TraderClientObject
 from ._misc import ExchangeItem
@@ -32,17 +32,11 @@ class P2PTradeOffer(TraderClientObject):
     trade_offer_create_params: str
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'P2PTradeOffer':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.P2PTradeOffer`: Данные для совершения p2p трейда.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'P2PTradeOffer':
 
         data = super(P2PTradeOffer, cls).de_json(data)
 
@@ -63,17 +57,11 @@ class P2PSendObject(TraderClientObject):
     trade_offer: 'P2PTradeOffer'
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'P2PSendObject':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.P2PSendObject`: Ссылка на p2p трейд и сам трейд.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'P2PSendObject':
 
         data.update({  # перенос с camleCase на snake_case
             'trade_link': data['tradeLink'],
@@ -104,17 +92,11 @@ class P2PReceiveObject(TraderClientObject):
     partner_steamid: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'P2PReceiveObject':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.P2PSendObject`: Массив с данными для принятия обмена.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'P2PReceiveObject':
 
         data.update({  # перенос с camleCase на snake_case
             'offerid': data['offerId'],
@@ -144,17 +126,11 @@ class P2PConfirmObject(TraderClientObject):
     partner_steamid: int
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'P2PConfirmObject':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.P2PSendObject`: Массив с данными для подтверждения обмена в мобильном аутентификаторе.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'P2PConfirmObject':
 
         data.update({  # перенос с camleCase на snake_case
             'offerid': data['offerId'],

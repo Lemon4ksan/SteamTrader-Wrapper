@@ -7,7 +7,7 @@ from ._misc import TradeMode, PriceRange
 
 from steam_trader.constants import SUPPORTED_APPIDS
 from steam_trader.exceptions import UnsupportedAppID, UnknownItem
-from steam_trader import (
+from steam_trader.api import (
     ClientAsync,
     Filters,
     Inventory,

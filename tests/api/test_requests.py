@@ -5,10 +5,10 @@
 
 import os
 import unittest
-import steam_trader
+import steam_trader.api as steam_trader
 from collections.abc import Sequence
 from steam_trader.constants import SUPPORTED_APPIDS, TEAM_FORTRESS2_APPID
-from steam_trader.exceptions import WrongTradeLink, NoTradeItems, Unauthorized
+from steam_trader.exceptions import WrongTradeLink, NoTradeItems
 
 from dotenv import load_dotenv
 load_dotenv()  # Для проведения тестов необходимо указать ваш токен и ссылку для обмена Steam в environemntal variables

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Optional, Union
 
-from .exceptions import BadRequestError, Unauthorized, InternalError, UnknownItem, TooManyRequests
+from steam_trader.exceptions import BadRequestError, Unauthorized, InternalError, UnknownItem, TooManyRequests
 from ._base import TraderClientObject
 from ._offers import SellOffer, BuyOffer
 from ._misc import SellHistoryItem, Filters
@@ -40,16 +40,6 @@ class MinPrices(TraderClientObject):
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
     ) -> 'MinPrices':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.MinPrices` Минимальная/максимальная цена на предмет.
-        """
 
         if not data['success']:
             match data['code']:
@@ -120,17 +110,11 @@ class ItemInfo(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'ItemInfo':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.ItemInfo`: Информация о группе предметов.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'ItemInfo':
 
         if not data['success']:
             match data['code']:
@@ -189,16 +173,6 @@ class OrderBook(TraderClientObject):
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
     ) -> 'OrderBook':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.OrderBook`: Список заявок о покупке/продаже предмета.
-        """
 
         if not data['success']:
             match data['code']:
