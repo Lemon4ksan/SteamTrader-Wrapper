@@ -2,7 +2,7 @@ import dataclasses
 import logging
 from abc import ABCMeta
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Union
 
 try:
     import ujson as json
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from ._client_async import ClientAsync
 
 class TraderClientObject:
-    """Базовый класс для всех объектов библиотеки.
+    """Базовый класс для всех api объектов библиотеки.
 
     Changes:
         0.3.0: Удалён метод is_valid_data из-за ненадобности.
