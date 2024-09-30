@@ -5,8 +5,8 @@
 
 import os
 import unittest
-import steam_trader
 import asyncio
+import steam_trader.api as steam_trader
 from collections.abc import Sequence
 from steam_trader.constants import SUPPORTED_APPIDS, TEAM_FORTRESS2_APPID
 from steam_trader.exceptions import WrongTradeLink, NoTradeItems

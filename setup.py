@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='UTF-8') as f:
 
 setup(
     name='steam-trader',
-    version='0.3.1',
+    version='0.4.0',
     author='Lemon4ksan (Bananchiki)',
     author_email='senya20151718@gmail.com',
     license='BSD License',
@@ -16,8 +16,9 @@ setup(
     long_description=readme,
     long_description_content_type='text/markdown',
     packages=find_packages(),
-    install_requires=['httpx'],
+    install_requires=['httpx', 'beautifulsoup4', 'lxml'],
     include_package_data=True,
+    options={'api': ['httpx']},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Natural Language :: Russian',

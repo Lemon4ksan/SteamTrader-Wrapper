@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Union
 
-from steam_trader import exceptions
+from .. import exceptions
 from ._base import TraderClientObject
 from ._misc import TradeDescription, ItemForExchange, ExchangeItem
 from ._p2p import P2PConfirmObject, P2PReceiveObject, P2PSendObject
@@ -30,17 +30,11 @@ class ItemsForExchange(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'ItemsForExchange':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.ItemsForExchange`: Предметы для обмена с ботом.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'ItemsForExchange':
 
         if not data['success']:
             match data['code']:
@@ -90,17 +84,11 @@ class ExchangeResult(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict,  client: Union['Client', 'ClientAsync', None] = None) -> 'ExchangeResult':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.ExchangeResult`: Результат обмена с ботом.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'ExchangeResult':
 
         if not data['success']:
             match data['code']:
@@ -171,17 +159,11 @@ class ExchangeP2PResult(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'ExchangeP2PResult':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.ExchangeP2PResult`: Результат p2p обмена.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'ExchangeP2PResult':
 
         if not data['success']:
             match data['code']:

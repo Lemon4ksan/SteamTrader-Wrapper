@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-from collections.abc import Sequence
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Union
 
-from steam_trader import TraderClientObject
-from steam_trader import exceptions
+from steam_trader.api import TraderClientObject
+from ... import exceptions
 
 if TYPE_CHECKING:
     from ._client_ext import ExtClient
@@ -31,17 +30,11 @@ class TradeMode(TraderClientObject):
     client: Union['ExtClient', 'ExtClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['ExtClient', 'ExtClientAsync', None] = None) -> 'TradeMode':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.ExtClient`, :class:`steam_trader.ExtClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.TradeMode`: Режим торговли.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['ExtClient', 'ExtClientAsync', None] = None
+    ) -> 'TradeMode':
 
         if not data['success']:
             match data['code']:

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Optional, Union
 
-from .exceptions import BadRequestError, Unauthorized, NoBuyOrders, TooManyRequests
+from steam_trader.exceptions import BadRequestError, Unauthorized, NoBuyOrders, TooManyRequests
 from ._base import TraderClientObject
 from ._misc import InventoryItem, BuyOrder, Discount, OperationsHistoryItem, AltWebSocketMessage
 
@@ -30,17 +30,11 @@ class WebSocketToken(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'WebSocketToken':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.WebSocketToken`: WebSocket токен.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'WebSocketToken':
 
         try:
             if not data['success']:
@@ -85,17 +79,6 @@ class Inventory(TraderClientObject):
             status: Optional[Sequence[int]] = None,
             client: Union['Client', 'ClientAsync', None] = None
     ) -> 'Inventory':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            status (Sequence[:obj:`int`], optional): Указывается, чтобы получить список предметов с определённым статусом.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.Inventory`: Инвентарь клиента.
-        """
 
         if not data['success']:
             try:
@@ -107,7 +90,7 @@ class Inventory(TraderClientObject):
                     case 429:
                         raise TooManyRequests('Вы отправили слишком много запросов.')
             except KeyError:
-                pass
+                del data['error']
 
         data.update({
             'gameid': data['game']
@@ -146,17 +129,11 @@ class BuyOrders(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'BuyOrders':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.BuyOrders`: Ваши запросы на покупку.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'BuyOrders':
 
         if not data['success']:
             match data['code']:
@@ -193,17 +170,11 @@ class Discounts(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'Discounts':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.Discounts`: Комиссии/скидки на игры.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'Discounts':
 
         if not data['success']:
             match data['code']:
@@ -237,17 +208,11 @@ class OperationsHistory(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'OperationsHistory':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.Discounts`: Истории операций.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'OperationsHistory':
 
         if not data['success']:
             match data['code']:
@@ -286,17 +251,11 @@ class InventoryState(TraderClientObject):
     client: Union['Client', 'ClientAsync', None]
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'InventoryState':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.InventoryState`: Текущий статус инвентаря.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'InventoryState':
 
         data.update({  # перенос с camleCase на snake_case
             'updating_now': data['updatingNow'],
@@ -341,19 +300,9 @@ class AltWebSocket(TraderClientObject):
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
     ) -> Optional['AltWebSocket']:
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :obj:`steam_trader.AltWebSocket`, optional: Запрос альтернативным WebSocket.
-        """
 
         if not data['success']:
-            logging.warning('WebSocket соединение поддержано.')
+            logging.debug('WebSocket соединение поддержано.')
             return
 
         for i, message in enumerate(data['messages']):

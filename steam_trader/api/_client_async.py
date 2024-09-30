@@ -4,8 +4,8 @@ import functools
 from collections.abc import Sequence, Callable
 from typing import Optional, LiteralString, Union, TypeVar, Any
 
-from .constants import SUPPORTED_APPIDS
-from .exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsupportedAppID, Unauthorized, TooManyRequests
+from steam_trader.constants import SUPPORTED_APPIDS
+from steam_trader.exceptions import BadRequestError, WrongTradeLink, SaveFail, UnsupportedAppID, Unauthorized, TooManyRequests
 from ._base import TraderClientObject
 from ._account import WebSocketToken, Inventory, BuyOrders, Discounts, OperationsHistory, InventoryState, AltWebSocket
 from ._buy import BuyResult, BuyOrderResult, MultiBuyResult
@@ -23,10 +23,10 @@ def log(method: F) -> F:
     logger = logging.getLogger(method.__module__)
 
     @functools.wraps(method)
-    def wrapper(*args, **kwargs) -> Any:
+    async def wrapper(*args, **kwargs) -> Any:
         logger.debug(f'Entering: {method.__name__}')
 
-        result = method(*args, **kwargs)
+        result = await method(*args, **kwargs)
         logger.info(result)
 
         logger.debug(f'Exiting: {method.__name__}')
@@ -36,15 +36,16 @@ def log(method: F) -> F:
     return wrapper
 
 
-class Client(TraderClientObject):
+class ClientAsync(TraderClientObject):
     """Класс, представляющий клиент Steam Trader.
 
     Args:
         api_token (:obj:`str`): Уникальный ключ для аутентификации.
-        proxy (:obj:`str`, optional): Прокси для запросов. Для работы необходимо использовать контекстный менеджер with.
+        proxy (:obj:`str`, optional): Прокси для запросов.
         base_url (:obj:`str`, optional): Ссылка на API Steam Trader.
         headers (:obj:`dict`, optional): Словарь, содержащий сведения об устройстве, с которого выполняются запросы.
             Используется при каждом запросе на сайт.
+        **kwargs: Будут переданы httpx клиенту. Например timeout.
 
     Attributes:
         api_token (:obj:`str`): Уникальный ключ для аутентификации.
@@ -59,13 +60,21 @@ class Client(TraderClientObject):
         TooManyRequests: Слишком много запросов.
     """
 
+    __slots__ = [
+        'sessionid',
+        'proxy',
+        'base_url'
+    ]
+
     def __init__(
             self,
             api_token: str,
             *,
             proxy: Optional[str] = None,
             base_url: Optional[str] = None,
-            headers: Optional[dict] = None) -> None:
+            headers: Optional[dict] = None,
+            **kwargs
+    ) -> None:
 
         self.api_token = api_token
 
@@ -82,25 +91,26 @@ class Client(TraderClientObject):
             }
         self.headers = headers
 
-        self._httpx_client = None
         self.proxy = proxy
+        self.kwargs = kwargs
 
-    def __enter__(self) -> 'Client':
-        self._httpx_client = httpx.Client(proxy=self.proxy)
+    async def __aenter__(self) -> 'ClientAsync':
+        self._async_client = httpx.AsyncClient(proxy=self.proxy, **self.kwargs)
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._httpx_client.close()
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self._async_client.aclose()
 
     @property
-    def balance(self) -> float:
+    async def balance(self) -> float:
         """Баланс клиента."""
 
         url = self.base_url + 'getbalance/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             headers=self.headers
-        ).json()
+        )
+        result = result.json()
         if not result['success']:
             match result['code']:
                 case 401:
@@ -110,7 +120,7 @@ class Client(TraderClientObject):
         return result['balance']
 
     @log
-    def sell(self, itemid: int, assetid: int, price: float) -> 'SellResult':
+    async def sell(self, itemid: int, assetid: int, price: float) -> 'SellResult':
         """Создать предложение о продаже определённого предмета.
 
         Note:
@@ -138,15 +148,15 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'sale/'
-        result = (self._httpx_client or httpx).post(
+        result = await self._async_client.post(
             url,
             data={"itemid": itemid, "assetid": assetid, "price": price},
             headers=self.headers
-        ).json()
-        return SellResult.de_json(result, self)
+        )
+        return SellResult.de_json(result.json(), self)
 
     @log
-    def buy(self, _id: Union[int, str], _type: int, price: float, currency: int = 1) -> 'BuyResult':
+    async def buy(self, _id: Union[int, str], _type: int, price: float, currency: int = 1) -> 'BuyResult':
         """Создать предложение о покупке предмета по строго указанной цене.
 
         Если в момент покупки цена предложения о продаже изменится, покупка не совершится.
@@ -174,16 +184,19 @@ class Client(TraderClientObject):
             NotEnoughMoney: Недостаточно средств.
         """
 
+        if _type not in range(1, 4):
+            logging.warning(f'Неправильное значение _type >> {_type}')
+
         url = self.base_url + 'buy/'
-        result = (self._httpx_client or httpx).post(
+        result = await self._async_client.post(
             url,
             data={"id": _id, "type": _type, "price": price, "currency": currency},
             headers=self.headers
-        ).json()
-        return BuyResult.de_json(result, self)
+        )
+        return BuyResult.de_json(result.json(), self)
 
     @log
-    def create_buy_order(self, gid: int, price: float, *, count: int = 1) -> 'BuyOrderResult':
+    async def create_buy_order(self, gid: int, price: float, *, count: int = 1) -> 'BuyOrderResult':
         """Создать заявку на покупку предмета с определённым GID.
 
         Note:
@@ -206,21 +219,21 @@ class Client(TraderClientObject):
             NoTradeLink: Отсутствует сслыка для обмена.
             NoLongerExists: Предложение больше недействительно.
             NotEnoughMoney: Недостаточно средств.
-            AssertionError: Указаны недопустимые параметры.
         """
 
-        assert 1 <= count <= 500, f'Количество заявок должно быть от 1 до 500 (не {count})'
+        if not 1 <= count <= 500:
+            logging.warning(f'Количество заявок должно быть от 1 до 500 (не {count})')
 
         url = self.base_url + 'createbuyorder/'
-        result = (self._httpx_client or httpx).post(
+        result = await self._async_client.post(
             url,
             data={"gid": gid, "price": price, "count": count},
             headers=self.headers
-        ).json()
-        return BuyOrderResult.de_json(result, self)
+        )
+        return BuyOrderResult.de_json(result.json(), self)
 
     @log
-    def multi_buy(self, gid: int, max_price: float, count: int) -> 'MultiBuyResult':
+    async def multi_buy(self, gid: int, max_price: float, count: int) -> 'MultiBuyResult':
         """Создать запрос о покупке нескольких предметов с определённым GID.
 
         Будут куплены самые лучшие (дешёвые) предложения о продаже.
@@ -230,7 +243,7 @@ class Client(TraderClientObject):
         если при покупке указать максмальную цену 25 ₽, то сделки совершатся по цене 10 и 11 ₽,
         а общая сумма потраченных средств - 21 ₽.
 
-        Если по указанной максимальной цене не окажется достаточно предложений о продаже,
+       Если по указанной максимальной цене не окажется достаточно предложений о продаже,
         success будет равен False и будет указано кол-во оставшихся предметов по данной цене.
 
         Args:
@@ -252,15 +265,15 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'multibuy/'
-        result = (self._httpx_client or httpx).post(
+        result = await self._async_client.post(
             url,
             data={"gid": gid, "max_price": max_price, "count": count},
             headers=self.headers
-        ).json()
-        return MultiBuyResult.de_json(result, self)
+        )
+        return MultiBuyResult.de_json(result.json(), self)
 
     @log
-    def edit_price(self, _id: int, price: float) -> 'EditPriceResult':
+    async def edit_price(self, _id: int, price: float) -> 'EditPriceResult':
         """Редактировать цену предмета/заявки на покупку.
 
         При редактировании может произойти моментальная продажа/покупка по аналогии тому,
@@ -281,15 +294,15 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'editprice/'
-        result = (self._httpx_client or httpx).post(
+        result = await self._async_client.post(
             url,
             data={"id": _id, "price": price},
             headers=self.headers
-        ).json()
-        return EditPriceResult.de_json(result, self)
+        )
+        return EditPriceResult.de_json(result.json(), self)
 
     @log
-    def delete_item(self, _id: int) -> 'DeleteItemResult':
+    async def delete_item(self, _id: int) -> 'DeleteItemResult':
         """Снять предмет с продажи/заявку на покупку.
 
         Args:
@@ -305,15 +318,15 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'deleteitem/'
-        result = (self._httpx_client or httpx).post(
+        result = await self._async_client.post(
             url,
             data={"id": _id},
             headers=self.headers
-        ).json()
-        return DeleteItemResult.de_json(result, self)
+        )
+        return DeleteItemResult.de_json(result.json(), self)
 
     @log
-    def get_down_orders(self, gameid: int, *, order_type: LiteralString = 'sell') -> 'GetDownOrdersResult':
+    async def get_down_orders(self, gameid: int, *, order_type: LiteralString = 'sell') -> 'GetDownOrdersResult':
         """Снять все заявки на продажу/покупку предметов.
 
         Args:
@@ -334,21 +347,21 @@ class Client(TraderClientObject):
         """
 
         if gameid not in SUPPORTED_APPIDS:
-            raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
+            raise UnsupportedAppID(f'Игра с AppID {gameid} в данный момент не поддерживается.')
 
         if order_type not in ['sell', 'buy']:
-            raise ValueError(f'Неизвестный тип {order_type}')
+            logging.warning(f'Неизвестный тип >> {order_type}')
 
         url = self.base_url + 'getdownorders/'
-        result = (self._httpx_client or httpx).post(
+        result = await self._async_client.post(
             url,
             data={"gameid": gameid, "type": order_type},
             headers=self.headers
-        ).json()
-        return GetDownOrdersResult.de_json(result, self)
+        )
+        return GetDownOrdersResult.de_json(result.json(), self)
 
     @log
-    def get_items_for_exchange(self) -> 'ItemsForExchange':
+    async def get_items_for_exchange(self) -> 'ItemsForExchange':
         """Получить список предметов для обмена с ботом.
 
         Returns:
@@ -360,14 +373,14 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'itemsforexchange/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             headers=self.headers
-        ).json()
-        return ItemsForExchange.de_json(result, self)
+        )
+        return ItemsForExchange.de_json(result.json(), self)
 
     @log
-    def exchange(self) -> 'ExchangeResult':
+    async def exchange(self) -> 'ExchangeResult':
         """Выполнить обмен с ботом.
 
         Note:
@@ -392,14 +405,14 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'exchange/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             headers=self.headers
-        ).json()
-        return ExchangeResult.de_json(result, self)
+        )
+        return ExchangeResult.de_json(result.json(), self)
 
     @log
-    def get_items_for_exchange_p2p(self) -> 'ItemsForExchange':
+    async def get_items_for_exchange_p2p(self) -> 'ItemsForExchange':
         """Получить список предметов для p2p обмена.
 
         Returns:
@@ -411,15 +424,14 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'itemsforexchangep2p/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             headers=self.headers
-        ).json()
-
-        return ItemsForExchange.de_json(result, self)
+        )
+        return ItemsForExchange.de_json(result.json(), self)
 
     @log
-    def exchange_p2p(self) -> 'ExchangeP2PResult':
+    async def exchange_p2p(self) -> 'ExchangeP2PResult':
         """Выполнить p2p обмен.
 
         Note:
@@ -442,15 +454,14 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'exchange/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             headers=self.headers
-        ).json()
-
-        return ExchangeP2PResult.de_json(result, self)
+        )
+        return ExchangeP2PResult.de_json(result.json(), self)
 
     @log
-    def get_min_prices(self, gid: int, currency: int = 1) -> 'MinPrices':
+    async def get_min_prices(self, gid: int, currency: int = 1) -> 'MinPrices':
         """Получить минимальные/максимальные цены предмета.
 
         Note:
@@ -469,15 +480,15 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + "getminprices/"
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             params={"gid": gid, "currency": currency},
             headers=self.headers
-        ).json()
-        return MinPrices.de_json(result, self)
+        )
+        return MinPrices.de_json(result.json(), self)
 
     @log
-    def get_item_info(self, gid: int) -> 'ItemInfo':
+    async def get_item_info(self, gid: int) -> 'ItemInfo':
         """Получить информацию о группе предметов.
 
         Args:
@@ -492,23 +503,23 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + "iteminfo/"
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             params={"gid": gid},
             headers=self.headers
-        ).json()
-        return ItemInfo.de_json(result, self)
+        )
+        return ItemInfo.de_json(result.json(), self)
 
     @log
-    def get_order_book(self, gid: int, *, mode: LiteralString = 'all', limit: Optional[int] = None) -> 'OrderBook':
+    async def get_order_book(self, gid: int, *, mode: LiteralString = 'all', limit: Optional[int] = None) -> 'OrderBook':
         """Получить заявки о покупке/продаже предмета.
 
         Args:
             gid (:obj:`int`): ID группы предметов.
             mode (:obj:`LiteralString`): Режим отображения
-                "all" - отображать покупки и продажи. Значение по умолчанию.
-                "sell" - отображать только заявки на ПРОДАЖУ.
-                "buy" - отображать только заявки на ПОКУПКУ.
+                'all' - отображать покупки и продажи. Значение по умолчанию.
+                'sell' - отображать только заявки на ПРОДАЖУ.
+                'buy' - отображать только заявки на ПОКУПКУ.
             limit (:obj:`int`, optional): Максимальное количество строк в списке. По умолчанию - неограниченно
 
         Returns:
@@ -516,32 +527,31 @@ class Client(TraderClientObject):
 
         Raises:
             InternalError: При выполнении запроса произошла неизвестная ошибка.
-            ValueError: Указано недопустимое значение mode.
         """
 
         if mode not in ['all', 'sell', 'buy']:
-            raise ValueError(f'Неизвестный режим {mode}')
+            logging.warning(f'Неизвестный режим >> {mode}')
 
         url = self.base_url + "orderbook/"
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             params={"gid": gid, "mode": mode, "limit": limit},
             headers=self.headers
-        ).json()
-        return OrderBook.de_json(result, self)
+        )
+        return OrderBook.de_json(result.json(), self)
 
     @log
-    def get_web_socket_token(self) -> 'WebSocketToken':
+    async def get_web_socket_token(self) -> 'WebSocketToken':
         """Получить токен для авторизации в WebSocket. Незадокументированно."""
         url = self.base_url + "getwstoken/"
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             params={'key': self.api_token}
-        ).json()
-        return WebSocketToken.de_json(result, self)
+        )
+        return WebSocketToken.de_json(result.json(), self)
 
     @log
-    def get_inventory(self, gameid: int, *, status: Optional[Sequence[int]] = None) -> 'Inventory':
+    async def get_inventory(self, gameid: int, *, status: Optional[Sequence[int]] = None) -> 'Inventory':
         """Получить инвентарь клиента, включая заявки на покупку и купленные предметы.
 
         По умолчанию возвращает список предметов из инвентаря Steam, которые НЕ выставлены на продажу.
@@ -578,19 +588,23 @@ class Client(TraderClientObject):
                     raise ValueError(f'Неизвестный статус {s}')
                 params[f'status[{i}]'] = s
 
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             params=params,
             headers=self.headers
-        ).json()
-        return Inventory.de_json(result, status, self)
+        )
+        return Inventory.de_json(result.json(), status, self)
 
     @log
-    def get_buy_orders(self, *, gameid: Optional[int] = None, gid: Optional[int] = None) -> 'BuyOrders':
+    async def get_buy_orders(self, *, gameid: Optional[int] = None, gid: Optional[int] = None) -> 'BuyOrders':
         """Получить последовательность заявок на покупку. По умолчанию возвращаются заявки для всех
         предметов из всех разделов.
 
         При указании соответствующих параметров можно получить заявки из определённого раздела и/или предмета.
+
+        Note:
+            Во время тестирования мои запросы на покупку отображались только тогда,
+            когда я указал конкретный appid игры и gid предмета.
 
         Args:
             gameid (:obj:`int`, optional): AppID приложения в Steam.
@@ -614,15 +628,15 @@ class Client(TraderClientObject):
             params['gid'] = gid
 
         url = self.base_url + 'getbuyorders/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             params=params,
             headers=self.headers
-        ).json()
-        return BuyOrders.de_json(result, self)
+        )
+        return BuyOrders.de_json(result.json(), self)
 
     @log
-    def get_discounts(self) -> 'Discounts':
+    async def get_discounts(self) -> 'Discounts':
         """Получить комиссии/скидки и оборот на сайте.
 
         Данные хранятся в словаре data, где ключ - это AppID игры в Steam (См. steam_trader.constants).
@@ -632,14 +646,14 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'getdiscounts/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             headers=self.headers
-        ).json()
-        return Discounts.de_json(result, self)
+        )
+        return Discounts.de_json(result.json(), self)
 
     @log
-    def set_trade_link(self, trade_link: str) -> None:
+    async def set_trade_link(self, trade_link: str) -> None:
         """Установить ссылку для обмена.
 
         Args:
@@ -652,28 +666,29 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'settradelink/'
-        result = (self._httpx_client or httpx).post(
+        result = await self._async_client.post(
             url,
             data={"trade_link": trade_link},
             headers=self.headers
-        ).json()
+        )
+        result = result.json()
 
         if not result['success']:
             try:
                 match result['code']:
                     case 400:
-                        raise BadRequestError('Неправильный запрос.')
+                        raise BadRequestError('Неправильный запрос')
                     case 401:
-                        raise Unauthorized('Неправильный api-токен.')
+                        raise Unauthorized('Неправильный api-токен')
                     case 429:
                         raise TooManyRequests('Вы отправили слишком много запросов.')
                     case 1:
-                        raise SaveFail('Не удалось сохранить ссылку обмена.')
+                        raise SaveFail('Не удалось сохранить ссылку обмена')
             except KeyError:
                 raise WrongTradeLink('Указана ссылка для обмена от другого Steam аккаунта ИЛИ ссылка для обмена уже указана.')
 
     @log
-    def remove_trade_link(self) -> None:
+    async def remove_trade_link(self) -> None:
         """Удалить ссылку для обмена.
 
         Raises:
@@ -681,28 +696,30 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'removetradelink/'
-        result = (self._httpx_client or httpx).post(
+        result = await self._async_client.post(
             url,
             data={"trade_link": "1"},
             headers=self.headers
-        ).json()
+        )
+        result = result.json()
 
         if not result['success']:
             match result['code']:
+                case 400:
+                    raise BadRequestError('Неправильный запрос')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен.')
+                    raise Unauthorized('Неправильный api-токен')
                 case 429:
                     raise TooManyRequests('Вы отправили слишком много запросов.')
                 case 1:
-                    raise SaveFail('Не удалось удалить ссылку обмена.')
+                    raise SaveFail('Не удалось удалить ссылку обмена')
 
     @log
-    def get_operations_history(self, *, operation_type: Optional[int] = None, page: int = 0) -> 'OperationsHistory':
-        """Получить историю операций (По умолчанию все типы). В каждой странице до 100 пунктов.
+    async def get_operations_history(self, *, operation_type: Optional[int] = None, page: int = 0) -> 'OperationsHistory':
+        """Получить историю операций (По умолчанию все типы).
 
         Args:
             operation_type (:obj:`int`, optional): Тип операции. Может быть пустым.
-                Принимает значения:
                 1 - Покупка предмета
                 2 - Продажа предмета
                 3 - Возврат за покупку
@@ -722,19 +739,19 @@ class Client(TraderClientObject):
             0.3.0: Добавлен аргумент page.
         """
 
-        if operation_type not in range(1, 11) and operation_type is not None:
-            raise ValueError(f'Неизвестный тип {operation_type}')
+        if operation_type is not None and operation_type not in range(1, 11):
+            logging.warning(f'Неизвестный тип {operation_type}')
 
         url = self.base_url + 'operationshistory/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             params={"type": operation_type, "page": page},
             headers=self.headers
-        ).json()
-        return OperationsHistory.de_json(result, self)
+        )
+        return OperationsHistory.de_json(result.json(), self)
 
     @log
-    def update_inventory(self, gameid: int) -> None:
+    async def update_inventory(self, gameid: int) -> None:
         """Обновить инвентарь игры на сайте.
 
         Args:
@@ -748,23 +765,24 @@ class Client(TraderClientObject):
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'updateinventory/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             params={"gameid": gameid},
             headers=self.headers
-        ).json()
+        )
+        result = result.json()
 
         if not result['success']:
             match result['code']:
                 case 400:
                     raise BadRequestError('Неправильный запрос.')
                 case 401:
-                    raise Unauthorized('Неправильный api-токен')
+                    raise Unauthorized('Неправильный api-токен.')
                 case 429:
                     raise TooManyRequests('Вы отправили слишком много запросов.')
 
     @log
-    def get_inventory_state(self, gameid: int) -> 'InventoryState':
+    async def get_inventory_state(self, gameid: int) -> 'InventoryState':
         """Получить текущий статус обновления инвентаря.
 
         Args:
@@ -781,15 +799,15 @@ class Client(TraderClientObject):
             raise UnsupportedAppID(f'Игра с AppID {gameid}, в данный момент не поддерживается.')
 
         url = self.base_url + 'inventorystate/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             params={"gameid": gameid},
             headers=self.headers
-        ).json()
-        return InventoryState.de_json(result, self)
+        )
+        return InventoryState.de_json(result.json(), self)
 
     @log
-    def trigger_alt_web_socket(self) -> Optional['AltWebSocket']:
+    async def trigger_alt_web_socket(self) -> Optional['AltWebSocket']:
         """Создать запрос альтернативным WebSocket.
         Для поддержания активного соединения нужно делать этот запрос каждые 2 минуты.
 
@@ -800,8 +818,8 @@ class Client(TraderClientObject):
         """
 
         url = self.base_url + 'altws/'
-        result = (self._httpx_client or httpx).get(
+        result = await self._async_client.get(
             url,
             headers=self.headers
-        ).json()
-        return AltWebSocket.de_json(result, self)
+        )
+        return AltWebSocket.de_json(result.json(), self)

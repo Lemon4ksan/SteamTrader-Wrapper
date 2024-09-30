@@ -4,7 +4,7 @@
 
 from time import sleep
 from datetime import datetime
-from steam_trader import Client
+from steam_trader.api import Client
 
 client = Client('Ваш токен')
 
@@ -30,7 +30,6 @@ with client:
 
             elif item.price < round(sell_orders.sell[1][0] - 0.01, 2) and sell_orders.sell[0][1] == 1:
                 new_price = round(sell_orders.sell[1][0] - 0.01, 2)
-
                 print(f'{datetime.now():%H:%M:%S} | '
                       f'{client.get_item_info(item.gid).name.center(67)} | '
                       f'{str(item.price).center(8)} -> {str(new_price).center(8)} | '

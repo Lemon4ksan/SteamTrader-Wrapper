@@ -6,6 +6,13 @@ DOTA2_APPID: int = 570
 # CS:GO Временно не поддерживается
 SUPPORTED_APPIDS: list[int] = [753, 440, 570]
 
+# Web Scraping
+NAME_BY_APPID: dict[int, str] = {
+    TEAM_FORTRESS2_APPID: 'tf2',
+    DOTA2_APPID: 'dota2',
+    STEAMGIFT_APPID: 'games',
+}
+
 # Фильтры
 # TF2
 # Качества

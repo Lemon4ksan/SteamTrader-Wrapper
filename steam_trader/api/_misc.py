@@ -360,10 +360,10 @@ class OperationsHistoryItem(TraderClientObject):
 
 @dataclass
 class AltWebSocketMessage(TraderClientObject):
-    """Класс, представляющий AltWebSsocket сообщение.
+    """Класс, представляющий AltWebSocket сообщение.
 
     Attributes:
-        type (:obj:`int`): Тип WebSocket сообщения в десятичном виде.
+        type (:obj:`int`): Код WebSocket сообщения.
         data (:obj:`str`): WebSocket сообщение.
     """
 
@@ -380,7 +380,7 @@ class AltWebSocketMessage(TraderClientObject):
                 Клиент Steam Trader.
 
         Returns:
-            :class:`steam_trader.Discount`: Комиссия/скидка.
+            :class:`steam_trader.AltWebSocketMessage`: AltWebSocket сообщение.
         """
 
         data = super(AltWebSocketMessage, cls).de_json(data)
@@ -392,8 +392,8 @@ class MultiBuyOrder(TraderClientObject):
     """Класс, представляющий предмет из запроса на мульти-покупку.
 
     Args:
-        id (:obj:`int`): ID заявки.
-        itemid (:obj:`int`): Уникальный ID предмета.
+        id (:obj:`int`): Уникальный ID заявки.
+        itemid (:obj:`int`): ID предмета.
         price (:obj:`float`): Цена, за которую был куплен предмет с учётом скидки.
     """
 
@@ -402,17 +402,11 @@ class MultiBuyOrder(TraderClientObject):
     price: float
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'MultiBuyOrder':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.MultiBuyOrder`: Запрос на покупку из steam_clieant.MultiBuyInfo.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'MultiBuyOrder':
 
         data = super(MultiBuyOrder, cls).de_json(data)
 
@@ -460,16 +454,6 @@ class ItemForExchange(TraderClientObject):
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
     ) -> 'ItemForExchange':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.ItemForExchange`: Информация о предмете для передачи/получения.
-        """
 
         data = super(ItemForExchange, cls).de_json(data)
 
@@ -505,16 +489,6 @@ class TradeDescription(TraderClientObject):
             data: dict,
             client: Union['Client', 'ClientAsync', None] = None
     ) -> 'TradeDescription':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
-                Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.TradeDescription`: Описание предмета для передачи/получения боту.
-        """
 
         data = super(TradeDescription, cls).de_json(data)
 
@@ -525,14 +499,14 @@ class ExchangeItem(TraderClientObject):
     """Класс, представляющий предмет, на который был отправлен обмен.
 
     Attributes:
-        id (:obj:`int`): ID покупки/продажи.
+        id (:obj:`int`): Уникальный ID заявки.
         assetid (:obj:`int`): AssetID предмета в Steam.
         gameid (:obj:`int`): AppID приложения в Steam.
         contextid (:obj:`int`): ContextID приложения в Steam.
         classid (:obj:`int`): ClassID предмета в Steam.
         instanceid (:obj:`int`): InstanceID предмета в Steam.
         type (:obj:`int`): Значение 0 - предмет для передачи боту, значение 1 - предмет для приема от бота.
-        itemid (:obj:`int`): ID предмета в нашей базе.
+        itemid (:obj:`int`): ID предмета.
         gid (:obj:`int`): Идентификатор группы предметов в нашей базе.
         price (:obj:`int`): Цена, за которую предмет был куплен/продан с учётом скидки/комиссии.
         currency (:obj:`int`): Валюта покупки/продажи.
@@ -553,16 +527,11 @@ class ExchangeItem(TraderClientObject):
     percent: float
 
     @classmethod
-    def de_json(cls: dataclass, data: dict, client: Union['Client', 'ClientAsync', None] = None) -> 'ExchangeItem':
-        """Десериализация объекта.
-
-        Args:
-            data (:obj:`dict`): Поля и значения десериализуемого объекта.
-            client (:class:`steam_trader.Client`, optional): Клиент Steam Trader.
-
-        Returns:
-            :class:`steam_trader.ExchangeItem`: Предмет, на который был отправлен обмен.
-        """
+    def de_json(
+            cls: dataclass,
+            data: dict,
+            client: Union['Client', 'ClientAsync', None] = None
+    ) -> 'ExchangeItem':
 
         data = super(ExchangeItem, cls).de_json(data)
 

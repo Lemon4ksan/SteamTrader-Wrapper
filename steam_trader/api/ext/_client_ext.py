@@ -7,7 +7,7 @@ from ._misc import TradeMode, PriceRange
 
 from steam_trader.constants import SUPPORTED_APPIDS
 from steam_trader.exceptions import UnsupportedAppID, UnknownItem
-from steam_trader import (
+from steam_trader.api import (
     Client,
     Filters,
     Inventory,
@@ -50,7 +50,6 @@ class ExtClient(Client):
 
     Attributes:
         api_token (:obj:`str`): Уникальный ключ для аутентификации.
-        steam_api_token (:obj:`str`): Уникальный ключ для аутентификации в SteamWebAPI.
         proxy (:obj:`str`, optional): Прокси для запросов.
         base_url (:obj:`str`, optional): Ссылка на API Steam Trader.
         headers (:obj:`dict`, optional): Словарь, содержащий сведения об устройстве, с которого выполняются запросы.
@@ -74,12 +73,12 @@ class ExtClient(Client):
             self,
             api_token: str,
             *,
-            steam_api_token: Optional[str] = None,
             proxy: Optional[str] = None,
             base_url: Optional[str] = None,
-            headers: Optional[dict] = None) -> None:
-        super().__init__(api_token, proxy=proxy, base_url=base_url, headers=headers)
-        self.steam_api_token = steam_api_token
+            headers: Optional[dict] = None,
+            **kwargs
+    ) -> None:
+        super().__init__(api_token, proxy=proxy, base_url=base_url, headers=headers, **kwargs)
 
     @log
     def get_inventory(
