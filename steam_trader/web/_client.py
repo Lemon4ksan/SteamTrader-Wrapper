@@ -82,6 +82,7 @@ class WebClient(WebClientObject):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._httpx_client.close()
 
+    @log
     def get_main_page(
             self,
             gameid: int,
@@ -159,6 +160,7 @@ class WebClient(WebClientObject):
 
         return MainPage.de_json(result)
 
+    @log
     def get_item_info(
             self,
             gid: int,
@@ -203,6 +205,7 @@ class WebClient(WebClientObject):
 
         return ItemInfo.de_json(result)
 
+    @log
     def get_referral_link(self) -> str:
         """Получить реферальную ссылку.
 
@@ -227,6 +230,7 @@ class WebClient(WebClientObject):
         html = bs4.BeautifulSoup(result['contents'], 'lxml')
         return html.find('input', {'class': 'big'}).get('value')
 
+    @log
     def get_referals(
             self,
             status: Optional[int] = None,
@@ -283,6 +287,7 @@ class WebClient(WebClientObject):
 
         return referals
 
+    @log
     def get_history_page(self, gameid: int, category: LiteralString = 'last_purchases') -> Sequence['HistoryItem']:
         """Получить страницу истории продаж.
 

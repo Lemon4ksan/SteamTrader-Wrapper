@@ -19,10 +19,10 @@ def log(method: F) -> F:
     logger = logging.getLogger(method.__module__)
 
     @functools.wraps(method)
-    def wrapper(*args, **kwargs) -> Any:
+    async def wrapper(*args, **kwargs) -> Any:
         logger.debug(f'Entering: {method.__name__}')
 
-        result = method(*args, **kwargs)
+        result = await method(*args, **kwargs)
         logger.info(result)
 
         logger.debug(f'Exiting: {method.__name__}')
@@ -30,7 +30,6 @@ def log(method: F) -> F:
         return result
 
     return wrapper
-
 
 class WebClientAsync(WebClientObject):
     """Этот клиент позволяет получить данные сайта без API ключа или получить информацию, которая недоступна через API.
@@ -83,6 +82,7 @@ class WebClientAsync(WebClientObject):
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self._async_client.aclose()
 
+    @log
     async def get_main_page(
             self,
             gameid: int,
@@ -160,6 +160,7 @@ class WebClientAsync(WebClientObject):
 
         return MainPage.de_json(result)
 
+    @log
     async def get_item_info(
             self,
             gid: int,
@@ -203,6 +204,7 @@ class WebClientAsync(WebClientObject):
 
         return ItemInfo.de_json(result)
 
+    @log
     async def get_referral_link(self) -> str:
         """Получить реферальную ссылку.
 
@@ -227,6 +229,7 @@ class WebClientAsync(WebClientObject):
         html = bs4.BeautifulSoup(result['contents'], 'lxml')
         return html.find('input', {'class': 'big'}).get('value')
 
+    @log
     async def get_referrals(
             self,
             status: Optional[int] = None,
@@ -283,6 +286,7 @@ class WebClientAsync(WebClientObject):
 
         return referals
 
+    @log
     async def get_history_page(self, gameid: int, category: LiteralString = 'last_purchases') -> Sequence['HistoryItem']:
         """Получить страницу истории продаж.
 
