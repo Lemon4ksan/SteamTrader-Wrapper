@@ -45,6 +45,7 @@ class Client(TraderClientObject):
         base_url (:obj:`str`, optional): Ссылка на API Steam Trader.
         headers (:obj:`dict`, optional): Словарь, содержащий сведения об устройстве, с которого выполняются запросы.
             Используется при каждом запросе на сайт.
+        **kwargs: Будут переданы httpx клиенту. Например timeout.
 
     Attributes:
         api_token (:obj:`str`): Уникальный ключ для аутентификации.
@@ -59,13 +60,21 @@ class Client(TraderClientObject):
         TooManyRequests: Слишком много запросов.
     """
 
+    __slots__ = [
+        'sessionid',
+        'proxy',
+        'base_url'
+    ]
+
     def __init__(
             self,
             api_token: str,
             *,
             proxy: Optional[str] = None,
             base_url: Optional[str] = None,
-            headers: Optional[dict] = None) -> None:
+            headers: Optional[dict] = None,
+            **kwargs
+    ) -> None:
 
         self.api_token = api_token
 
@@ -84,9 +93,10 @@ class Client(TraderClientObject):
 
         self._httpx_client = None
         self.proxy = proxy
+        self.kwargs = kwargs
 
     def __enter__(self) -> 'Client':
-        self._httpx_client = httpx.Client(proxy=self.proxy)
+        self._httpx_client = httpx.Client(proxy=self.proxy, **self.kwargs)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):

@@ -18,11 +18,7 @@ setup(
     packages=find_packages(),
     install_requires=['httpx', 'beautifulsoup4', 'lxml'],
     include_package_data=True,
-    options={
-        'api_cl': ['httpx'],
-        'web_cl': ['httpx', 'beautifulsoup4', 'lxml'],
-        'websocket': []  # TODO
-    },
+    options={'api': ['httpx']},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Natural Language :: Russian',

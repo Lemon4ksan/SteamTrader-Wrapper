@@ -17,7 +17,7 @@
 
 ### Введение
 
-Эта библиотека представляет Python обёртку для API [Steam-Trader](https://steam-trader.com/).
+Эта библиотека представляет Python обёртку для REST и WEB API [Steam-Trader](https://steam-trader.com/).
 
 Она совместима с версиями Python 3.12+ и поддерживает работу как с синхронным, так и с асинхронным (asyncio) кодом.
 
@@ -28,12 +28,23 @@
 
 Токен можно получить на сайте перейдя на вкладку [API](https://steam-trader.com/api/). В коде указывается один раз при создании клиента.
 
+#### Получение sessionid
+
+Чтобы получить ID сессии, нужно зарегистрироваться на сайте, зайти в панель разработчика браузера, перейти к файлам куки и скопировать значение ключа sid.
+Учтите, что это значение сбрасывается когда вы выходите из своего аккаунта.
+
 ### Установка
 
 Вы можете установить или обновить Steam-Trader API с помощью команды:
 
 ```shell
 pip install steam-trader
+```
+
+Если вам нужен только API, можете установить часть библиотеки.
+
+```shell
+pip intall steam_trader[api]
 ```
 
 Или можете построить билд на основе репозитория:
@@ -49,13 +60,13 @@ python setup.py install
 Приступив к работе, первым делом необходимо создать экземпляр клиента.
 
 ```python
-from steam_trader import Client
+from steam_trader.api import Client
 
 client = Client('Ваш токен')
 
 # или
 
-from steam_trader import ClientAsync
+from steam_trader.api import ClientAsync
 
 client = ClientAsync('Ваш токен')
 ```
@@ -92,7 +103,7 @@ from steam_trader.constants import TEAM_FORTRESS2_APPID, TF2_CRAFTABLE, DOTA2_RA
 Пример скрипта для продажи всего Очищенного металла в инвентаре TF2 с помощью синхронного клиента.
 
 ```python
-from steam_trader import Client
+from steam_trader.api import Client
 from steam_trader.constants import TEAM_FORTRESS2_APPID
 
 client = Client('Ваш токен')
@@ -110,7 +121,7 @@ for item in inventory.items:
 Пример покупки всех предметов по GID ниже заданной стоимости.
 
 ```python
-from steam_trader import Client
+from steam_trader.api import Client
 from steam_trader.exceptions import NotEnoughMoney
 
 client = Client('Ваш токен')
@@ -131,11 +142,11 @@ for offer in sell_offers.sell:
 С помощью get_order_book мы получаем все предложения о продаже, проходимся по каждому, если цена предложения меньше нашей максимальной, то мы покупаем все предложения по данной цене.
 Также мы используем исключение, если нам не хватит денег на покупку в любой момент.
 
-Последним примером будет использование асинхронного клиента для получения запросов информации большого числа предметов.
+Использование асинхронного клиента для получения запросов информации большого числа предметов.
 
 ```python
 import asyncio
-from steam_trader import ClientAsync
+from steam_trader.api import ClientAsync
 
 client = ClientAsync('Ваш токен')
 
@@ -153,6 +164,18 @@ asyncio.run(main())
 
 Благодаря асинхронности, мы отправили все запросы на сервер *одновременно* и получили результат намного быстрее, чем с синхронным клиентом.
 Мы не ждём ответа при каждом запросе, а переключаемся на другой. Если вам это не понятно, изучите модуль asyncio.
+
+REST API сайта даёт не полный доступ к его данным. Для некоторых задач необходим WEB функционал.
+Например, для получения описаний индивидуальных предметов.
+
+```python
+from steam_trader.web import WebClient
+
+with WebClient('Ваш токен') as client:
+    item_info = client.get_item_info(1523)
+    for offer in item_info.sell_offers:
+        print(item_info.descriptions[offer.itemid])
+```
 
 ### Документация
 

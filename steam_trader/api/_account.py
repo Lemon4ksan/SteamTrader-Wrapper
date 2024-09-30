@@ -90,7 +90,7 @@ class Inventory(TraderClientObject):
                     case 429:
                         raise TooManyRequests('Вы отправили слишком много запросов.')
             except KeyError:
-                pass
+                del data['error']
 
         data.update({
             'gameid': data['game']

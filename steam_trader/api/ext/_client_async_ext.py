@@ -59,8 +59,10 @@ class ExtClientAsync(ClientAsync):
             *,
             proxy: Optional[str] = None,
             base_url: Optional[str] = None,
-            headers: Optional[dict] = None) -> None:
-        super().__init__(api_token, proxy=proxy, base_url=base_url, headers=headers)
+            headers: Optional[dict] = None,
+            **kwargs
+    ) -> None:
+        super().__init__(api_token, proxy=proxy, base_url=base_url, headers=headers, **kwargs)
 
     @log
     async def get_inventory(

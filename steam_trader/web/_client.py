@@ -4,7 +4,6 @@ import logging
 import functools
 from collections.abc import Sequence, Callable
 from typing import Optional, LiteralString, TypeVar, Any
-
 from ._base import WebClientObject
 from ._dataclasses import MainPage, ItemInfo, Referal, HistoryItem
 from steam_trader import constants
@@ -99,8 +98,8 @@ class WebClient(WebClientObject):
 
         Args:
             gameid (:obj:`int`): AppID игры.
-            price_from (:obj:`int`): Минимальная цена предмета. Только целые числа.
-            price_to (:obj:`int`): Максимальная цена предмета. Только целые числа.
+            price_from (:obj:`int`): Минимальная цена предмета.
+            price_to (:obj:`int`): Максимальная цена предмета.
                 Если больше или равно 2000, ограничение снимается.
             filters (:obj:`dict[str, int]`, optional): Словарь пар название/ID.
                 См web_api.api.Filters для названий и web_api.constants для ID.
@@ -173,7 +172,7 @@ class WebClient(WebClientObject):
             gid (:obj:`int`): ID группы предметов.
             page (:obj:`int`): Номер страницы.
             items_on_page (:obj:`int`): Кол-во предметов на странице.
-                Значение должно быть в диапазоне от 24 до 120.
+                Значение должно быть в диапазоне от 24 до 120 с интервалом 6.
 
         Returns:
             :class:`steam_trader.web_api.ItemInfo`: Информацию о предмете.

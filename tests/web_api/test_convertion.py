@@ -33,7 +33,7 @@ class IndependentTests(unittest.TestCase):
     def test_sell_item(self):
         raw_response = r"""<a class="item" href="/tf2/85949-More-Gun-Marshal"><span class="img"><img alt="Многопушечный маршал" src="/upload/items/130/da/da4de04534c0b0915ffd3218128a9f52.png"/></span><span class="price">19 <span>₽</span></span><span class="date">Сегодня в 20:39</span><span class="name" style="color:#7D6D00" title="Многопушечный маршал">Многопушечный маршал</span></a>"""
         expected_result = HistoryItem(name='Многопушечный маршал', date='Сегодня в 20:39', price=19.0, color='7D6D00', image_url='/upload/items/130/da/da4de04534c0b0915ffd3218128a9f52.png')
-        self.assertion(HistoryItem.de_json(bs4.BeautifulSoup(raw_response)), expected_result)
+        self.assertion(HistoryItem.de_json(bs4.BeautifulSoup(raw_response, 'lxml')), expected_result)
 
 if __name__ == '__main__':
     unittest.main()
