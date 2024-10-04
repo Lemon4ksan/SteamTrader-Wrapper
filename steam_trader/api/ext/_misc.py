@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Union
 
 from steam_trader.api import TraderClientObject
-from ... import exceptions
+from steam_trader import exceptions
 
 if TYPE_CHECKING:
     from ._client_ext import ExtClient
@@ -12,7 +12,7 @@ from collections import namedtuple
 PriceRange = namedtuple('PriceRange', ['lowest', 'highest'])
 
 
-@dataclass
+@dataclass(slots=True)
 class TradeMode(TraderClientObject):
     """Класс, представляющий режим торговли.
 

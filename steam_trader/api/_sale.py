@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from ._client import Client
     from ._client_async import ClientAsync
 
-@dataclass
+@dataclass(slots=True)
 class SellResult(TraderClientObject):
     """Класс, представляющий информацию о выставленном на продажу предмете.
 

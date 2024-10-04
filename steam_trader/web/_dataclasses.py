@@ -9,7 +9,7 @@ from ._base import WebClientObject
 from steam_trader.exceptions import UnknownItem, NotFoundError
 
 
-@dataclass
+@dataclass(slots=True)
 class MainPageItem(WebClientObject):
     """Класс, представляющий данные предмета на главной странице.
 
@@ -25,19 +25,6 @@ class MainPageItem(WebClientObject):
         price (:obj:`float`): Цена самого дешёвого предложения.
         type (:obj:`int`): Тип/Уровень предмета.
     """
-
-    __slots__ = [
-        'benefit',
-        'count',
-        'description',
-        'gid',
-        'hash_name',
-        'image_small',
-        'name',
-        'outline',
-        'price',
-        'type'
-    ]
 
     benefit: bool
     count: int
@@ -59,7 +46,7 @@ class MainPageItem(WebClientObject):
         return cls(**data)
 
 
-@dataclass
+@dataclass(slots=True)
 class MainPage(WebClientObject):
     """Класс, представляющий главную страничку продажи.
 
@@ -73,23 +60,13 @@ class MainPage(WebClientObject):
         discount (:obj:`float`): Скидка на покупки. Указывется если auth = True.
     """
 
-    __slots__ = [
-        'auth',
-        'items',
-        'currency',
-        'current_page',
-        'page_count',
-        'commission',
-        'discount'
-    ]
-
     auth: bool
     items: Sequence['MainPageItem']
     currency: int
     current_page: int
     page_count: int
-    commission: Optional[int]
-    discount: Optional[float]
+    commission: Optional[int] = None
+    discount: Optional[float] = None
 
     @classmethod
     def de_json(cls: dataclass, data: dict) -> 'MainPage':
@@ -111,22 +88,12 @@ class MainPage(WebClientObject):
 
         del data['body'], data['chat'], data['handler'], data['menu'], data['sorter'], data['title'], data['game']
 
-        try:
-            _ = data['commission']
-        except KeyError:
-            data['commission'] = None
-
-        try:
-            _ = data['discount']
-        except KeyError:
-            data['discount'] = None
-
         data = super(MainPage, cls).de_json(data)
 
         return cls(**data)
 
 
-@dataclass
+@dataclass(slots=True)
 class SellOffer(WebClientObject):
     """Класс, представляющий предложение о продаже.
 
@@ -138,15 +105,6 @@ class SellOffer(WebClientObject):
         type (:obj:`int`): Тип/Уровень предмета.
         price (:obj:`float`): Цена предложения.
     """
-
-    __slots__ = [
-        'id',
-        'itemid',
-        'image_url',
-        'name',
-        'type',
-        'price'
-    ]
 
     id: int
     itemid: int
@@ -173,7 +131,7 @@ class SellOffer(WebClientObject):
         return cls(**data)
 
 
-@dataclass
+@dataclass(slots=True)
 class ItemDescription(WebClientObject):
     """Класс, представляющйи данные предмета."""
 
@@ -191,7 +149,7 @@ class ItemDescription(WebClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class ItemInfo(WebClientObject):
     """Класс, представляющий данные группы предметов.
 
@@ -205,21 +163,12 @@ class ItemInfo(WebClientObject):
         discount (:obj:`float`): Скидка на покупки. Указывется если auth = True.
     """
 
-    __slots__ = [
-        'auth',
-        'sell_offers',
-        'descriptions',
-        'item',
-        'commission',
-        'discount'
-    ]
-
     auth: bool
     sell_offers: Sequence['SellOffer']
     descriptions: Optional[dict[int, ItemDescription]]
     item: bool
-    commission: Optional[int]
-    discount: Optional[float]
+    commission: Optional[int] = None
+    discount: Optional[float] = None
 
     @classmethod
     def de_json(cls: dataclass, data: dict) -> 'ItemInfo':
@@ -242,18 +191,12 @@ class ItemInfo(WebClientObject):
 
         del data['title'], data['game'], data['menu'], data['contents']
 
-        if 'commission' not in data:
-            data['commission'] = None
-
-        if 'discount' not in data:
-            data['discount'] = None
-
         data = super(ItemInfo, cls).de_json(data)
 
         return cls(**data)
 
 
-@dataclass
+@dataclass(slots=True)
 class Referal(WebClientObject):
     """Класс, представляющий реферала.
 
@@ -263,13 +206,6 @@ class Referal(WebClientObject):
         status (:obj:`str`): Статус реферала.
         sum (:obj:`float`): Сумма потраченных рефералом средств.
     """
-
-    __slots__ = [
-        'name',
-        'date',
-        'status',
-        'sum'
-    ]
 
     name: str
     date: str
@@ -284,7 +220,7 @@ class Referal(WebClientObject):
         return cls(**data)
 
 
-@dataclass
+@dataclass(slots=True)
 class HistoryItem(WebClientObject):
     """Класс, представляющий предмет из истории продаж.
 
@@ -295,14 +231,6 @@ class HistoryItem(WebClientObject):
         color (:obj:`str`): HEX код цвета текста названия.
         image_url (:obj:`str`): Неабсолютная ссылка на изображение предмета.
     """
-
-    __slots__ = [
-        'name',
-        'date',
-        'price',
-        'color',
-        'image_url'
-    ]
 
     name: str
     date: str

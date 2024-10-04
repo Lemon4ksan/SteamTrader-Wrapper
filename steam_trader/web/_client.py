@@ -288,13 +288,13 @@ class WebClient(WebClientObject):
         return referals
 
     @log
-    def get_history_page(self, gameid: int, category: LiteralString = 'last_purchases') -> Sequence['HistoryItem']:
+    def get_history_page(self, gameid: int, category: LiteralString = 'last') -> Sequence['HistoryItem']:
         """Получить страницу истории продаж.
 
         Args:
             gameid (:obj:`int`): AppID игры.
             category (:obj:`LiteralString`): Категория истории.
-                'last_purchases': Последние покупки. По умолчанию.
+                'last': Последние покупки. По умолчанию.
                 'day_most': Самые дорогие за 24 часа.
                 'all_time_most': Самые дорогие за все время.
 
@@ -308,7 +308,7 @@ class WebClient(WebClientObject):
             raise UnsupportedAppID('Указан недействительный AppID.')
 
         match category:
-            case 'last_purchases':
+            case 'last':
                 i = 0
             case 'day_most':
                 i = 1

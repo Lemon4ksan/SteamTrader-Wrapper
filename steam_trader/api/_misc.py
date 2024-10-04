@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from ._client import Client
     from ._client_async import ClientAsync
 
-@dataclass
+@dataclass(slots=True)
 class SellHistoryItem(TraderClientObject):
     """Класс, представляющий информацию о предмете в истории продаж.
 
@@ -37,7 +37,7 @@ class SellHistoryItem(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class InventoryItem(TraderClientObject):
     """Класс, представляющий предмет в инвентаре.
 
@@ -99,7 +99,7 @@ class InventoryItem(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class Filter(TraderClientObject):
     """Класс, представляющий фильтр.
 
@@ -135,7 +135,7 @@ class Filter(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class Filters(TraderClientObject):
     """Класс, представляющий фильтры, используемые для поиска на сайте.
 
@@ -243,7 +243,7 @@ class Filters(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class BuyOrder(TraderClientObject):
     """Класс, представляющий информацию о запросе на покупку.
 
@@ -288,7 +288,7 @@ class BuyOrder(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class Discount(TraderClientObject):
     """Класс, представляющий информацию о комиссии/скидке в определённой игре.
 
@@ -321,7 +321,7 @@ class Discount(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class OperationsHistoryItem(TraderClientObject):
     """Класс, представляющий информацию о предмете в истории операций.
 
@@ -358,7 +358,7 @@ class OperationsHistoryItem(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class AltWebSocketMessage(TraderClientObject):
     """Класс, представляющий AltWebSocket сообщение.
 
@@ -387,7 +387,7 @@ class AltWebSocketMessage(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class MultiBuyOrder(TraderClientObject):
     """Класс, представляющий предмет из запроса на мульти-покупку.
 
@@ -412,7 +412,7 @@ class MultiBuyOrder(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class ItemForExchange(TraderClientObject):
     """Класс, представляющий информацию о предмете для передачи/получения боту.
 
@@ -459,7 +459,7 @@ class ItemForExchange(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class TradeDescription(TraderClientObject):
     """Класс, предстваляющий описание предмета для передачи/получения боту.
 
@@ -494,7 +494,7 @@ class TradeDescription(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class ExchangeItem(TraderClientObject):
     """Класс, представляющий предмет, на который был отправлен обмен.
 

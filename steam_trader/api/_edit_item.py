@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from ._client import Client
     from ._client_async import ClientAsync
 
-@dataclass
+@dataclass(slots=True)
 class EditPriceResult(TraderClientObject):
     """Класс, представляющий результат запроса на изменение цены.
 
@@ -65,7 +65,7 @@ class EditPriceResult(TraderClientObject):
 
         return cls(client=client, **data)
 
-@dataclass
+@dataclass(slots=True)
 class DeleteItemResult(TraderClientObject):
     """Класс, представляющий результат запроса снятия предмета с продажи/заявки на покупку.
 
@@ -112,7 +112,7 @@ class DeleteItemResult(TraderClientObject):
 
         return cls(client=client, **data)
 
-@dataclass
+@dataclass(slots=True)
 class GetDownOrdersResult(TraderClientObject):
     """Класс, представляющий результат снятия всех заявок на продажу/покупку.
 

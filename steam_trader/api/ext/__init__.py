@@ -1,4 +1,4 @@
-"""Расширенная версия клиента с изменёнными методами.
+"""Extended version of api client.
 
 Licensed under the BSD 3-Clause License - Copyright (c) 2024-present, Lemon4ksan (aka Bananchiki) <https://github.com/Lemon4ksan>
 See LICENSE

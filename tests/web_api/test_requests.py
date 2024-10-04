@@ -36,7 +36,7 @@ class IndependentTests(unittest.TestCase):
         self.assertIsInstance(result, list)
 
     def test_get_history(self):
-        self.client.get_history_page(440, 'last_purchases')
+        self.client.get_history_page(440, 'last')
         self.client.get_history_page(440, 'day_most')
         self.client.get_history_page(440, 'all_time_most')
 

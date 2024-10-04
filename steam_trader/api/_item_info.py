@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from ._client import Client
     from ._client_async import ClientAsync
 
-@dataclass
+@dataclass(slots=True)
 class MinPrices(TraderClientObject):
     """Класс, представляющий минимальную/максимальную цену на предмет.
 
@@ -58,7 +58,7 @@ class MinPrices(TraderClientObject):
 
         return cls(client=client, **data)
 
-@dataclass
+@dataclass(slots=True)
 class ItemInfo(TraderClientObject):
     """Класс, представляющий информацию о группе предметов на сайте.
 
@@ -144,7 +144,7 @@ class ItemInfo(TraderClientObject):
 
         return cls(client=client, **data)
 
-@dataclass
+@dataclass(slots=True)
 class OrderBook(TraderClientObject):
     """Класс, представляющий заявоки о покупке/продаже предмета.
 

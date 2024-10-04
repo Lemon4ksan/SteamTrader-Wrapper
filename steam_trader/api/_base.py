@@ -4,13 +4,6 @@ from abc import ABCMeta
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Union
 
-try:
-    import ujson as json
-
-    ujson = True
-except ImportError:
-    import json
-
 if TYPE_CHECKING:
     from ._client import Client
     from ._client_async import ClientAsync

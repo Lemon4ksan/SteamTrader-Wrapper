@@ -8,13 +8,6 @@ from typing import TypeVar
 
 _WT = TypeVar("_WT")
 
-try:
-    import ujson as json
-
-    ujson = True
-except ImportError:
-    import json
-
 
 class WebClientObject:
     """Базовый класс для всех объектов web части библиотеки."""
