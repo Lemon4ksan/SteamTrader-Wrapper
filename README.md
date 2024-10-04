@@ -41,12 +41,6 @@
 pip install steam-trader
 ```
 
-Если вам нужен только API, можете установить часть библиотеки.
-
-```shell
-pip intall steam_trader[api]
-```
-
 Или можете построить билд на основе репозитория:
 
 ```shell
