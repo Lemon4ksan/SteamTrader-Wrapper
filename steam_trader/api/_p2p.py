@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from ._client import Client
     from ._client_async import ClientAsync
 
-@dataclass
+@dataclass(slots=True)
 class P2PTradeOffer(TraderClientObject):
     """Класс, представляющий данные для совершения p2p трейда. Незадокументированно.
 
@@ -42,7 +42,7 @@ class P2PTradeOffer(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class P2PSendObject(TraderClientObject):
     """Класс, представляющий ссылку на p2p обмен и сам обмен.
 
@@ -75,7 +75,7 @@ class P2PSendObject(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class P2PReceiveObject(TraderClientObject):
     """Класс, представляющий массив с данными для принятия обмена.
 
@@ -111,7 +111,7 @@ class P2PReceiveObject(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class P2PConfirmObject(TraderClientObject):
     """Класс, представляющий массив с данными для подтверждения обмена в мобильном аутентификаторе.
 

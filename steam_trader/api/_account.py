@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from ._client_async import ClientAsync
 
 
-@dataclass
+@dataclass(slots=True)
 class WebSocketToken(TraderClientObject):
     """Класс, представляющий WebSocket токен. Незадокументированно.
 
@@ -51,7 +51,7 @@ class WebSocketToken(TraderClientObject):
         return cls(client=client, **data)
 
 
-@dataclass
+@dataclass(slots=True)
 class Inventory(TraderClientObject):
     """Класс, представляющий инвентарь клиента.
 
@@ -113,7 +113,7 @@ class Inventory(TraderClientObject):
         return cls(client=client, **data)
 
 
-@dataclass
+@dataclass(slots=True)
 class BuyOrders(TraderClientObject):
     """Класс, представляющий ваши запросы на покупку.
 
@@ -154,7 +154,7 @@ class BuyOrders(TraderClientObject):
         return cls(client=client, **data)
 
 
-@dataclass
+@dataclass(slots=True)
 class Discounts(TraderClientObject):
     """Класс, представляющий комиссии/скидки на игры, доступные на сайте.
 
@@ -192,7 +192,7 @@ class Discounts(TraderClientObject):
         return cls(client=client, **data)
 
 
-@dataclass
+@dataclass(slots=True)
 class OperationsHistory(TraderClientObject):
     """Класс, представляющий истории операций, произведённых на сайте.
 
@@ -231,7 +231,7 @@ class OperationsHistory(TraderClientObject):
         return cls(client=client, **data)
 
 
-@dataclass
+@dataclass(slots=True)
 class InventoryState(TraderClientObject):
     """Класс, представляющий текущий статус инвентаря.
 
@@ -278,7 +278,7 @@ class InventoryState(TraderClientObject):
         return cls(client=client, **data)
 
 
-@dataclass
+@dataclass(slots=True)
 class AltWebSocket(TraderClientObject):
     """Класс, представляющий запрос альтернативным WebSocket.
 

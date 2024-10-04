@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from ._client import Client
     from ._client_async import ClientAsync
 
-@dataclass
+@dataclass(slots=True)
 class ItemsForExchange(TraderClientObject):
     """Класс, представляющий предметы для обмена с ботом.
 
@@ -60,7 +60,7 @@ class ItemsForExchange(TraderClientObject):
 
         return cls(client=client, **data)
 
-@dataclass
+@dataclass(slots=True)
 class ExchangeResult(TraderClientObject):
     """Класс, представляющий результат инициализации обмена с ботом.
 
@@ -135,7 +135,7 @@ class ExchangeResult(TraderClientObject):
 
         return cls(client=client, **data)
 
-@dataclass
+@dataclass(slots=True)
 class ExchangeP2PResult(TraderClientObject):
     """Класс, представляющий результат инициализации p2p обмена.
 

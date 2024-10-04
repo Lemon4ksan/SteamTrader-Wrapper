@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from ._client import Client
     from ._client_async import ClientAsync
 
-@dataclass
+@dataclass(slots=True)
 class SellOffer(TraderClientObject):
     """Класс, представляющий информацию о предложении продажи.
 
@@ -38,7 +38,7 @@ class SellOffer(TraderClientObject):
 
         return cls(**data)
 
-@dataclass
+@dataclass(slots=True)
 class BuyOffer(TraderClientObject):
     """Класс, представляющий информацию о запросе на покупку.
 

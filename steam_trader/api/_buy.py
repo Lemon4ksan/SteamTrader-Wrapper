@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from ._client import Client
     from ._client_async import ClientAsync
 
-@dataclass
+@dataclass(slots=True)
 class BuyResult(TraderClientObject):
     """Класс, представляющий результат покупки.
 
@@ -65,7 +65,7 @@ class BuyResult(TraderClientObject):
 
         return cls(client=client, **data)
 
-@dataclass
+@dataclass(slots=True)
 class BuyOrderResult(TraderClientObject):
     """Класс, представляющий результат запроса на покупку.
 
@@ -114,7 +114,7 @@ class BuyOrderResult(TraderClientObject):
 
         return cls(client=client, **data)
 
-@dataclass
+@dataclass(slots=True)
 class MultiBuyResult(TraderClientObject):
     """Класс, представляющий результат мульти-покупки.
 
