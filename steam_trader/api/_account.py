@@ -14,12 +14,12 @@ if TYPE_CHECKING:
 
 @dataclass(slots=True)
 class WebSocketToken(TraderClientObject):
-    """Класс, представляющий WebSocket токен. Незадокументированно.
+    """Класс, представляющий WebSocket токен.
 
     Attributes:
-        steam_id: (:obj:`str`)
-        time: (:obj:`int`)
-        hash: (:obj:`str`)
+        steam_id: (:obj:`str`): SteamID клиента.
+        time: (:obj:`int`): Время создание токена.
+        hash: (:obj:`str`): Хеш токена.
         client (Union[:class:`steam_trader.Client`, :class:`steam_trader.ClientAsync`, :obj:`None`]):
             Клиент Steam Trader.
     """
