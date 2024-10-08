@@ -8,8 +8,6 @@ Licensed under the BSD 3-Clause License - Copyright (c) 2024-present, Lemon4ksan
 See LICENSE
 """
 
-from .__version__ import __version__, __license__, __copyright__
-
 from ._base import TraderClientObject
 
 from ._misc import SellHistoryItem
@@ -63,9 +61,6 @@ from ._client import Client
 from ._client_async import ClientAsync
 
 __all__ = [
-    '__version__',
-    '__license__',
-    '__copyright__',
     'TraderClientObject',
     'Client',
     'WebSocketToken',
